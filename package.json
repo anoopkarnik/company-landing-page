@@ -1,0 +1,29 @@
+{
+  "name": "turborepo-saas-boilerplate-code",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "start": "turbo start",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "db:migrate": "cd packages/prisma-db && npx prisma migrate dev --name init",
+    "db:generate": "cd packages/prisma-db && npx prisma generate",
+    "db:seed": "cd packages/prisma-db && npx prisma db seed",
+    "docs:deploy": "cd apps/docs && npm run deploy-s3",
+    "docs:serve": "cd apps/docs && npm run serve -- --host 0.0.0.0 --no-open"
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5",
+    "turbo": "^2.3.3",
+    "typescript": "5.5.4"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "npm@10.5.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}

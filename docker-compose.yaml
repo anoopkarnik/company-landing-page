@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  nextjs-app:
+    environment:
+      - AUTH_URL=${AUTH_URL}
+      - AUTH_TRUST_HOST=${AUTH_TRUST_HOST}
+      - AUTH_SECRET=${AUTH_SECRET}
+      - DATABASE_URL=${DATABASE_URL}
+      - NEXT_PUBLIC_ADMIN_MAIL=${NEXT_PUBLIC_ADMIN_MAIL}
+      - NEXT_PUBLIC_ADMIN_PASSWORD=${NEXT_PUBLIC_ADMIN_PASSWORD}
+      - NEXT_PUBLIC_BLOB_READ_WRITE_TOKEN=${NEXT_PUBLIC_BLOB_READ_WRITE_TOKEN}
+      - NEXT_PUBLIC_DOCUMENTATION_URL=${NEXT_PUBLIC_DOCUMENTATION_URL}
+      - NEXT_PUBLIC_GUEST_MAIL=${NEXT_PUBLIC_GUEST_MAIL}
+      - NEXT_PUBLIC_GUEST_PASSWORD=${NEXT_PUBLIC_GUEST_PASSWORD}
+      - NEXT_PUBLIC_RESEND_API_KEY=${NEXT_PUBLIC_RESEND_API_KEY}
+      - NEXT_PUBLIC_URL=${NEXT_PUBLIC_URL}
+      - NEXT_PUBLIC_CASHFREE_CLIENT_ID=${NEXT_PUBLIC_CASHFREE_CLIENT_ID}
+      - NEXT_PUBLIC_CASHFREE_CLIENT_SECRET=${NEXT_PUBLIC_CASHFREE_CLIENT_SECRET}
+      - NEXT_PUBLIC_ENV=production
+      - NEXT_PUBLIC_NOTION_CLIENT_ID=${NEXT_PUBLIC_NOTION_CLIENT_ID}
+      - NEXT_PUBLIC_NOTION_CLIENT_SECRET=${NEXT_PUBLIC_NOTION_CLIENT_SECRET}
+      - NEXT_PUBLIC_RAZORPAY_KEY_ID=${NEXT_PUBLIC_RAZORPAY_KEY_ID}
+      - NEXT_PUBLIC_RAZORPAY_KEY_SECRET=${NEXT_PUBLIC_RAZORPAY_KEY_SECRET}
+      - NEXT_PUBLIC_RESEND_API_KEY=${NEXT_PUBLIC_RESEND_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_ASSISTANT_ID=${OPENAI_ASSISTANT_ID}
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.nextjs-app
+    ports:
+      - "3000:3000"
+    image: anoopkarnik/turborepo-saas-boilerplate-code-nextjs-app:latest
+    restart: always
+  
+  docs:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.docs
+    ports:
+      - "3010:3010"
+    image: anoopkarnik/turborepo-saas-boilerplate-code-docs:latest
+    restart: always
+
+

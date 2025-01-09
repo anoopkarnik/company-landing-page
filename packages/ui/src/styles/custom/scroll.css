@@ -1,0 +1,24 @@
+/* Style for WebKit-based browsers (Chrome, Edge, Safari) */
+.scrollbar-custom::-webkit-scrollbar {
+    width: 8px; /* Scrollbar width */
+  }
+  
+  .scrollbar-custom::-webkit-scrollbar-track {
+    background: var(--background); /* Scrollbar track color */
+  }
+  
+  .scrollbar-custom::-webkit-scrollbar-thumb {
+    background: var(--accent); /* Scrollbar thumb color */
+    border-radius: 4px; /* Rounded corners */
+  }
+  
+  .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-hover); /* Hover color for thumb */
+  }
+  
+  /* Style for Firefox */
+  .scrollbar-custom {
+    scrollbar-color: var(--accent) var(--background); /* Thumb and track colors */
+    scrollbar-width: thin; /* Thin scrollbar */
+  }
+  

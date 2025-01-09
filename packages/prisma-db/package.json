@@ -1,0 +1,30 @@
+{
+  "name": "@repo/prisma-db",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "prisma": {
+    "seed": " ts-node --transpile-only prisma/seeds/seed.ts"
+  },
+  "exports": {
+    "./client": "./src/index.ts",
+    "./repo/*": "./src/*.ts"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^6.0.1",
+    "bcryptjs": "^2.4.3",
+    "prisma": "^6.0.1",
+    "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "@types/uuid": "^10.0.0",
+    "ts-node": "^10.9.2"
+  }
+}
