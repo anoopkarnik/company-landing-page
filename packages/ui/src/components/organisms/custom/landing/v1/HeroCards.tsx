@@ -1,6 +1,4 @@
 import { Avatar, AvatarFallback, AvatarImage } from "../../../../atoms/shadcn/avatar";
-import { Badge } from "../../../../atoms/shadcn/badge";
-import { Button, buttonVariants } from "../../../../atoms/shadcn/button";
 import {
   Card,
   CardContent,
@@ -9,7 +7,6 @@ import {
   CardTitle,
   CardFooter,
 } from "../../../../molecules/shadcn/card";
-import { Check} from "lucide-react";
 import { LightbulbIcon } from "lucide-react";
 import { HeroCardsProps } from "@repo/ts-types/landing-page/v1";
 
