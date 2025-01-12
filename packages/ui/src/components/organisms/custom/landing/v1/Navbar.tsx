@@ -111,7 +111,7 @@ const Navbar = ({routeList,githubLink,githubUsername,githubRepositoryName,title,
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="yellow"
-                      className="w-4 h-4 mx-1"
+                      className="w-4 h-4 mx-1 "
                       viewBox="0 0 24 24"
                     >
                       <path d="M12 .587l3.668 7.429 8.332 1.151-6.064 5.868 1.516 8.252-7.452-3.915-7.452 3.915 1.516-8.252-6.064-5.868 8.332-1.151z" />

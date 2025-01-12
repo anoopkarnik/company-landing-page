@@ -13,15 +13,12 @@ export interface NavbarProps {
     logo: string;
     darkLogo: string;
   }
-export interface HeroProps {
-    loginFunction: () => void;
+export interface HeroProps extends HeroCardsProps {
+    loginFunction?: () => void;
     documentationLink: string;
     tagline: string;
     description: string;
     testimonials: TestimonialProps[];
-    pricingList: PricingProps[];
-    teamList: TeamProps[];
-    featuresWithDescription: FeatureWithDescriptionProps[];
   }
 
 export interface FeatureWithDescriptionProps {
@@ -29,28 +26,50 @@ export interface FeatureWithDescriptionProps {
     href?: string;
     description: string;
   }
+
+export interface ProjectProps {
+    title: string;
+    description: string;
+    demo?: string;
+    github?: string;
+    image?: string;
+    notion?: string;
+
+}
+
+export interface ServiceProps {
+  title: string;
+  description: string;
+}
   
 export interface FeaturesProps {
     featuresWithDescription: FeatureWithDescriptionProps[];
     featureList: string[];
   }
 
+export interface StatisticsProps {
+    users: string;
+    subscribers: string;
+    products: string;
+    downloads: string;
+  }
 
-export interface LandingPageProps  extends NavbarProps{
-    documentationLink: string;
-    loginFunction: () => void;
-    tagline: string;
-    description: string;
-    featuresWithDescription: FeatureWithDescriptionProps[];
-    featureList: string[];
+export interface AboutProps  extends StatisticsProps{
+    companyDetails: string;
+
+}
+
+export interface LandingPageProps  extends NavbarProps, HeroProps, AboutProps{
+    featureList?: string[];
     testimonials: TestimonialProps[];
-    pricingList: PricingProps[];
-    FAQList: FAQProps[];
+    FAQList?: FAQProps[];
     footerList: FooterListProps;
+    projectsList?: ProjectProps[];
     creator: string;
     creatorLink: string;
-    teamList: TeamProps[];
     supportEmailAddress: string;
+    services?: ServiceProps[];
+    createContactAction?: (email:string) => void;
   }
 
 export interface TestimonialProps {
@@ -166,7 +185,9 @@ export interface SociaNetworkslProps {
 
 export interface HeroCardsProps {
   testimonials: TestimonialProps[];
-  pricingList: PricingProps[];
-  featuresWithDescription: FeatureWithDescriptionProps[];
+  pricingList?: PricingProps[];
+  featuresWithDescription?: FeatureWithDescriptionProps[];
   teamList: TeamProps[];
+  projects?: ProjectProps[];
+  services?: ServiceProps[];
 }

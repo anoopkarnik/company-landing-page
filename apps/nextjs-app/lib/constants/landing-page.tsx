@@ -3,139 +3,36 @@ import { RouteProps, FeatureWithDescriptionProps,
     PricingProps,
     FAQProps,
     FooterListProps,
-    TeamProps} from "@repo/ts-types/landing-page/v1";
+    TeamProps,
+    ProjectProps,
+    ServiceProps} from "@repo/ts-types/landing-page/v1";
 
 
 
 export const routeList: RouteProps[] = [
+
     {
-        href: "#features",
-        label: "Features",
+        href: "#about",
+        label: "About",
     },
     {
-        href: "#testimonials",
-        label: "Testimonials",
+      href: "#services",
+      label: "Services",
     },
     {
-        href: "#pricing",
-        label: "Pricing",
+      href: "#products",
+      label: "Products",
     },
     {
-        href: "#faq",
-        label: "FAQ",
+      href: "#team",
+      label: "Team",
     }
 ]
 
 export const featuresWithDescription: FeatureWithDescriptionProps[] = [
-    {
-      title: "Aesthetic Landing Page",
-      description:
-        "The landing page is designed to be minimalist and aesthetic inspired from https://github.com/leoMirandaa/shadcn-landing-page. It is designed to be responsive and mobile-friendly and easily customizable.",
-      href:"./features/landing.png"
-    },
-    {
-      title: "Atomic Design Shadcn Components",
-      description:
-        "All the Shadcn Components are stored in a atomic design manner as atoms, molecules. We have created organisms and templates using these components and some custom ones",
-      href:"./features/shadcn.png"
-    },
-    {
-      title: "Shadcn Themes",
-      description:
-        "All the Shadcn Themes can be used to change the look and feel of the landing page by just changing a import statement. We have created a dark and light theme for the landing page.",
-      href:"./features/shadcn-themes.webp"
-    },
-    {
-      title: "Authv5 Authentication",
-      description:
-        "Email Authentication with verification, forgot password, etc. Social Logins with Google, Github, Linkedin, etc. All the authentication is done using Authv5.",
-      href:"./features/authv5.png"
-    },
-    {
-      title: "Razorpay Payments",
-      description:
-        "Razorpay Payments are integrated into the landing page.",
-      href:"./features/razorpay.webp"
-    },
-    {
-      title: "Vercel Blob Storage",
-      description:
-        "Vercel Blob Storage is used to store the profile images of the users and also modify them.",
-      href:"./features/vercel.jpg"
-    },
-    {
-      title: "Prisma ORM",
-      description:
-        "Prisma ORM is used to store the user data.",
-      href:"./features/prismaorm.jpg"
-    },
-    {
-      title: "Profile Management Settings",
-      description:
-        "Profile Management Settings are used to change the user profile details.",
-      href:"./features/settings.png"
-    },
-    {
-      title: "Resend Email",
-      description:
-        "Resend Email is used to resend the verification and reset password email to the user.",
-      href: "./features/resend.png"
-    },
-    {
-      title: "Sidebar Navigation",
-      description:
-        "Sidebar Navigation is used to navigate to the different sections of the home page and also profile settings.",
-      href: "./features/sidebar.png"
-    },
-    {
-      title: "Notification System",
-      description:
-        "Notification System is used to see notifications of the user.",
-      href: "./features/notifications.png"
-    },
-    {
-      title: "Customized Pricing for API Credits using Cashfree Payments",
-      description:
-        "Customized Pricing for API Credits is used to show the pricing of the API Credits.",
-      href: "./features/cashfree.avif"
-    },
-    {
-      title: "Notion Client Library",
-      description:
-        "Notion Client Library is used to fetch the data from the Notion API.",
-      href: "./features/notion.png"
-    },
-    {
-      title: "OpenAI Client Library",
-      description:
-        "OpenAI Client Library is used to fetch the data from the OpenAI API.",
-      href: "./features/openai.png"
-    }
-
   ];
   
   export const featureList: string[] = [
-    "Landing Page",
-    "Dark/Light theme",
-    "Docusaurus Documentation",
-    "Razorpay Payments",
-    "NextAuth Authentication",
-    "Social Logins",
-    "Shadcn Atomic Design Components",
-    "Shadcn Themes",
-    "Shadcn Templates",
-    "Profile Management Settings",
-    "Prisma ORM",
-    "Resend Email",
-    "Vercel Blob Storage",
-    "Responsive design",
-    "Minimalist",
-    "Session Management",
-    "Third Party Integrations",
-    "Notification System",
-    "Customized Pricing for API Credits",
-    "Notion Client Library",
-    "OpenAI Client Library",
   ];
 
   export const testimonials: TestimonialProps[] = [
@@ -183,93 +80,48 @@ export const featuresWithDescription: FeatureWithDescriptionProps[] = [
     },
   ];
   
+export const projects: ProjectProps[] = [
+  {
+    "title": "Turborepo SaaS Boilerplate Code",
+    "description": "The best boilerplate code for creating a micro SaaS monorepo codebase.",
+    "demo": "https://dev.boilerplate.bsamaritan.com",
+    "github": "https://github.com/anoopkarnik/turborepo-saas-boilerplate-code",
+    "image": "/projects/turborepo-saas-boilerplate-code.png"
+
+  },
+  {
+    "title": "Company Landing Page Boilerplate Code",
+    "description": "The best boilerplate code for creating a company landing page.",
+    "demo": "https://dev.bsamaritan.com",
+    "github": "https://github.com/anoopkarnik/company-landing-page",
+    "image": "/projects/company-landing-page.png"
+  },
+  {
+    "title": "Personal Finance System Template",
+    "description": "This dashboard is used to put your monthly budgets, yearly budgets, assets and liabilities, financial transactions, FIRE and funds with a sample list of all budgets a person above 25 faces.",
+    "notion": "https://www.notion.so/marketplace/templates/personal-finance-system",
+    "image": "/projects/personal-finance-system.webp"
+  },
+  {
+    "title": "Social & Relationship System Template",
+    "description": "This is a template to maintain all my relationships - friends, family, acquantances and professional.",
+    "notion": "https://www.notion.so/marketplace/templates/social-relationship-system",
+    "image": "/projects/social-relationship-system.jpeg"
+  },
+  {
+    "title": "Solopreneur Project Management System Template",
+    "description": "This dashboard is perfect for planning production level projects which a very small team or solopreneur builds, it includes databases for projects, sprints, bugs, features, team, etc.",
+    "notion": "https://www.notion.so/marketplace/templates/solopreneur-projects-dashboard",
+    "image": "/projects/solopreneur-projects-dashboard.webp"
+  }
+]
 
 export const pricingList: PricingProps[] = [
-    {
-      title: "Trial",
-      popular: 1,
-      price: "Rs 0",
-      priceType: "/one-time",
-      href: "/auth/login",
-      description:
-        "To test live how this project works, you can use this trial plan and perform 20 credits worth of operations.",
-      buttonText: "Get Started",
-      benefitList: [
-        "Open Source Code",
-        "Testing how it works live",
-        "Latest Tools and Technologies",
-        "20 credits",
-        "Mail Support",
-      ],
-    },
-    {
-      title: "Pro",
-      popular: 0,
-      price: "Rs 20",
-      priceType: "/one-time",
-      href: "/auth/login",
-      description:
-        "To test live how this project works, you can use this trial plan and perform 200 credits worth of operations.",
-      buttonText: "Upgrade (Only after Login)",
-      benefitList: [
-        "Open Source Code",
-        "Testing how it works live",
-        "Latest Tools and Technologies",
-        "200 credits",
-        "Mail Support",
-      ],
-    },
-    {
-      title: "Enterprise",
-      popular: 0,
-      price: "",
-      priceType: "/Customized Pricing",
-      href: "https://mail.google.com/mail?view=cm&fs=1&to=support@bsamaritan.com&su=Support",
-      description:
-        "Customize this boilerplate code to your own startup needs.",
-      buttonText: "Contact Us",
-      benefitList: [
-        "Open Source Code",
-        "Testing how it works live",
-        "Latest Tools and Technologies",
-        "All Future Updates",
-        "Mail Support",
-      ],
-    },
+   
   ];
 
     
   export const FAQList: FAQProps[] = [
-    {
-      question: "Is this boilerplate code free?",
-      answer: "Yes. It is a free and open-source boilerplate code.",
-      value: "item-1",
-    },
-    {
-      question: "What are the tools and languages used in this boilerplate code?",
-      answer:
-        "Nexjs, React, Typescript, Tailwind CSS, Turborepo, Docusaurus, Prisma, Vercel, Razorpay, NextAuth, Shadcn Atomic Design Components, Shadcn Themes, Shadcn Templates, and many more.",
-      value: "item-2",
-    },
-    {
-      question:
-        "What level of coding expertise is required to use this boilerplate code?",
-      answer:
-        "This boilerplate code is beginner-friendly. You can start building your project with minimal coding expertise, if you go through the documentation properly.",
-      value: "item-3",
-    },
-    {
-      question: "What kind of support is provided for this boilerplate code?",
-      answer: "You can contant us from below link on email on chat with AI trained on our documentation in the bottom right corner.",
-      value: "item-4",
-    },
-    {
-      question:
-        "How can I contribute to this boilerplate code?",
-      answer:
-        "You can contribute to this boilerplate code by forking the repository, making changes, and creating a pull request.",
-      value: "item-5",
-    },
   ];
 
   export const footerList: FooterListProps = {
@@ -285,28 +137,6 @@ export const pricingList: PricingProps[] = [
         {
             label: "Github",
             href: "https://github.com/anoopkarnik"
-        }
-    ],
-    "Documentation": [
-        {
-            label: "Overview",
-            href: "https://docs.bsamaritan.com/docs/overview/"
-        },
-        {
-            label: "Getting Started",
-            href: "https://docs.bsamaritan.com/docs/category/getting-started"
-        },
-        {
-            label: "Deployment",
-            href: "https://docs.bsamaritan.com/docs/category/deployment"
-        },
-        {
-            label: "Troubleshooting",
-            href: "https://docs.bsamaritan.com/docs/troubleshooting"
-        },
-        {
-            label: "FAQs",
-            href: "https://docs.bsamaritan.com/docs/faqs"
         }
     ],
     "Legal": [
@@ -328,6 +158,30 @@ export const pricingList: PricingProps[] = [
         }
     ],
   }
+
+export const services: ServiceProps[] = [
+    {
+      title: "AI Integration",
+      description:
+        "Be it chatbots, recommendation engines, or predictive analytics, we can help you integrate AI into your business.",
+    },
+    {
+      title: "MVP Development",
+      description:
+        "We can help you build a Minimum Viable Product (MVP) to validate your idea and get feedback from your users .",
+    },
+    {
+      title: "Notion Templates Creation",
+      description:
+        "Create Notion Templates for any kind of documentation or process improvement in a company."
+    },
+    {
+      title: "Automation of your repetitive tasks",
+      description:
+        "Automate the boring stuff in your life and business using code."
+    }
+  ];
+
 
   export const teamList: TeamProps[] = [
     {

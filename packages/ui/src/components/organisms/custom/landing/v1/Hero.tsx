@@ -5,8 +5,7 @@ import HeroCards  from "./HeroCards";
 import { useEffect, useState } from "react";
 import { HeroProps } from "@repo/ts-types/landing-page/v1";
 
-const Hero = ({loginFunction,documentationLink,tagline,description,testimonials,
-    pricingList,teamList,featuresWithDescription}: HeroProps) => {
+const Hero = ({loginFunction,documentationLink,tagline,description,testimonials,teamList,services, projects}: HeroProps) => {
     const [taglineArray,setTaglineArray] = useState<string[]>([])
     useEffect(()=>{
         if(tagline){
@@ -29,7 +28,11 @@ const Hero = ({loginFunction,documentationLink,tagline,description,testimonials,
             <span className="inline bg-gradient-to-r from-[#61DAFB] via-[#1fc0f1] to-[#03a3d7] text-transparent bg-clip-text">
               {taglineArray[4]}
             </span>{" "}
-            {taglineArray.slice(5,)}
+            {taglineArray[5]}
+            {" "}
+            <span className="inline bg-gradient-to-r from-[#61DAFB] via-[#1fc0f1] to-[#03a3d7] text-transparent bg-clip-text">
+              {taglineArray[6]}
+            </span>{" "}
           </h2>
         </main>
 
@@ -39,9 +42,9 @@ const Hero = ({loginFunction,documentationLink,tagline,description,testimonials,
 
         <div className="space-y-4 md:space-y-0 md:space-x-4">
             
-          <Button onClick={loginFunction} className="w-full md:w-1/3">Get Started</Button>
+          {loginFunction && <Button onClick={loginFunction} className="w-full md:w-1/3">Get Started</Button>}
 
-          <a
+          {documentationLink && <a
             rel="noreferrer noopener"
             href={documentationLink}
             target="_blank"
@@ -51,14 +54,13 @@ const Hero = ({loginFunction,documentationLink,tagline,description,testimonials,
           >
             Documentation
             <BookOpenIcon className="ml-2 w-4 h-4" />
-          </a>
+          </a>}
         </div>
       </div>
 
       {/* Hero cards sections */}
       <div className="z-10">
-        <HeroCards testimonials={testimonials} pricingList={pricingList}
-         teamList={teamList} featuresWithDescription={featuresWithDescription}/>
+        <HeroCards testimonials={testimonials} teamList={teamList} services={services} projects={projects}/>
       </div>
 
       {/* Shadow effect */}

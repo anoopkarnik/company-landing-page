@@ -21,11 +21,11 @@ const Testimonials = ({testimonials}: {testimonials: TestimonialProps[]}) => {
           {" "}
           People Love{" "}
         </span>
-        This Micro SaaS Boilerplate Code
+        Our Company
       </h2>
 
       <p className="text-xl text-muted-foreground pt-4 pb-8">
-        Tweets from our happy users who have used our product and loved it.
+        Tweets from our happy users who have used our products and services and loved it.
       </p>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-4 sm:block columns-2  lg:columns-3 lg:gap-6 mx-auto space-y-4 lg:space-y-6">

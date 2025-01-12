@@ -6,12 +6,7 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "start": "turbo start",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "db:migrate": "cd packages/prisma-db && npx prisma migrate dev --name init",
-    "db:generate": "cd packages/prisma-db && npx prisma generate",
-    "db:seed": "cd packages/prisma-db && npx prisma db seed",
-    "docs:deploy": "cd apps/docs && npm run deploy-s3",
-    "docs:serve": "cd apps/docs && npm run serve -- --host 0.0.0.0 --no-open"
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
     "prettier": "^3.2.5",
