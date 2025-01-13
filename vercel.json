@@ -1,5 +1,5 @@
 {
-    "buildCommand": "npm run db:generate && cd apps/nextjs-app && npm run build",
+    "buildCommand": "cd apps/nextjs-app && npm run build",
     "outputDirectory": "apps/nextjs-app/.next",
     "installCommand": "npm install",
     "devCommand": "cd apps/nextjs-app && npm run dev"

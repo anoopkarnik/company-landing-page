@@ -36,10 +36,7 @@ export default function Landing() {
         darkLogo={darkLogo}
         tagline={tagline}
         description={description}
-        featuresWithDescription={featuresWithDescription}
-        featureList={featureList}
         testimonials={testimonials}
-        pricingList={pricingList}
         projectsList={projects}
         FAQList={FAQList}
         footerList={footerList}
