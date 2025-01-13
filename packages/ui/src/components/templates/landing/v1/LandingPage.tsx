@@ -10,9 +10,9 @@ import { Services } from '../../../organisms/custom/landing/v1/Services';
 import { Newsletter } from '../../../organisms/custom/landing/v1/Newsletter';
 import { About } from '../../../organisms/custom/landing/v1/About';
 
-const LandingPage = ({routeList,githubLink,githubUsername,githubRepositoryName,loginFunction,documentationLink,
-  title,logo, darkLogo,tagline,description,testimonials,projectsList, footerList, creator, creatorLink, teamList,
-   supportEmailAddress, donateNowLink,downloads,products, 
+const LandingPage = ({routeList,githubLink,githubUsername,githubRepositoryName,
+  title,logo, darkLogo,tagline,description,testimonials,projectsList, footerList, creator, creatorLink,
+   teamList,donateNowLink,downloads,products, appointmentLink,
    users,subscribers, companyDetails, services, createContactAction }: LandingPageProps) => {
     
 
@@ -20,7 +20,7 @@ const LandingPage = ({routeList,githubLink,githubUsername,githubRepositoryName,l
     <div className='flex flex-col items-center justify-center'>
       <Navbar routeList={routeList} githubLink={githubLink} githubUsername={githubUsername} 
       githubRepositoryName={githubRepositoryName} title={title} logo={logo} darkLogo={darkLogo} donateNowLink={donateNowLink} />
-      <Hero loginFunction={loginFunction} documentationLink={documentationLink} tagline={tagline} description={description} 
+      <Hero appointmentLink={appointmentLink} tagline={tagline} description={description} 
       testimonials={testimonials} teamList={teamList} services={services} projects={projectsList}/>
        <About companyDetails={companyDetails} downloads={downloads} products={products} users={users} subscribers={subscribers} />
        <Services services={services || []} />

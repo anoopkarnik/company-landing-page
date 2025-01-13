@@ -1,11 +1,12 @@
-import { BookOpenIcon } from "lucide-react";
+import { BookOpenIcon, ExternalLink, Link } from "lucide-react";
 import { Button } from "../../../../atoms/shadcn/button";
 import { buttonVariants } from "../../../../atoms/shadcn/button";
 import HeroCards  from "./HeroCards";
 import { useEffect, useState } from "react";
 import { HeroProps } from "@repo/ts-types/landing-page/v1";
 
-const Hero = ({loginFunction,documentationLink,tagline,description,testimonials,teamList,services, projects}: HeroProps) => {
+const Hero = ({loginFunction,documentationLink,tagline,description,testimonials,teamList,services, 
+  projects,appointmentLink}: HeroProps) => {
     const [taglineArray,setTaglineArray] = useState<string[]>([])
     useEffect(()=>{
         if(tagline){
@@ -42,18 +43,16 @@ const Hero = ({loginFunction,documentationLink,tagline,description,testimonials,
 
         <div className="space-y-4 md:space-y-0 md:space-x-4">
             
-          {loginFunction && <Button onClick={loginFunction} className="w-full md:w-1/3">Get Started</Button>}
-
-          {documentationLink && <a
+          {appointmentLink && <a
             rel="noreferrer noopener"
-            href={documentationLink}
+            href={appointmentLink}
             target="_blank"
-            className={`w-full md:w-1/3 text-lg ${buttonVariants({
-              variant: "outline",
+            className={`w-full md:w-1/3 text-lg flex items-center gap-1 ${buttonVariants({
+              variant: "default",
             })}`}
           >
-            Documentation
-            <BookOpenIcon className="ml-2 w-4 h-4" />
+            <div>Book an Appointment</div>
+            <ExternalLink size={16}/>
           </a>}
         </div>
       </div>

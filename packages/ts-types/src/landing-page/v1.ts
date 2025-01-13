@@ -15,7 +15,8 @@ export interface NavbarProps {
   }
 export interface HeroProps extends HeroCardsProps {
     loginFunction?: () => void;
-    documentationLink: string;
+    documentationLink?: string;
+    appointmentLink?: string;
     tagline: string;
     description: string;
     testimonials: TestimonialProps[];
