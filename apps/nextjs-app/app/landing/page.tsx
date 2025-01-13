@@ -6,7 +6,6 @@ import { createContactAction } from "../_actions/email";
 import { useToast } from "../../../../packages/ui/src/hooks/use-toast";
 
 export default function Landing() {
-  const documentationLink = process.env.NEXT_PUBLIC_DOCUMENTATION_URL as string;
 
   const {toast} = useToast();
   const createContact = async (email: string) => {
