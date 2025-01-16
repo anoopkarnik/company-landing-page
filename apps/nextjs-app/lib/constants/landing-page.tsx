@@ -137,6 +137,10 @@ export const pricingList: PricingProps[] = [
         {
             label: "Github",
             href: "https://github.com/anoopkarnik"
+        },
+        {
+            label: "Youtube",
+            href: "https://youtube.com/@bayesianlabs"
         }
     ],
     "Legal": [
@@ -147,10 +151,6 @@ export const pricingList: PricingProps[] = [
         {
             label: "Privacy Policy",
             href: "/landing/privacy-policy"
-        },
-        {
-            label: "Cancellation/Refund Policies",
-            href: "/landing/cancellation-refund-policies"
         },
         {
           label: "Contact Us",

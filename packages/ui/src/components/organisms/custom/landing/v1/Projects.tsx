@@ -33,7 +33,7 @@ const Projects = ({projectsList}: {projectsList:ProjectProps[]}) => {
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 ">
         {projectsList.map((project) => (
-          <Card key={project.title} className="flex flex-col relative transition-transform hover:scale-150 hover:z-[999999] ">
+          <Card key={project.title} className="flex flex-col relative  ">
             <CardHeader>
               <CardTitle className="text-center text-subtitle">{project.title}</CardTitle>
             </CardHeader>

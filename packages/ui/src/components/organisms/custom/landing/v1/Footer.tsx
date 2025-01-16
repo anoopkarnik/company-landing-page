@@ -14,38 +14,36 @@ const Footer = ({footerList,creator,creatorLink,title,logo,darkLogo}:FooterCompo
   return (
     <div id="footer" className="w-full container  ">
         <hr className="w-full mx-auto" />
-        <div className="flex container py-10 ">
+        <div className="w-full flex flex-wrap items-start justify-around gap-4 my-10 ">
             <section className="hidden lg:flex w-1/2 ">
                 <a
                 rel="noreferrer noopener"
                 href="/"
-                className="flex ml-2 font-bold text-xl items-center gap-2"
+                className="flex ml-2 text-paragraph items-center gap-2"
                 >
                     {theme === "dark" ?
-                    <Image src={darkLogo} alt={title} width={30} height={30} /> : 
-                    <Image src={logo} alt={title} width={30} height={30} />}
+                    <Image src={darkLogo} alt={title} width={20} height={20} /> : 
+                    <Image src={logo} alt={title} width={20} height={20} />}
                     {title}
                </a>
             </section>
-            <section className="w-full flex flex-wrap items-start justify-between gap-4 mx-2">
-                {footerList && Object.keys(footerList).map((footer:string)=>(
-                    <div key={footer} className="flex flex-col gap-2">
-                        <h3 className="font-bold text-lg">{footer}</h3>
-                        {footerList[footer]?.map((item:FooterProps)=>(
-                            <div key={item.label}>
-                                <a
-                                    rel="noreferrer noopener"
-                                    href={item.href}
-                                    className="opacity-60 hover:opacity-100"
-                                >
-                                {item.label}
-                                </a>
+            {footerList && Object.keys(footerList).map((footer:string)=>(
+                <div key={footer} className="flex flex-col gap-2">
+                    <h3 className="text-paragraph">{footer}</h3>
+                    {footerList[footer]?.map((item:FooterProps)=>(
+                        <div key={item.label}>
+                            <a
+                                rel="noreferrer noopener"
+                                href={item.href}
+                                className="opacity-60 hover:opacity-100 text-description"
+                            >
+                            {item.label}
+                            </a>
 
-                            </div>
-                        ))}
-                    </div>
-                ))}
-            </section>
+                        </div>
+                    ))}
+                </div>
+            ))}
         </div>
 
 

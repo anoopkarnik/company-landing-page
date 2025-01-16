@@ -1,7 +1,8 @@
 import React from 'react';
-import { address, companyName, darkLogo, githubLink, githubRepositoryName, githubUsername,
+import { address,  darkLogo, githubLink, githubRepositoryName, githubUsername,
    lastUpdatedPrivacyPolicy, logo, supportEmailAddress, title,
-   contactNumber} from '../../../lib/constants/appDetails';
+   contactNumber,
+   companyLegalName} from '../../../lib/constants/appDetails';
 import ContactUsPage from '@repo/ui/templates/landing/v1/ContactUsPage';
 
 const page = () => {
@@ -10,7 +11,7 @@ const page = () => {
   return (
     <ContactUsPage githubLink={githubLink} githubUsername={githubUsername} 
     githubRepositoryName={githubRepositoryName} title={title} logo={logo} darkLogo={darkLogo} routeList={routeList}
-    lastUpdated={lastUpdatedPrivacyPolicy} companyName={companyName} email={supportEmailAddress} 
+    lastUpdated={lastUpdatedPrivacyPolicy} companyName={companyLegalName} email={supportEmailAddress} 
     address={address} contactNumber={contactNumber} />
   );
 }

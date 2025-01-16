@@ -16,11 +16,12 @@ export const companyDetails = " We are a team of passionate innovative developer
 export const users = "0"
 export const subscribers = "8"
 export const products = "5"
-export const downloads = "950"
+export const downloads = "944"
 //legal constants
 
 export const lastUpdatedPrivacyPolicy = '2024-12-22';
 export const companyName = 'BAYESIAN LABS';
+export const companyLegalName = 'BAYESIAN LABS (OPC) PRIVATE LIMITED';
 export const websiteUrl = 'https://bayesian-labs.com';
 export const country = 'India';
 export const version = '1.0.0';
