@@ -84,7 +84,7 @@ export const projects: ProjectProps[] = [
   {
     "title": "Turborepo SaaS Boilerplate Code",
     "description": "The best boilerplate code for creating a micro SaaS monorepo codebase.",
-    "demo": "https://dev.boilerplate.bsamaritan.com",
+    "demo": "https://boilerplate.bayesian-labs.com",
     "github": "https://github.com/anoopkarnik/turborepo-saas-boilerplate-code",
     "image": "/projects/turborepo-saas-boilerplate-code.png"
 
@@ -92,7 +92,7 @@ export const projects: ProjectProps[] = [
   {
     "title": "Company Landing Page Boilerplate Code",
     "description": "The best boilerplate code for creating a company landing page.",
-    "demo": "https://dev.bsamaritan.com",
+    "demo": "https://bayesian-labs.com",
     "github": "https://github.com/anoopkarnik/company-landing-page",
     "image": "/projects/company-landing-page.png"
   },
