@@ -141,6 +141,10 @@ export const pricingList: PricingProps[] = [
         {
             label: "Youtube",
             href: "https://youtube.com/@bayesianlabs"
+        },
+        {
+            label: "Discord",
+            href: "https://discord.gg/ephjwba9"
         }
     ],
     "Legal": [
