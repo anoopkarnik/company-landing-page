@@ -12,7 +12,7 @@ import { About } from '../../../organisms/custom/landing/v1/About';
 
 const LandingPage = ({routeList,githubLink,githubUsername,githubRepositoryName,
   title,logo, darkLogo,tagline,description,testimonials,projectsList, footerList, creator, creatorLink,
-   teamList,donateNowLink,downloads,products, appointmentLink,
+   teamList,donateNowLink,downloads,products, appointmentLink,supportEmailAddress,
    users,subscribers, companyDetails, services, createContactAction }: LandingPageProps) => {
     
 
@@ -27,7 +27,7 @@ const LandingPage = ({routeList,githubLink,githubUsername,githubRepositoryName,
       <Projects projectsList={projectsList || []} />
       <Testimonials testimonials={testimonials} />
       <Team teamList={teamList} />
-      <Newsletter createContactAction={createContactAction} />
+      <Newsletter createContactAction={createContactAction} supportEmailAddress={supportEmailAddress} />
       <Footer footerList={footerList} creator={creator} creatorLink={creatorLink} title={title} logo={logo}
        darkLogo={darkLogo} />
 

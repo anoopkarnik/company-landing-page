@@ -1,7 +1,9 @@
 "use client"
 import LandingPage from "@repo/ui/templates/landing/v1/LandingPage";
 import { routeList,testimonials, FAQList, footerList, teamList, projects, services} from "../../lib/constants/landing-page";
-import { appointmentLink, companyDetails, creator, creatorLink, darkLogo, description, donateNowLink, downloads, githubLink, githubRepositoryName, githubUsername, logo, products, subscribers, supportEmailAddress, tagline, title, users } from "../../lib/constants/appDetails";
+import { appointmentLink, companyDetails, creator, creatorLink, darkLogo, description, donateNowLink, downloads,
+   githubLink, githubRepositoryName, githubUsername, logo, products, subscribers, supportEmailAddress, tagline,
+    title, users } from "../../lib/constants/appDetails";
 import { createContactAction } from "../_actions/email";
 import { useToast } from "../../../../packages/ui/src/hooks/use-toast";
 

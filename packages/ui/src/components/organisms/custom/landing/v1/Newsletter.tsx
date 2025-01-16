@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "../../../../atoms/shadcn/button";
 import { Input } from "../../../../atoms/shadcn/input";
 
-export const Newsletter = ({createContactAction}:{createContactAction:any}) => {
+export const Newsletter = ({createContactAction,supportEmailAddress}:{createContactAction:any,supportEmailAddress:string}) => {
 
     const [email, setEmail] = useState<string>("");
   
@@ -27,7 +27,7 @@ export const Newsletter = ({createContactAction}:{createContactAction:any}) => {
           className="flex flex-col w-full md:flex-row md:w-6/12 lg:w-4/12 mx-auto gap-4 md:gap-2 "
         >
           <Input
-            placeholder="support@bsamaritan.com"
+            placeholder={supportEmailAddress}
             aria-label="email"
             className="w-full"
             value={email}
