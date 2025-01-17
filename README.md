@@ -16,14 +16,16 @@ npx company-landing-page@latest
 
 1) You can deploy it to Vercel with one click:
 
-    [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fanoopkarnik%2Fcompany-landing-page&project-name=company-name&build-command=cd%20apps%2Fnextjs-app%20%26%26%20npm%20run%20build&output-directory=apps%2Fnextjs-app%2F.next&install-command=npm%20install&dev-command=cd%20apps%2Fnextjs-app%20%26%26%20npm%20run%20dev
+    [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fanoopkarnik%2Fcompany-landing-page&build-command=cd%20apps%2Fnextjs-app%20%26%26%20npm%20run%20build&output-directory=apps%2Fnextjs-app%2F.next&install-command=npm%20install&dev-command=cd%20apps%2Fnextjs-app%20%26%26%20npm%20run%20dev
     )
 
 2) Give a repository name which will clone this repo to your account.
 
 ## Contribution
 
-See the [CONTRIBUTING](CONTRIBUTING) file for details, while maintaining the [CODE_OF_CONDUCT](CODE_OF_CONDUCT).
+See the [CONTRIBUTING](CONTRIBUTING) file for details on how to add to the repo, while maintaining the [CODE_OF_CONDUCT](CODE_OF_CONDUCT).
+
+You can also contribute by reporting a bug using this [BUG_REPORT](bug_report) template and request a feature using this [FEATURE_REQUEST](feature_request) template.
 
 ## License
 
