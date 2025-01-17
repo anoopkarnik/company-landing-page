@@ -1,6 +1,6 @@
 "use client"
 import LandingPage from "@repo/ui/templates/landing/v1/LandingPage";
-import { routeList,testimonials, FAQList, footerList, teamList, projects, services} from "../../lib/constants/landing-page";
+import { routeList,testimonials, footerList, teamList, projects, services} from "../../lib/constants/landing-page";
 import { appointmentLink, companyDetails, creator, creatorLink, darkLogo, description, donateNowLink, downloads,
    githubLink, githubRepositoryName, githubUsername, logo, products, subscribers, supportEmailAddress, tagline,
     title, users } from "../../lib/constants/appDetails";
@@ -36,7 +36,6 @@ export default function Landing() {
         description={description}
         testimonials={testimonials}
         projectsList={projects}
-        FAQList={FAQList}
         footerList={footerList}
         creator={creator}
         creatorLink={creatorLink}

@@ -7,6 +7,7 @@ import { ThemeProvider } from "@repo/ui/providers/theme-provider";
 import "../../../packages/ui/src/styles/custom/heroBackgroundAnimation.css"
 import { Toaster } from "@repo/ui/molecules/custom/v1/Toaster";
 import { Analytics } from "@vercel/analytics/react"
+import { companyDetails, companyName } from "../lib/constants/appDetails";
 
 
 const geistSans = localFont({
@@ -21,8 +22,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Turborepo Micro SaaS Boilerplate",
-  description: "Build your Turborepo Micro SaaS Application in turborepo effortlessly by keeping and modifying the required components, packages and apps to your project.",
+  title: companyName,
+  description: companyDetails
 };
 
 export default function RootLayout({

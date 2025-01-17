@@ -1,6 +1,7 @@
 {
-  "name": "turborepo-saas-boilerplate-code",
-  "private": true,
+  "name": "company-landing-page",
+  "private": false,
+  "version": "1.0.0",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
@@ -12,6 +13,9 @@
     "prettier": "^3.2.5",
     "turbo": "^2.3.3",
     "typescript": "5.5.4"
+  },
+  "bin": {
+    "company-landing-page": "bin/cli.js"
   },
   "engines": {
     "node": ">=18"

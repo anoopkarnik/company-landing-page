@@ -19,11 +19,11 @@ const Footer = ({footerList,creator,creatorLink,title,logo,darkLogo}:FooterCompo
                 <a
                 rel="noreferrer noopener"
                 href="/"
-                className="flex ml-2 text-paragraph items-center gap-2"
+                className="flex ml-2  items-center gap-2"
                 >
                     {theme === "dark" ?
-                    <Image src={darkLogo} alt={title} width={20} height={20} /> : 
-                    <Image src={logo} alt={title} width={20} height={20} />}
+                    <Image src={darkLogo} alt={title} width={25} height={25} /> : 
+                    <Image src={logo} alt={title} width={25} height={25} />}
                     {title}
                </a>
             </section>
@@ -47,7 +47,7 @@ const Footer = ({footerList,creator,creatorLink,title,logo,darkLogo}:FooterCompo
         </div>
 
 
-        <section className="container pb-14 text-center">
+        <section className="container pb-14 text-center text-paragraph">
             <h3>
             &copy; 2024 Made by {" "}
             <a
