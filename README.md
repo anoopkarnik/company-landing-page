@@ -16,7 +16,7 @@ npx company-landing-page@latest
 
 1) You can deploy it to Vercel with one click:
 
-    [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fanoopkarnik%2Fcompany-landing-page&project-name=nextjs-app
+    [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fanoopkarnik%2Fcompany-landing-page&project-name=company-name&build-command=cd%20apps%2Fnextjs-app%20%26%26%20npm%20run%20build&output-directory=apps%2Fnextjs-app%2F.next&install-command=npm%20install&dev-command=cd%20apps%2Fnextjs-app%20%26%26%20npm%20run%20dev
     )
 
 2) Give a repository name which will clone this repo to your account.
