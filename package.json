@@ -15,7 +15,7 @@
     "typescript": "5.5.4"
   },
   "bin": {
-    "company-landing-page": "bin/cli.js"
+    "company-landing-page": "scripts/cli.js"
   },
   "engines": {
     "node": ">=18"
