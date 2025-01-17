@@ -23,9 +23,9 @@ npx company-landing-page@latest
 
 ## Contribution
 
-See the [CONTRIBUTING](CONTRIBUTING) file for details on how to add to the repo, while maintaining the [CODE_OF_CONDUCT](CODE_OF_CONDUCT).
+See the [CONTRIBUTING](/docs/CONTRIBUTING.md) file for details on how to add to the repo, while maintaining the [CODE_OF_CONDUCT](/docs/CODE_OF_CONDUCT.md). Use this [PULL_REQUEST](/docs/pull_request_template.md) template to add in description, while issuing a pull request for us to approve.
 
-You can also contribute by reporting a bug using this [BUG_REPORT](bug_report) template and request a feature using this [FEATURE_REQUEST](feature_request) template.
+You can also contribute by reporting a bug using this [BUG_REPORT](/docs/ISSUE_TEMPLATE/bug_report.md) template and request a feature using this [FEATURE_REQUEST](/docs/ISSUE_TEMPLATE/feature_request.md) template.
 
 ## License
 
