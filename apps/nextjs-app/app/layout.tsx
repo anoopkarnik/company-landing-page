@@ -8,7 +8,7 @@ import "../../../packages/ui/src/styles/custom/heroBackgroundAnimation.css"
 import { Toaster } from "@repo/ui/molecules/custom/v1/Toaster";
 import { Analytics } from "@vercel/analytics/react"
 import { companyDetails, companyName } from "../lib/constants/appDetails";
-
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -41,6 +41,7 @@ export default function RootLayout({
               <Analytics/>
               <Toaster />
             </ThemeProvider>
+            <GoogleAnalytics gaId="G-FPD7ZF56T1"/>
       </body>
     </html>
   );
