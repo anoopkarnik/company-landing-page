@@ -41,7 +41,7 @@ export default function RootLayout({
               <Analytics/>
               <Toaster />
             </ThemeProvider>
-            <GoogleAnalytics gaId="G-FPD7ZF56T1"/>
+            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_MEASUREMENT_ID as string}/>
       </body>
     </html>
   );
