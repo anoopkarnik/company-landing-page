@@ -149,6 +149,10 @@ export const pricingList: PricingProps[] = [
     ],
     "Legal": [
         {
+            label: "Cancellation/Refund Policies",
+            href: "/landing/cancellation-refund-policies"
+        },
+        {
             label: "Terms & Conditions",
             href: "/landing/terms-of-service"
         },
