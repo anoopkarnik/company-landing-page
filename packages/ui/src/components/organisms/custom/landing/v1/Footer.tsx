@@ -17,15 +17,18 @@ const Footer = ({footerList,creator,creatorLink,title,logo,darkLogo}:FooterCompo
         <div className="w-full flex flex-wrap items-start justify-around gap-4 my-10 ">
             <section className="hidden lg:flex w-1/2 ">
                 <a
-                rel="noreferrer noopener"
-                href="/"
-                className="flex ml-2  items-center gap-2"
+                    rel="noreferrer noopener"
+                    href="/"
+                    className="ml-2 flex items-center gap-2"
                 >
                     {theme === "dark" ?
-                    <Image src={darkLogo} alt={title} width={25} height={25} /> : 
-                    <Image src={logo} alt={title} width={25} height={25} />}
-                    {title}
-               </a>
+                    <Image src={darkLogo} alt={title} width={40} height={40} /> : 
+                    <Image src={logo} alt={title} width={40} height={40} />}
+                    <div className="hidden lg:flex flex-col items-start text-md leading-none bg-gradient-to-r from-[#03a3d7] to-[#D247BF] bg-clip-text text-transparent ">
+                        <div>{title.split(' ')[0]}</div>
+                        <div>{title.split(' ')[1]}</div>
+                    </div>
+                </a>
             </section>
             {footerList && Object.keys(footerList).map((footer:string)=>(
                 <div key={footer} className="flex flex-col gap-2">

@@ -19,7 +19,7 @@ const Projects = ({projectsList}: {projectsList:ProjectProps[]}) => {
   return (
     <section
       id="products"
-      className="container py-24 sm:py-32 cas"
+      className="container py-24 sm:py-32 relative"
     >
       <h2 className="text-3xl lg:text-4xl font-bold md:text-left ">
         Many{" "}
@@ -78,6 +78,8 @@ const Projects = ({projectsList}: {projectsList:ProjectProps[]}) => {
           </Card>
         ))}
       </div>
+                  {/* Shadow effect */}
+                  <div className="shadow left-0"></div>
     </section>
   );
 };

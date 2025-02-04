@@ -34,7 +34,7 @@ export const Team = ({teamList}:{teamList:TeamProps[]}) => {
   return (
     <section
       id="team"
-      className="container py-24 sm:py-32 space-y-8"
+      className="container py-24 sm:py-32 space-y-8 relative"
     >
       <h2 className="text-3xl md:text-4xl font-bold">
         <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
@@ -92,6 +92,8 @@ export const Team = ({teamList}:{teamList:TeamProps[]}) => {
           )
         )}
       </div>
+                  {/* Shadow effect */}
+                  <div className="shadow left-0"></div>
     </section>
   );
 };

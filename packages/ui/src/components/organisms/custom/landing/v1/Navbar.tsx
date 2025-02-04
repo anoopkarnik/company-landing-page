@@ -54,12 +54,15 @@ const Navbar = ({routeList,githubLink,githubUsername,githubRepositoryName,title,
             <a
               rel="noreferrer noopener"
               href="/"
-              className="ml-2 font-bold text-xl flex items-center gap-2"
+              className="ml-2 flex items-center gap-2"
             >
               {theme === "dark" ?
-               <Image src={darkLogo} alt={title} width={30} height={30} /> : 
-               <Image src={logo} alt={title} width={30} height={30} />}
-               <div className="hidden lg:flex">{title}</div>
+               <Image src={darkLogo} alt={title} width={40} height={40} /> : 
+               <Image src={logo} alt={title} width={40} height={40} />}
+               <div className="hidden lg:flex flex-col items-start text-md leading-none bg-gradient-to-r from-[#03a3d7] to-[#D247BF] bg-clip-text text-transparent ">
+                  <div>{title.split(' ')[0]}</div>
+                  <div>{title.split(' ')[1]}</div>
+                </div>
             </a>
           </NavigationMenuItem>
 

@@ -6,7 +6,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from "../../../../molecu
 
 export const Services = ({services}:{services:ServiceProps[]}) => {
   return (
-    <section id="services" className="container py-24 sm:py-32">
+    <section id="services" className="container py-24 sm:py-32 relative">
       <div className="grid lg:grid-cols-[1fr,1fr] gap-8 place-items-center">
         <div>
           <h2 className="text-3xl md:text-4xl font-bold">
@@ -38,6 +38,8 @@ export const Services = ({services}:{services:ServiceProps[]}) => {
         </div>
 
       </div>
+                  {/* Shadow effect */}
+                  <div className="shadow"></div>
     </section>
   );
 };
