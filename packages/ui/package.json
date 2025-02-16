@@ -9,6 +9,7 @@
     "./organisms/*": "./src/components/organisms/*.tsx",
     "./templates/*": "./src/components/templates/*.tsx",
     "./styles/*": "./src/styles/*.css",
+    "./typography/*": "./src/typography/*.tsx",
     "./lib/*": "./src/lib/*.ts",
     "./providers/*": "./src/providers/*.tsx",
     "./postcss.config": "./postcss.config.cjs",

@@ -15,7 +15,7 @@ const Footer = ({footerList,creator,creatorLink,title,logo,darkLogo}:FooterCompo
     <div id="footer" className="w-full container  ">
         <hr className="w-full mx-auto" />
         <div className="w-full flex flex-wrap items-start justify-around gap-4 my-10 ">
-            <section className="hidden lg:flex w-1/2 ">
+            <section className="hidden lg:flex w-1/2 font-cyberdyne">
                 <a
                     rel="noreferrer noopener"
                     href="/"

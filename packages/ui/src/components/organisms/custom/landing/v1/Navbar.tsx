@@ -47,14 +47,14 @@ const Navbar = ({routeList,githubLink,githubUsername,githubRepositoryName,title,
   }, [theme,githubLink]);
 
   return (
-    <header className="sticky border-b-[1px] top-0 z-40 w-full bg-background">
+    <header className="sticky border-b-[1px] top-0 z-40 w-full bg-background font-geistMono">
       <NavigationMenu className="mx-auto">
         <NavigationMenuList className="container h-14 px-4 w-screen flex justify-between ">
           <NavigationMenuItem className="font-bold flex">
             <a
               rel="noreferrer noopener"
               href="/"
-              className="ml-2 flex items-center gap-2"
+              className="ml-2 flex items-center gap-2 font-cyberdyne"
             >
               {theme === "dark" ?
                <Image src={darkLogo} alt={title} width={40} height={40} /> : 

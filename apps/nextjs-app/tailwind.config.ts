@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import path from "path";
+import { cyberdyne } from "@repo/ui/typography/font";
 export default {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -86,6 +87,11 @@ export default {
         "paragraph": ["14px", {fontWeight: "300"}],
         "description": ["12px", {fontWeight: "500"}],
         "code-snippet": ["12px", {fontWeight: "200"}],
+      },
+      fontFamily:{
+        geistSans: ["var(--font-geist-sans)"],
+        geistMono: ["var(--font-geist-mono)"],
+        cyberdyne: ["var(--font-cyberdyne)"],
       }
     },
   },
