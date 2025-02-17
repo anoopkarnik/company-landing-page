@@ -1,17 +1,14 @@
 import React from 'react';
-import { companyName,  darkLogo, githubLink, githubRepositoryName, githubUsername,
-   lastUpdatedPrivacyPolicy, logo, supportEmailAddress, title, websiteUrl } from '../../../lib/constants/appDetails';
 import CancellationRefundPoliciesPage from '@repo/ui/templates/landing/v1/CancellationRefundPoliciesPage';
+import { cancellationRefundPolicies } from '../../../lib/constants/legal/cancellationRefundPolicies';
+import { navbarSection } from '../../../lib/constants/landing-page/navbar';
 
 const page = () => {
-    const routeList:any = [];
 
   return (
     <>
-        <CancellationRefundPoliciesPage githubLink={githubLink} githubUsername={githubUsername} 
-        githubRepositoryName={githubRepositoryName} title={title} logo={logo} darkLogo={darkLogo} routeList={routeList}
-        lastUpdated={lastUpdatedPrivacyPolicy} companyName={companyName} 
-        siteName={title} websiteUrl={websiteUrl} email={supportEmailAddress}  />
+        <CancellationRefundPoliciesPage cancellationRefundPolicies={cancellationRefundPolicies} 
+        navbarSection={navbarSection} />
     </>
   );
 }

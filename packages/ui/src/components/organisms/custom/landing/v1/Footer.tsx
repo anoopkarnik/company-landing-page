@@ -1,14 +1,14 @@
-import { FooterComponentProps, FooterProps } from "@repo/ts-types/landing-page/v1";
 import { useEffect } from "react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
+import { FooterSectionProps } from "@repo/ts-types/landing-page/footer";
 
-const Footer = ({footerList,creator,creatorLink,title,logo,darkLogo}:FooterComponentProps) => {
+const Footer = ({footerSection}:{footerSection:FooterSectionProps}) => {
     const {theme} = useTheme();
 
     useEffect(()=>{
   
-    },[theme,footerList])
+    },[theme,footerSection.footerList])
 
     
   return (
@@ -22,18 +22,18 @@ const Footer = ({footerList,creator,creatorLink,title,logo,darkLogo}:FooterCompo
                     className="ml-2 flex items-center gap-2"
                 >
                     {theme === "dark" ?
-                    <Image src={darkLogo} alt={title} width={40} height={40} /> : 
-                    <Image src={logo} alt={title} width={40} height={40} />}
+                    <Image src={footerSection.darkLogo} alt={footerSection.title} width={40} height={40} /> : 
+                    <Image src={footerSection.logo} alt={footerSection.title} width={40} height={40} />}
                     <div className="hidden lg:flex flex-col items-start text-md leading-none bg-gradient-to-r from-[#03a3d7] to-[#D247BF] bg-clip-text text-transparent ">
-                        <div>{title.split(' ')[0]}</div>
-                        <div>{title.split(' ')[1]}</div>
+                        <div>{footerSection.title?.split(' ')[0]}</div>
+                        <div>{footerSection.title?.split(' ')[1]}</div>
                     </div>
                 </a>
             </section>
-            {footerList && Object.keys(footerList).map((footer:string)=>(
+            {footerSection.footerList && Object.keys(footerSection.footerList)?.map((footer:string)=>(
                 <div key={footer} className="flex flex-col gap-2">
                     <h3 className="text-paragraph">{footer}</h3>
-                    {footerList[footer]?.map((item:FooterProps)=>(
+                    {footerSection.footerList[footer]?.map((item)=>(
                         <div key={item.label}>
                             <a
                                 rel="noreferrer noopener"
@@ -56,10 +56,10 @@ const Footer = ({footerList,creator,creatorLink,title,logo,darkLogo}:FooterCompo
             <a
                 rel="noreferrer noopener"
                 target="_blank"
-                href={creatorLink}
+                href={footerSection.creatorLink}
                 className="text-primary transition-all border-primary hover:border-b-2"
             >
-                {creator}
+                {footerSection.creator}
             </a>
             </h3>
         </section>

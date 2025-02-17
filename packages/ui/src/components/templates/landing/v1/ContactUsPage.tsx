@@ -1,15 +1,14 @@
 import React from 'react'
 import Navbar from '../../../organisms/custom/landing/v1/Navbar'
-import { ContactUsPageProps } from '@repo/ts-types/landing-page/v1'
 import ContactUs from '../../../organisms/custom/landing/v1/ContactUs'
+import { NavbarSectionProps } from '@repo/ts-types/landing-page/navbar'
+import { ContactUsProps } from '@repo/ts-types/landing-page/legal'
 
-const ContactUsPage = ({routeList,githubLink,githubUsername,githubRepositoryName,title,logo,darkLogo,
-    companyName,lastUpdated,email,address, contactNumber,donateNowLink}:ContactUsPageProps) => {
+const ContactUsPage = ({contactUs,navbarSection}:{contactUs:ContactUsProps,navbarSection:NavbarSectionProps}) => {
   return (
     <div className='flex flex-col items-center justify-center'>
-      <Navbar routeList={routeList} githubLink={githubLink} githubUsername={githubUsername} 
-      githubRepositoryName={githubRepositoryName} title={title} logo={logo} darkLogo={darkLogo} donateNowLink={donateNowLink} />
-      <ContactUs lastUpdated={lastUpdated} companyName={companyName} address={address} email={email} contactNumber={contactNumber} />
+      <Navbar navbarSection={navbarSection}/>
+      <ContactUs contactUs={contactUs}/>
     </div>
   )
 }

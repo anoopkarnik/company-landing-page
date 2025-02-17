@@ -19,9 +19,9 @@ import { MenuIcon, Coffee } from "lucide-react";
 import { ModeToggle } from "../../../../molecules/custom/v1/theme-toggle-dropdown";
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
-import { NavbarProps, RouteProps } from "@repo/ts-types/landing-page/v1";
+import { NavbarSectionProps, RouteProps } from "@repo/ts-types/landing-page/navbar";
 
-const Navbar = ({routeList,githubLink,githubUsername,githubRepositoryName,title,logo,darkLogo,donateNowLink}: NavbarProps) => {
+const Navbar = ({navbarSection}: {navbarSection: NavbarSectionProps}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const {theme} = useTheme();
   const [starCount, setStarCount] = useState<number>(0);
@@ -29,7 +29,7 @@ const Navbar = ({routeList,githubLink,githubUsername,githubRepositoryName,title,
   useEffect(() => {
     const fetchStarCount = async () => {
       try {
-        const response = await fetch("https://api.github.com/repos/"+githubUsername+"/"+ githubRepositoryName);
+        const response = await fetch("https://api.github.com/repos/"+navbarSection.githubUsername+"/"+ navbarSection.githubRepositoryName);
         if (response.ok) {
           const data = await response.json();
           setStarCount(data.stargazers_count);
@@ -40,11 +40,11 @@ const Navbar = ({routeList,githubLink,githubUsername,githubRepositoryName,title,
         console.log("Error fetching star count:", error);
       }
     };
-    if(githubLink){
+    if(navbarSection.githubLink){
       fetchStarCount();
     }
 
-  }, [theme,githubLink]);
+  }, [theme,navbarSection.githubLink]);
 
   return (
     <header className="sticky border-b-[1px] top-0 z-40 w-full bg-background font-geistMono">
@@ -57,11 +57,11 @@ const Navbar = ({routeList,githubLink,githubUsername,githubRepositoryName,title,
               className="ml-2 flex items-center gap-2 font-cyberdyne"
             >
               {theme === "dark" ?
-               <Image src={darkLogo} alt={title} width={40} height={40} /> : 
-               <Image src={logo} alt={title} width={40} height={40} />}
+               <Image src={navbarSection.darkLogo} alt={navbarSection.title} width={40} height={40} /> : 
+               <Image src={navbarSection.logo} alt={navbarSection.title} width={40} height={40} />}
                <div className="hidden lg:flex flex-col items-start text-md leading-none bg-gradient-to-r from-[#03a3d7] to-[#D247BF] bg-clip-text text-transparent ">
-                  <div>{title.split(' ')[0]}</div>
-                  <div>{title.split(' ')[1]}</div>
+                  <div>{navbarSection.title?.split(' ')[0]}</div>
+                  <div>{navbarSection.title?.split(' ')[1]}</div>
                 </div>
             </a>
           </NavigationMenuItem>
@@ -85,7 +85,7 @@ const Navbar = ({routeList,githubLink,githubUsername,githubRepositoryName,title,
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="flex flex-col justify-center items-center gap-2 mt-4">
-                  {routeList.map(({ href, label }: RouteProps) => (
+                  {navbarSection.routeList?.map(({ href, label }: RouteProps) => (
                     <a
                       rel="noreferrer noopener"
                       key={label}
@@ -96,14 +96,14 @@ const Navbar = ({routeList,githubLink,githubUsername,githubRepositoryName,title,
                       {label}
                     </a>
                   ))}
-                  <a rel="noreferrer noopener" href={donateNowLink}>    
+                  <a rel="noreferrer noopener" href={navbarSection.donateNowLink}>    
                     <Button size="sm" >
                       Donate Now
                     </Button>
                   </a>
                   <a
                     rel="noreferrer noopener"
-                    href={githubLink}
+                    href={navbarSection.githubLink}
                     target="_blank"
                     className={`w-[110px] border ${buttonVariants({
                       variant: "secondary",
@@ -128,7 +128,7 @@ const Navbar = ({routeList,githubLink,githubUsername,githubRepositoryName,title,
 
           {/* desktop */}
           <nav className="hidden md:flex gap-2">
-            {routeList.map((route: RouteProps, i) => (
+            {navbarSection.routeList?.map((route: RouteProps, i) => (
               <a
                 rel="noreferrer noopener"
                 href={route.href}
@@ -143,14 +143,14 @@ const Navbar = ({routeList,githubLink,githubUsername,githubRepositoryName,title,
           </nav>
 
           <div className="hidden md:flex gap-2">
-            <a rel="noreferrer noopener" href={donateNowLink}>    
+            <a rel="noreferrer noopener" href={navbarSection.donateNowLink}>    
               <Button size="sm" >
                 Donate Now
               </Button>
             </a>
             <a
               rel="noreferrer noopener"
-              href={githubLink}
+              href={navbarSection.githubLink}
               target="_blank"
               className={`border flex items-center ${buttonVariants({ variant: "secondary" })}`}
             >

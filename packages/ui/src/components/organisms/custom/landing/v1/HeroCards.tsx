@@ -1,3 +1,4 @@
+import { HeroCardsProps } from "@repo/ts-types/landing-page/hero";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../../atoms/shadcn/avatar";
 import {
   Card,
@@ -8,7 +9,6 @@ import {
   CardFooter,
 } from "../../../../molecules/shadcn/card";
 import { LightbulbIcon } from "lucide-react";
-import { HeroCardsProps } from "@repo/ts-types/landing-page/v1";
 
 const HeroCards = ({testimonials,teamList,services,projects}:HeroCardsProps) => {
   return (

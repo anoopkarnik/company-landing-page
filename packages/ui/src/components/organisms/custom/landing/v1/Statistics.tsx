@@ -1,4 +1,5 @@
-import { StatisticsProps } from "@repo/ts-types/landing-page/v1";
+import { StatisticsProps } from "@repo/ts-types/landing-page/about";
+
 
 
 export const Statistics = ({users, subscribers, products, downloads}:StatisticsProps) => {

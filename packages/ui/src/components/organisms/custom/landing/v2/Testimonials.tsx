@@ -7,11 +7,10 @@ import {
   CarouselContent,
   CarouselItem,
 } from "../../../../molecules/shadcn/carousel";
-import { User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../../atoms/shadcn/avatar";
-import { TestimonialProps } from "@repo/ts-types/landing-page/v1";
+import { TestimonialSectionProps } from "@repo/ts-types/landing-page/testimonials";
 
-const Testimonials = ({testimonials}: {testimonials: TestimonialProps[]}) => {
+const Testimonials = ({testimonialsSection}:{testimonialsSection:TestimonialSectionProps}) => {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
 
@@ -51,7 +50,7 @@ const Testimonials = ({testimonials}: {testimonials: TestimonialProps[]}) => {
 
           <Carousel setApi={setApi} className="w-full">
             <CarouselContent>
-                {testimonials.map((testimonial: TestimonialProps) => (
+                {testimonialsSection.testimonials?.map((testimonial) => (
                     <CarouselItem className="lg:basis-1/4" key={testimonial.name}>
                     <div className="bg-muted rounded-md p-6 min-h-[200px] ">
                         <div className="flex flex-col justify-between ">

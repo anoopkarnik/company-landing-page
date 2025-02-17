@@ -3,35 +3,38 @@ import Navbar from '../../../organisms/custom/landing/v1/Navbar';
 import Hero from '../../../organisms/custom/landing/v1/Hero';
 import Testimonials from '../../../organisms/custom/landing/v2/Testimonials';
 import Footer from '../../../organisms/custom/landing/v1/Footer';
-import { LandingPageProps} from '@repo/ts-types/landing-page/v1';
-import { Team } from '../../../organisms/custom/landing/v1/Team';
+import Team  from '../../../organisms/custom/landing/v1/Team';
 import Projects from '../../../organisms/custom/landing/v1/Projects';
-import { Services } from '../../../organisms/custom/landing/v1/Services';
-import { Newsletter } from '../../../organisms/custom/landing/v1/Newsletter';
-import { About } from '../../../organisms/custom/landing/v1/About';
+import Services from '../../../organisms/custom/landing/v1/Services';
+import Newsletter from '../../../organisms/custom/landing/v1/Newsletter';
+import About from '../../../organisms/custom/landing/v1/About';
+import { LandingPageProps } from '@repo/ts-types/landing-page/landing-page';
+import FAQ from '../../../organisms/custom/landing/v1/FAQ';
+import Pricing from '../../../organisms/custom/landing/v1/Pricing';
+import Features from '../../../organisms/custom/landing/v1/Features';
 
-const LandingPage = ({routeList,githubLink,githubUsername,githubRepositoryName,
-  title,logo, darkLogo,tagline,description,testimonials,projectsList, footerList, creator, creatorLink,
-   teamList,donateNowLink,downloads,products, appointmentLink,supportEmailAddress,
-   users,subscribers, companyDetails, services, createContactAction }: LandingPageProps) => {
+const LandingPage = ({navbarSection,heroSection,aboutSection,servicesSection,featureSection,testimonialsSection,
+  projectsSection,teamSection,FAQSection,newsletterSection,pricingSection,footerSection
+ }: LandingPageProps) => {
     
 
   return (
     <div className='flex flex-col items-center justify-center'>
-      <Navbar routeList={routeList} githubLink={githubLink} githubUsername={githubUsername} 
-      githubRepositoryName={githubRepositoryName} title={title} logo={logo} darkLogo={darkLogo} donateNowLink={donateNowLink} />
-      <Hero appointmentLink={appointmentLink} tagline={tagline} description={description} 
-      testimonials={testimonials} teamList={teamList} services={services} projects={projectsList}/>
-       <About companyDetails={companyDetails} downloads={downloads} products={products} users={users} subscribers={subscribers} />
-       <Services services={services || []} />
-      <Projects projectsList={projectsList || []} />
-      <Testimonials testimonials={testimonials} />
-      <Team teamList={teamList} />
-      <Newsletter createContactAction={createContactAction} supportEmailAddress={supportEmailAddress} />
-      <Footer footerList={footerList} creator={creator} creatorLink={creatorLink} title={title} logo={logo}
-       darkLogo={darkLogo} />
+      <Navbar navbarSection={navbarSection} />
+      <Hero heroSection={heroSection}/>
+      {aboutSection && <About aboutSection={aboutSection} />}
+      {featureSection && featureSection.featureList.length>0 && featureSection.featuresWithDescription.length>0
+       && <Features featureSection={featureSection} />}
+      {servicesSection && servicesSection.services.length>0 && <Services servicesSection={servicesSection} />}
+      {projectsSection && projectsSection.projects.length>0 && <Projects projectsSection={projectsSection} />}
+      {testimonialsSection && testimonialsSection.testimonials.length>0 && 
+       <Testimonials testimonialsSection={testimonialsSection}/>}
+      {teamSection && teamSection.teamList.length>0 &&<Team teamSection={teamSection} />}
+      {newsletterSection && <Newsletter newsletterSection={newsletterSection}/>}
+      {pricingSection && pricingSection.pricingList.length>0 && <Pricing pricingSection={pricingSection}/>}
 
-
+      {FAQSection && FAQSection.faqList.length>0 && <FAQ FAQSection={FAQSection}/>} 
+      {footerSection &&  <Footer footerSection={footerSection}/>}
     </div>
   );
 };

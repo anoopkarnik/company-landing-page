@@ -2,13 +2,15 @@
 import type { Metadata } from "next";
 import "../../../packages/ui/src/styles/shadcn/shadcn-green.css"
 import "../../../packages/ui/src/styles/custom/scroll.css"
-import { ThemeProvider } from "@repo/ui/providers/theme-provider";
 import "../../../packages/ui/src/styles/custom/heroBackgroundAnimation.css"
+import { ThemeProvider } from "@repo/ui/providers/theme-provider";
+
 import { Toaster } from "@repo/ui/molecules/custom/v1/Toaster";
 import { Analytics } from "@vercel/analytics/react"
-import { companyDetails, companyName } from "../lib/constants/appDetails";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { geistSans, geistMono, cyberdyne } from "@repo/ui/typography/font";
+import { companyDetails } from "../lib/constants/landing-page/about";
+import { companyName } from "../lib/constants/appDetails";
 
 export const metadata: Metadata = {
   title: companyName,

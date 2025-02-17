@@ -7,32 +7,41 @@ import {
   CardHeader,
   CardTitle,
 } from "../../../../molecules/shadcn/card";
-import { ProjectProps } from "@repo/ts-types/landing-page/v1";
 import { useRouter } from "next/navigation";
 import { useTheme } from "../../../../../providers/theme-provider";
+import { ProjectSectionProps } from "@repo/ts-types/landing-page/projects";
+import { useEffect, useState } from "react";
 
 
-const Projects = ({projectsList}: {projectsList:ProjectProps[]}) => {
+const Projects = ({projectsSection}:{projectsSection:ProjectSectionProps}) => {
   const router = useRouter();
   const {theme} = useTheme();
+  const [headingArray,setHeadingArray] = useState<string[]>([])
+  useEffect(()=>{
+      if(projectsSection.heading){
+          setHeadingArray(projectsSection.heading.split(" "))
+      }
+  },[projectsSection.heading])
 
   return (
     <section
       id="products"
       className="container py-24 sm:py-32 relative"
     >
-      <h2 className="text-3xl lg:text-4xl font-bold md:text-left ">
-        Many{" "}
+    <h2 className="text-3xl md:text-4xl font-bold text-left leading-tight">
         <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
-          Great Projects
+          {headingArray.slice(0, Math.ceil(headingArray.length / 2)).join(" ")}
+        </span>{" "}
+        <span>
+          {headingArray.slice(Math.ceil(headingArray.length / 2)).join(" ")}
         </span>
-      </h2>
+    </h2>
       <p className="text-xl text-muted-foreground pt-4 pb-8 mb-10">
-        Check out some of the prioritized projects that I have worked on.
+        {projectsSection.description}
       </p>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 ">
-        {projectsList.map((project) => (
+        {projectsSection.projects?.map((project) => (
           <Card key={project.title} className="flex flex-col relative  ">
             <CardHeader>
               <CardTitle className="text-center text-subtitle">{project.title}</CardTitle>

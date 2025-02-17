@@ -1,3 +1,4 @@
+import { FeatureSectionProps } from "@repo/ts-types/landing-page/features";
 import { Badge } from "../../../../atoms/shadcn/badge";
 import {
   Card,
@@ -6,23 +7,31 @@ import {
   CardHeader,
   CardTitle,
 } from "../../../../molecules/shadcn/card";
-import { FeaturesProps,FeatureWithDescriptionProps } from "@repo/ts-types/landing-page/v1";
+import { useEffect, useState } from "react";
 
-const Features = ({featuresWithDescription,featureList}: FeaturesProps) => {
+const Features = ({featureSection}:{featureSection:FeatureSectionProps}) => {
+  const [headingArray,setHeadingArray] = useState<string[]>([])
+  useEffect(()=>{
+      if(featureSection.heading){
+          setHeadingArray(featureSection.heading.split(" "))
+      }
+  },[featureSection.heading])
   return (
     <section
       id="features"
       className="container py-24 sm:py-32 space-y-8"
     >
-      <h2 className="text-3xl lg:text-4xl font-bold md:text-center">
-        Many{" "}
-        <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
-          Great Features
-        </span>
-      </h2>
+     <h2 className="text-3xl md:text-4xl font-bold text-left leading-tight">
+      <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
+        {headingArray.slice(0, Math.ceil(headingArray.length / 2)).join(" ")}
+      </span>{" "}
+      <span>
+        {headingArray.slice(Math.ceil(headingArray.length / 2)).join(" ")}
+      </span>
+    </h2>
 
       <div className="flex flex-wrap md:justify-center gap-4">
-        {featureList.map((feature: string) => (
+        {featureSection.featureList?.map((feature: string) => (
           <div key={feature}>
             <Badge
               variant="secondary"
@@ -35,17 +44,17 @@ const Features = ({featuresWithDescription,featureList}: FeaturesProps) => {
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {featuresWithDescription.map(({ title, description,href}: FeatureWithDescriptionProps) => (
-          <Card key={title}>
+        {featureSection.featuresWithDescription?.map((feature) => (
+          <Card key={feature.title}>
             <CardHeader>
-              <CardTitle>{title}</CardTitle>
+              <CardTitle>{feature.title}</CardTitle>
             </CardHeader>
 
-            <CardContent>{description}</CardContent>
+            <CardContent>{feature.description}</CardContent>
 
             <CardFooter>
               <img
-                src={href}
+                src={feature.href}
                 alt="About feature"
                 className="w-[200px] lg:w-[300px] mx-auto"
               />

@@ -1,27 +1,17 @@
-import { TermsOfServiceProps } from '@repo/ts-types/landing-page/v1'
+
+import { TermsOfServiceProps } from '@repo/ts-types/landing-page/legal'
 import React from 'react'
 
-const TermsOfUse = ({
-    email,
-    siteName,
-    companyName,
-    country,
-    websiteUrl,
-    lastUpdated,
-    version,
-    address
-  }:TermsOfServiceProps) => {
+const TermsOfService = ({termsOfService}:{termsOfService:TermsOfServiceProps}) => {
   return (
     <div className="p-6 mx-[20%]">
-        <h1 className="text-title-h1">Terms of Use</h1>
-        <p className="text-description mb-6">Version {version} | Last updated: {lastUpdated}</p>
+        <h1 className="text-title-h1">Terms of Service</h1>
+        <p className="text-description mb-6">Version {termsOfService.version} | Last updated: {termsOfService.lastUpdated}</p>
 
       <p className="mb-4">
-        The {siteName} website located at
-        <a href={websiteUrl} className="text-blue-600 underline hover:text-blue-800">
-          {websiteUrl}
-        </a>{' '}
-        is a copyrighted work belonging to {companyName}. Certain features of the Site may be subject to additional guidelines, terms, or rules, which will be posted on the Site in connection with such features.
+        The {termsOfService.siteName} website located at <a href={termsOfService.websiteUrl} className="text-blue-600 underline hover:text-blue-800">
+          {termsOfService.websiteUrl}
+        </a> is a copyrighted work belonging to {termsOfService.companyLegalName}. Certain features of the Site may be subject to additional guidelines, terms, or rules, which will be posted on the Site in connection with such features.
       </p>
 
       <p className="mb-4">
@@ -237,13 +227,13 @@ const TermsOfUse = ({
 
         <h2 className="text-title-h2 mt-6 mb-2">Contact Information</h2>
         <p className="mb-4">
-            Address: {address}
+            Address: {termsOfService.address}
         </p>
         <p className="mb-4">
-            Email: {email}
+            Email: {termsOfService.supportEmailAddress}
         </p>
     </div>
   )
 }
 
-export default TermsOfUse
+export default TermsOfService
