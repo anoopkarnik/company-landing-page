@@ -1,5 +1,4 @@
 import { ServiceProps, ServiceSectionProps } from "@repo/ts-types/landing-page/services";
-import { description } from "./hero";
 
 export const services: ServiceProps[] = [
     {

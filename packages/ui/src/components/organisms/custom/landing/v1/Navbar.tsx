@@ -106,7 +106,7 @@ const Navbar = ({navbarSection}: {navbarSection: NavbarSectionProps}) => {
                     href={navbarSection.githubLink}
                     target="_blank"
                     className={`w-[110px] border ${buttonVariants({
-                      variant: "secondary",
+                      variant: "secondary", size:"sm"
                     })}`}
                   >
                       <GitHubLogoIcon className="mr-2 w-5 h-5" />
@@ -142,7 +142,7 @@ const Navbar = ({navbarSection}: {navbarSection: NavbarSectionProps}) => {
             ))}
           </nav>
 
-          <div className="hidden md:flex gap-2">
+          <div className="hidden md:flex gap-2 items-center">
             <a rel="noreferrer noopener" href={navbarSection.donateNowLink}>    
               <Button size="sm" >
                 Donate Now
@@ -152,7 +152,7 @@ const Navbar = ({navbarSection}: {navbarSection: NavbarSectionProps}) => {
               rel="noreferrer noopener"
               href={navbarSection.githubLink}
               target="_blank"
-              className={`border flex items-center ${buttonVariants({ variant: "secondary" })}`}
+              className={`border flex items-center ${buttonVariants({ variant: "secondary" ,size:"sm"})}`}
             >
               <GitHubLogoIcon className="mr-2 w-5 h-5" />
 
@@ -167,7 +167,7 @@ const Navbar = ({navbarSection}: {navbarSection: NavbarSectionProps}) => {
               {starCount}
             </a>
 
-            <ModeToggle />
+            {/* <ModeToggle /> */}
           </div>
         </NavigationMenuList>
       </NavigationMenu>

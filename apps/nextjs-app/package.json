@@ -9,7 +9,7 @@
     "lint": "next lint --max-warnings 20"
   },
   "dependencies": {
-    "@next/third-parties": "^15.1.5",
+    "@repo/analytics": "*",
     "@repo/resend-email": "*",
     "@repo/ts-types": "*",
     "@repo/typescript-config": "*",

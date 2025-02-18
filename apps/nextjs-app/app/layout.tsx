@@ -6,11 +6,11 @@ import "../../../packages/ui/src/styles/custom/heroBackgroundAnimation.css"
 import { ThemeProvider } from "@repo/ui/providers/theme-provider";
 
 import { Toaster } from "@repo/ui/molecules/custom/v1/Toaster";
-import { Analytics } from "@vercel/analytics/react"
-import { GoogleAnalytics } from "@next/third-parties/google";
 import { geistSans, geistMono, cyberdyne } from "@repo/ui/typography/font";
 import { companyDetails } from "../lib/constants/landing-page/about";
 import { companyName } from "../lib/constants/appDetails";
+import { VercelAnalytics } from "@repo/analytics/vercel.ts";
+import { GoogleAnalytics } from "@repo/analytics/google.ts";
 
 export const metadata: Metadata = {
   title: companyName,
@@ -29,7 +29,7 @@ export default function RootLayout({
       >
             <ThemeProvider defaultTheme="dark" >
               {children}
-              <Analytics/>
+              <VercelAnalytics/>
               <Toaster />
             </ThemeProvider>
             <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_MEASUREMENT_ID as string}/>

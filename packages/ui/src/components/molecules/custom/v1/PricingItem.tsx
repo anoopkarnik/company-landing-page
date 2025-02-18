@@ -1,3 +1,4 @@
+import { PricingProps } from "@repo/ts-types/landing-page/pricing";
 import { Badge } from "../../../atoms/shadcn/badge";
 import { Button } from "../../../atoms/shadcn/button";
 import {
@@ -9,7 +10,6 @@ import {
   CardTitle,
 } from "../../../molecules/shadcn/card";
 import { Check } from "lucide-react";
-import { PricingProps } from "@repo/ts-types/landing-page/v1";
 import { useState } from "react";
 
 enum PopularPlanType {
