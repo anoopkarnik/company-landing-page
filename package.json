@@ -17,6 +17,13 @@
   "bin": {
     "company-landing-page": "scripts/cli.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anoopkarnik/company-landing-page.git"
+  },
+  "keywords": ["saas", "landing page", "cli"],
+  "author": "Anoop Karnik",
+  "license": "MIT",
   "engines": {
     "node": ">=18"
   },
