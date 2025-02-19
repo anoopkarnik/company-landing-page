@@ -14,7 +14,6 @@
   "license": "ISC",
   "dependencies": {
     "@react-email/components": "^0.0.32",
-    "@repo/prisma-db": "*",
     "resend": "^4.0.1"
   },
   "devDependencies": {
