@@ -32,7 +32,7 @@ export default function RootLayout({
               <VercelAnalytics/>
               <Toaster />
             </ThemeProvider>
-            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_MEASUREMENT_ID as string}/>
+            <GoogleAnalytics gaId={process.env.GOOGLE_ANALYTICS_MEASUREMENT_ID as string}/>
       </body>
     </html>
   );

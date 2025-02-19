@@ -12,6 +12,23 @@ Clone the repo using:
 npx company-landing-page@latest
 ```
 
+## Modifying Landing Page, Legal Pages data
+
+1) In apps/nextjs-app/lib/constants/landing-page, you can modify landing page data section wise in the files.
+2) In apps/nextjs-app/lib/constants/appDetails.tsx, you can modify variables used in different legal pages in apps/nextjs-app/lib/constants/legal.
+
+## Modifying Payment link
+
+For donation payments, we use dodo payments link - https://dodopayments.com as its build for SaaS, you can login and verify your account to get live transactions and create a product with minimum and maximum payment and use the link in the donation link variable. You can also use any other payment links for donation payments.
+
+## Email Newsletter 
+
+1) Create a resend account.
+2) Create a resend api key, in API keys tab in sidebar.
+3) Copy the api key and fill it in RESEND_API_KEY environment variable in apps/nextjs-app/.env.
+4) In the Audiences tab in sidebar, create a new audience and copy the AUDIENCE ID.
+5) Fill it in RESEND_AUDIENCE_ID environment variable in apps/nextjs-app/.env.
+
 ## Deploy Your Own
 
 1) You can deploy it to Vercel with one click:
