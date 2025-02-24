@@ -25,7 +25,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-      <script src="/theme.js" />
+        {/* eslint-disable @next/next/no-sync-scripts */}
+      <script src="/scripts/theme.js" />
+      {/* eslint-enable @next/next/no-sync-scripts */}
+
       </head>
       <body
         className={`${geistSans.className} ${geistMono.variable} ${cyberdyne.variable} antialiased`}
