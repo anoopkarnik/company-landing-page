@@ -1,6 +1,4 @@
 import type { Config } from "tailwindcss";
-import path from "path";
-import { cyberdyne } from "@repo/ui/typography/font";
 export default {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",

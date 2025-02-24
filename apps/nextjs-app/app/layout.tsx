@@ -24,16 +24,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+      <script src="/theme.js" />
+      </head>
       <body
         className={`${geistSans.className} ${geistMono.variable} ${cyberdyne.variable} antialiased`}
       >
-            <ThemeProvider defaultTheme="dark" >
-              {children}
-              <VercelAnalytics/>
-              <Toaster />
-            </ThemeProvider>
-            <GoogleAnalytics gaId={process.env.GOOGLE_ANALYTICS_MEASUREMENT_ID as string}/>
+        <ThemeProvider defaultTheme="dark">
+          {children}
+          <VercelAnalytics />
+          <Toaster />
+        </ThemeProvider>
+        <GoogleAnalytics gaId={process.env.GOOGLE_ANALYTICS_MEASUREMENT_ID as string}/>
       </body>
     </html>
   );
 }
+
