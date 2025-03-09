@@ -31,13 +31,13 @@ const Features = ({featureSection}:{featureSection:FeatureSectionProps}) => {
     </h2>
 
       <div className="flex flex-wrap md:justify-center gap-4">
-        {featureSection.featureList?.map((feature: string) => (
-          <div key={feature}>
+        {featureSection.featureList?.map((feature: any) => (
+          <div key={feature.title}>
             <Badge
               variant="secondary"
               className="text-sm"
             >
-              {feature}
+              {feature.title}
             </Badge>
           </div>
         ))}

@@ -4,18 +4,18 @@ import axios from 'axios';
 
 export const getCompanyDetails = async () => {
     try{
-        let baseUrl = process.env.STRAPI_API_URL || "http://localhost:1337/api/";
-        let database = "company-landing-page";
-        let populateNavbarSection = "populate[navbarSection][populate]p[0]=routeList"
-        let populateHeroSection = "populate[heroSection]=true"
-        let populateAboutSection = "populate[aboutSection]=true"
-        let populateProjectsSection = "populate[projectSection][populate][projects][populate][0]=websiteDetails&populate[projectSection][populate][projects][populate][1]=notionDetails&populate[projectSection][populate][projects][populate][2]=openSourceDetails&populate[projectSection][populate][projects][populate][3]=techStack&populate[projectSection][populate][projects][populate][4]=contentDetails"
-        let populateServicesSection = "populate[serviceSection][populate][0]=services"
-        let populateTeamSection = "populate[teamSection][populate][0]=teamList"
-        let populateTestimonialSection = "populate[testimonialSection][populate][0]=testimonials"
-        let populateFooterSection = "populate[footerSection][populate][0]=footerList"
+        const baseUrl = process.env.STRAPI_API_URL || "http://localhost:1337/api/";
+        const database = "company-landing-page";
+        const populateNavbarSection = "populate[navbarSection][populate]p[0]=routeList"
+        const populateHeroSection = "populate[heroSection]=true"
+        const populateAboutSection = "populate[aboutSection]=true"
+        const populateProjectsSection = "populate[projectSection][populate][projects][populate][0]=websiteDetails&populate[projectSection][populate][projects][populate][1]=notionDetails&populate[projectSection][populate][projects][populate][2]=openSourceDetails&populate[projectSection][populate][projects][populate][3]=techStack&populate[projectSection][populate][projects][populate][4]=contentDetails"
+        const populateServicesSection = "populate[serviceSection][populate][0]=services"
+        const populateTeamSection = "populate[teamSection][populate][0]=teamList"
+        const populateTestimonialSection = "populate[testimonialSection][populate][0]=testimonials"
+        const populateFooterSection = "populate[footerSection][populate][0]=footerList"
         const url = `${baseUrl}${database}?${populateNavbarSection}&${populateHeroSection}&${populateAboutSection}&${populateServicesSection}&${populateTeamSection}&${populateTestimonialSection}&${populateProjectsSection}&${populateFooterSection}`;
-        let config = {
+        const config = {
             method: 'get',
             maxBodyLength: Infinity,
             url,
@@ -35,15 +35,15 @@ export const getCompanyDetails = async () => {
 
 export const getLegalDetails = async () => {
   try{
-      let baseUrl = process.env.STRAPI_API_URL || "http://localhost:1337/api/";
-      let database = "company-landing-page";
-      let populateNavbarSection = "populate[navbarSection]=true"
-      let populateTermsOfService = "populate[termsOfService]=true"
-      let populatePrivacyPolicy = "populate[privacyPolicy]=true"
-      let populateCancellationRefundPolicies = "populate[cancellationRefundPolicies]=true"
-      let populateContactUs = "populate[contactUs]=true"
+      const baseUrl = process.env.STRAPI_API_URL || "http://localhost:1337/api/";
+      const database = "company-landing-page";
+      const populateNavbarSection = "populate[navbarSection]=true"
+      const populateTermsOfService = "populate[termsOfService]=true"
+      const populatePrivacyPolicy = "populate[privacyPolicy]=true"
+      const populateCancellationRefundPolicies = "populate[cancellationRefundPolicies]=true"
+      const populateContactUs = "populate[contactUs]=true"
       const url = `${baseUrl}${database}?${populateNavbarSection}&${populateTermsOfService}&${populatePrivacyPolicy}&${populateCancellationRefundPolicies}&${populateContactUs}`;
-      let config = {
+      const config = {
           method: 'get',
           maxBodyLength: Infinity,
           url,

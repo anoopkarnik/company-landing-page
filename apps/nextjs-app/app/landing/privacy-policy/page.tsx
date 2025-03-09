@@ -4,7 +4,7 @@ import PrivacyPolicyPage from '@repo/ui/templates/landing/v1/PrivacyPolicyPage';
 import { useGlobalData } from '../../../context/DataContext';
 import LoadingPage from '@repo/ui/templates/landing/v1/LoadingPage';
 
-const page = () => {
+const PrivacyPolicy = () => {
       const data = useGlobalData();
 
       if (data.isLoading) {
@@ -17,4 +17,4 @@ const page = () => {
   );
 }
 
-export default page;
+export default PrivacyPolicy;

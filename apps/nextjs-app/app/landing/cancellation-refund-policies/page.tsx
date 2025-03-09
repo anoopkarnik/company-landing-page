@@ -5,7 +5,7 @@ import CancellationRefundPoliciesPage from '@repo/ui/templates/landing/v1/Cancel
 import { useGlobalData } from '../../../context/DataContext';
 import LoadingPage from '@repo/ui/templates/landing/v1/LoadingPage';
 
-const page = () => {
+const CancellationRefundPolicies = () => {
         const data = useGlobalData();
         if (data.isLoading) {
           return (
@@ -20,4 +20,4 @@ const page = () => {
   );
 }
 
-export default page;
+export default CancellationRefundPolicies;

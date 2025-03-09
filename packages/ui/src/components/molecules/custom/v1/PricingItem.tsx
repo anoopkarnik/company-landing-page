@@ -1,4 +1,4 @@
-import { PricingProps } from "@repo/ts-types/landing-page/pricing";
+import { BenefitProps, PricingProps } from "@repo/ts-types/landing-page/pricing";
 import { Badge } from "../../../atoms/shadcn/badge";
 import { Button } from "../../../atoms/shadcn/button";
 import {
@@ -60,13 +60,13 @@ const PricingItem = ({pricing}:{pricing:PricingProps}) => {
                 
             <CardFooter className="flex">
               <div className="space-y-4">
-                {pricing.benefitList.map((benefit: string) => (
+                {pricing.benefitList?.map((benefit: BenefitProps) => (
                   <span
-                    key={benefit}
+                    key={benefit.title}
                     className="flex"
                   >
                     <Check className="text-green-500" />{" "}
-                    <h3 className="ml-2">{benefit}</h3>
+                    <h3 className="ml-2">{benefit.title}</h3>
                   </span>
                 ))}
               </div>

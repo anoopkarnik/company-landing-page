@@ -1,4 +1,4 @@
-import { FAQSectionProps } from "@repo/ts-types/landing-page/faq";
+import { faqSectionProps } from "@repo/ts-types/landing-page/faq";
 import {
     Accordion,
     AccordionContent,
@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 
 
   
-  const FAQ = ({FAQSection}:{FAQSection:FAQSectionProps}) => {
+  const FAQ = ({FAQSection}:{FAQSection:faqSectionProps}) => {
 
     let href = "https://mail.google.com/mail?view=cm&fs=1&to="+FAQSection.supportEmailAddress+"&su=Support";
 
