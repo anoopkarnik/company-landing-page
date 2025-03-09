@@ -1,0 +1,16 @@
+{
+    "collectionName": "components_content_details_props_content_details",
+    "info": {
+      "displayName": "contentDetails"
+    },
+    "options": {},
+    "attributes": {
+      "blogLink": {
+        "type": "string"
+      },
+      "videoLink": {
+        "type": "string"
+      }
+    }
+  }
+  

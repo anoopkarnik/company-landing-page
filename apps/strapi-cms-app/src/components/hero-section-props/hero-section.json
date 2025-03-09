@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_hero_section_props_hero_sections",
+  "info": {
+    "displayName": "heroSection"
+  },
+  "options": {},
+  "attributes": {
+    "documentationLink": {
+      "type": "string"
+    },
+    "appointmentLink": {
+      "type": "string"
+    },
+    "tagline": {
+      "type": "text"
+    },
+    "description": {
+      "type": "text"
+    }
+  }
+}

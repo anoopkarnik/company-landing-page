@@ -1,0 +1,33 @@
+{
+  "collectionName": "components_terms_of_service_props_terms_of_services",
+  "info": {
+    "displayName": "termsOfService"
+  },
+  "options": {},
+  "attributes": {
+    "supportEmailAddress": {
+      "type": "string"
+    },
+    "siteName": {
+      "type": "string"
+    },
+    "companyLegalName": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string"
+    },
+    "websiteUrl": {
+      "type": "string"
+    },
+    "lastUpdated": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "address": {
+      "type": "text"
+    }
+  }
+}

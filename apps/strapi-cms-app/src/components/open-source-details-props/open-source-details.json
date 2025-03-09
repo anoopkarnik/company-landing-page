@@ -1,0 +1,25 @@
+{
+    "collectionName": "components_open_source_details_props_open_source_details",
+    "info": {
+      "displayName": "openSourceDetails"
+    },
+    "options": {},
+    "attributes": {
+      "link": {
+        "type": "string"
+      },
+      "npmPackageLink": {
+        "type": "string"
+      },
+      "stars": {
+        "type": "string"
+      },
+      "weeklyDownloads": {
+        "type": "string"
+      },
+      "weeklyClones": {
+        "type": "string"
+      }
+    }
+  }
+  

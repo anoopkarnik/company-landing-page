@@ -1,0 +1,36 @@
+{
+  "collectionName": "components_pricing_list_props_pricing_list_props",
+  "info": {
+    "displayName": "pricingListProps"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "popular": {
+      "type": "boolean"
+    },
+    "price": {
+      "type": "string"
+    },
+    "priceType": {
+      "type": "string"
+    },
+    "href": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "buttonText": {
+      "type": "string"
+    },
+    "benefitList": {
+      "displayName": "benefitList",
+      "type": "component",
+      "repeatable": true,
+      "component": "benefit-list-props.benefit-list"
+    }
+  }
+}

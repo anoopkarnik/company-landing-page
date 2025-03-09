@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_route_props_routes",
+  "info": {
+    "displayName": "route"
+  },
+  "options": {},
+  "attributes": {
+    "href": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    }
+  }
+}

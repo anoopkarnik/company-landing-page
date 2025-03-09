@@ -1,0 +1,95 @@
+{
+  "kind": "singleType",
+  "collectionName": "company_landing_pages",
+  "info": {
+    "singularName": "company-landing-page",
+    "pluralName": "company-landing-pages",
+    "displayName": "company-landing-page",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "aboutSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "about-section-props.about-section"
+    },
+    "faqSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "faq-section-props.faq-section"
+    },
+    "featureSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "feature-section-props.feature-section"
+    },
+    "heroSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "hero-section-props.hero-section"
+    },
+    "pricingSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "pricing-section-props.pricing-section"
+    },
+    "newsletterSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "newsletter-section-props.newsletter-section"
+    },
+    "projectSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "project-section-props.project-section"
+    },
+    "serviceSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "service-section-props.service-section"
+    },
+    "teamSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "team-section-props.team-section"
+    },
+    "testimonialSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "testimonial-section-props.testimonial-section"
+    },
+    "footerSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "footer-section-props.footer-section"
+    },
+    "navbarSection": {
+      "type": "component",
+      "repeatable": false,
+      "component": "navbar-section-props.navbar-section"
+    },
+    "termsOfService": {
+      "type": "component",
+      "repeatable": false,
+      "component": "terms-of-service-props.terms-of-service"
+    },
+    "privacyPolicy": {
+      "type": "component",
+      "repeatable": false,
+      "component": "privacy-policy-props.privacy-policy"
+    },
+    "cancellationRefundPolicies": {
+      "type": "component",
+      "repeatable": false,
+      "component": "cancellation-refund-policies-props.cancellation-refund-policies"
+    },
+    "contactUs": {
+      "type": "component",
+      "repeatable": false,
+      "component": "contact-us-props.contact-us"
+    }
+  }
+}

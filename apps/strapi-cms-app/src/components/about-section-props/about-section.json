@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_about_section_props_about_sections",
+  "info": {
+    "displayName": "aboutSection"
+  },
+  "options": {},
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "companyDetails": {
+      "type": "text"
+    },
+    "users": {
+      "type": "string"
+    },
+    "subscribers": {
+      "type": "string"
+    },
+    "products": {
+      "type": "string"
+    },
+    "downloads": {
+      "type": "string"
+    }
+  }
+}

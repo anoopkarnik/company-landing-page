@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_feature_section_props_feature_sections",
+  "info": {
+    "displayName": "featureSection"
+  },
+  "options": {},
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "featureList": {
+      "displayName": "featureListProps",
+      "type": "component",
+      "repeatable": true,
+      "component": "feature-list-props.feature-list-props"
+    },
+    "featuresWithDescription": {
+      "displayName": "featureWithDescription",
+      "type": "component",
+      "repeatable": true,
+      "component": "feature-with-description-props.feature-with-description"
+    }
+  }
+}

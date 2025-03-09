@@ -1,0 +1,19 @@
+{
+    "collectionName": "components_website_details_props_website_details",
+    "info": {
+      "displayName": "websiteDetails"
+    },
+    "options": {},
+    "attributes": {
+      "websiteDetails": {
+        "type": "string"
+      },
+      "websiteViews": {
+        "type": "string"
+      },
+      "websiteUsers": {
+        "type": "string"
+      }
+    }
+  }
+  

@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_faq_list_props_faq_lists",
+  "info": {
+    "displayName": "faqList"
+  },
+  "options": {},
+  "attributes": {
+    "question": {
+      "type": "text"
+    },
+    "answer": {
+      "type": "text"
+    },
+    "value": {
+      "type": "string"
+    }
+  }
+}

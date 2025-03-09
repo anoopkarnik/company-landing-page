@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_faq_section_props_faq_sections",
+  "info": {
+    "displayName": "faqSection"
+  },
+  "options": {},
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "supportEmailAddress": {
+      "type": "string"
+    },
+    "faqList": {
+      "displayName": "faqList",
+      "type": "component",
+      "repeatable": true,
+      "component": "faq-list-props.faq-list"
+    }
+  }
+}

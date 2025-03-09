@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_privacy_policy_props_privacy_policies",
+  "info": {
+    "displayName": "privacyPolicy"
+  },
+  "options": {},
+  "attributes": {
+    "supportEmailAddress": {
+      "type": "string"
+    },
+    "siteName": {
+      "type": "string"
+    },
+    "companyLegalName": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string"
+    },
+    "websiteUrl": {
+      "type": "string"
+    },
+    "lastUpdated": {
+      "type": "string"
+    }
+  }
+}

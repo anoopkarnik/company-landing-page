@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_cancellation_refund_policies_props_cancellation_refund_policies",
+  "info": {
+    "displayName": "cancellationRefundPolicies"
+  },
+  "options": {},
+  "attributes": {
+    "supportEmailAddress": {
+      "type": "string"
+    },
+    "siteName": {
+      "type": "string"
+    },
+    "companyLegalName": {
+      "type": "string"
+    },
+    "websiteUrl": {
+      "type": "string"
+    },
+    "lastUpdated": {
+      "type": "string"
+    }
+  }
+}

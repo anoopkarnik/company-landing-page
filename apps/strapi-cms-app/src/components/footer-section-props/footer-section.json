@@ -1,0 +1,50 @@
+{
+  "collectionName": "components_footer_section_props_footer_sections",
+  "info": {
+    "displayName": "footerSection"
+  },
+  "options": {},
+  "attributes": {
+    "creator": {
+      "type": "string"
+    },
+    "creatorLink": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "logo": {
+      "type": "string"
+    },
+    "darkLogo": {
+      "type": "string"
+    },
+    "logoMedia": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "darkLogoMedia": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "footerList": {
+      "displayName": "footerList",
+      "type": "component",
+      "repeatable": true,
+      "component": "footer-list-props.footer-list"
+    }
+  }
+}

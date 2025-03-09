@@ -1,0 +1,50 @@
+{
+  "collectionName": "components_navbar_section_props_navbar_sections",
+  "info": {
+    "displayName": "navbarSection"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "logo": {
+      "type": "string"
+    },
+    "darkLogo": {
+      "type": "string"
+    },
+    "donateNowLink": {
+      "type": "string"
+    },
+    "githubLink": {
+      "type": "string"
+    },
+    "logoMedia": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "darkLogoMedia": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "routeList": {
+      "displayName": "route",
+      "type": "component",
+      "repeatable": true,
+      "component": "route-props.route"
+    }
+  }
+}

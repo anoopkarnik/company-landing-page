@@ -1,0 +1,22 @@
+{
+    "collectionName": "components_notion_details_props_notion_details",
+    "info": {
+      "displayName": "notionDetails"
+    },
+    "options": {},
+    "attributes": {
+      "templateLink": {
+        "type": "string"
+      },
+      "views": {
+        "type": "string"
+      },
+      "downloads": {
+        "type": "string"
+      },
+      "rating": {
+        "type": "string"
+      }
+    }
+  }
+  

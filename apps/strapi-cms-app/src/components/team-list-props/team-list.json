@@ -1,0 +1,37 @@
+{
+  "collectionName": "components_team_list_props_team_lists",
+  "info": {
+    "displayName": "teamList"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "position": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "imageUrl": {
+      "type": "string"
+    },
+    "imageUrlMedia": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "socialNetwork": {
+      "displayName": "socialNetwork",
+      "type": "component",
+      "repeatable": true,
+      "component": "social-network-props.social-network"
+    }
+  }
+}

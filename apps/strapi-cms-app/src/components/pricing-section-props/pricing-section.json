@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_pricing_section_props_pricing_sections",
+  "info": {
+    "displayName": "pricingSection"
+  },
+  "options": {},
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "supportEmailAddress": {
+      "type": "string"
+    },
+    "pricingList": {
+      "displayName": "pricingListProps",
+      "type": "component",
+      "repeatable": true,
+      "component": "pricing-list-props.pricing-list-props"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_feature_with_description_props_feature_with_descriptions",
+  "info": {
+    "displayName": "featureWithDescription"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "href": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    }
+  }
+}

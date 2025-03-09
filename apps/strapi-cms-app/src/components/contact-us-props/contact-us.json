@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_contact_us_props_contactuses",
+  "info": {
+    "displayName": "contactUs"
+  },
+  "options": {},
+  "attributes": {
+    "supportEmailAddress": {
+      "type": "string"
+    },
+    "companyLegalName": {
+      "type": "string"
+    },
+    "lastUpdated": {
+      "type": "string"
+    },
+    "contactNumber": {
+      "type": "string"
+    },
+    "address": {
+      "type": "text"
+    }
+  }
+}

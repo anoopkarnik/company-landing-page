@@ -1,0 +1,12 @@
+{
+  "collectionName": "components_feature_list_props_feature_list_props",
+  "info": {
+    "displayName": "featureListProps"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    }
+  }
+}

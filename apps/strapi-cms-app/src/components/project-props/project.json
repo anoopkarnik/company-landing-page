@@ -1,0 +1,70 @@
+{
+    "collectionName": "components_project_props_projects",
+    "info": {
+      "displayName": "project",
+      "description": ""
+    },
+    "options": {},
+    "attributes": {
+      "title": {
+        "type": "string"
+      },
+      "contribution": {
+        "type": "text"
+      },
+      "description": {
+        "type": "text"
+      },
+      "type": {
+        "type": "string"
+      },
+      "demoImage": {
+        "type": "string"
+      },
+      "featured": {
+        "type": "boolean"
+      },
+      "demoImageMedia": {
+        "type": "media",
+        "multiple": false,
+        "required": false,
+        "allowedTypes": [
+          "images",
+          "files",
+          "videos",
+          "audios"
+        ]
+      },
+      "openSourceDetails": {
+        "displayName": "openSourceDetails",
+        "type": "component",
+        "repeatable": false,
+        "component": "open-source-details-props.open-source-details"
+      },
+      "websiteDetails": {
+        "displayName": "websiteDetails",
+        "type": "component",
+        "repeatable": false,
+        "component": "website-details-props.website-details"
+      },
+      "contentDetails": {
+        "displayName": "contentDetails",
+        "type": "component",
+        "repeatable": false,
+        "component": "content-details-props.content-details"
+      },
+      "techStack": {
+        "displayName": "techStack",
+        "type": "component",
+        "repeatable": true,
+        "component": "tech-stack-props.tech-stack"
+      },
+      "notionDetails": {
+        "displayName": "notionDetails",
+        "type": "component",
+        "repeatable": false,
+        "component": "notion-details-props.notion-details"
+      }
+    }
+  }
+  
