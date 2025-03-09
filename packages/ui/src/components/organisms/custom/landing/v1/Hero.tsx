@@ -8,6 +8,7 @@ import { TestimonialProps } from "@repo/ts-types/landing-page/testimonials";
 import { ProjectProps } from "@repo/ts-types/landing-page/projects";
 import { TeamProps } from "@repo/ts-types/landing-page/team";
 
+
 const Hero = ({heroSection,services,testimonials,projects,teamList}:{
   heroSection:HeroSectionProps ,services:ServiceProps[] | undefined,testimonials:TestimonialProps[] | undefined,
   projects:ProjectProps[] | undefined, teamList:TeamProps[]  | undefined}) => {

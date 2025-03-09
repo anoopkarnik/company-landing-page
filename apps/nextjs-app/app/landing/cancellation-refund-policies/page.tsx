@@ -1,14 +1,21 @@
+"use client"
+
 import React from 'react';
 import CancellationRefundPoliciesPage from '@repo/ui/templates/landing/v1/CancellationRefundPoliciesPage';
-import { cancellationRefundPolicies } from '../../../lib/constants/legal/cancellationRefundPolicies';
-import { navbarSection } from '../../../lib/constants/landing-page/navbar';
+import { useGlobalData } from '../../../context/DataContext';
+import LoadingPage from '@repo/ui/templates/landing/v1/LoadingPage';
 
 const page = () => {
-
+        const data = useGlobalData();
+        if (data.isLoading) {
+          return (
+            <LoadingPage />
+          );
+        }
   return (
     <>
-        <CancellationRefundPoliciesPage cancellationRefundPolicies={cancellationRefundPolicies} 
-        navbarSection={navbarSection} />
+        <CancellationRefundPoliciesPage cancellationRefundPolicies={data.cancellationRefundPoliciesState} 
+        navbarSection={data.navbarSectionState} />
     </>
   );
 }

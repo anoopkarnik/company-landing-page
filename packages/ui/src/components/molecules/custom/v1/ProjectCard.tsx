@@ -25,7 +25,7 @@ const ProjectCard = ({project}:{project:ProjectProps}) => {
                 <SiGithub size={30} className='cursor-pointer opacity-50 hover:opacity-100 transition-all duration-300'/>
             </a>}
             {project.notionDetails && <a href={project.notionDetails.templateLink} target='_blank'>
-                <SiNotion size={30} color='black' className='cursor-pointer opacity-50 hover:opacity-100 transition-all duration-300'/>
+                <SiNotion size={30} color='white' className='cursor-pointer opacity-50 hover:opacity-100 transition-all duration-300'/>
             </a>}
             {project.contentDetails && <a href={project.contentDetails.videoLink} target='_blank'>
                 <SiYoutube size={30} color='red' className='cursor-pointer opacity-50 hover:opacity-100 transition-all duration-300'/>

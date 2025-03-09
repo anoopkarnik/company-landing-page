@@ -11,6 +11,7 @@ import { companyDetails } from "../lib/constants/landing-page/about";
 import { companyName } from "../lib/constants/appDetails";
 import { VercelAnalytics } from "@repo/analytics/vercel.ts";
 import { GoogleAnalytics } from "@repo/analytics/google.ts";
+import { DataProvider } from "../context/DataContext";
 
 export const metadata: Metadata = {
   title: companyName,
@@ -34,7 +35,9 @@ export default function RootLayout({
         className={`${geistSans.className} ${geistMono.variable} ${cyberdyne.variable} antialiased`}
       >
         <ThemeProvider defaultTheme="dark">
-          {children}
+          <DataProvider>
+            {children}
+          </DataProvider>
           <VercelAnalytics />
           <Toaster />
         </ThemeProvider>

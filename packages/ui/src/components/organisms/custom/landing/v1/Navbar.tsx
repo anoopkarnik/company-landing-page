@@ -40,11 +40,11 @@ const Navbar = ({navbarSection}: {navbarSection: NavbarSectionProps}) => {
         console.log("Error fetching star count:", error);
       }
     };
-    if(navbarSection.githubLink){
+    if(navbarSection?.githubLink){
       fetchStarCount();
     }
 
-  }, [theme,navbarSection.githubLink]);
+  }, [theme,navbarSection]);
 
   return (
     <header className="sticky border-b-[1px] top-0 z-40 w-full bg-background font-geistMono">
@@ -57,11 +57,11 @@ const Navbar = ({navbarSection}: {navbarSection: NavbarSectionProps}) => {
               className="ml-2 flex items-center gap-2 font-cyberdyne"
             >
               {theme === "dark" ?
-               <Image src={navbarSection.darkLogo} alt={navbarSection.title} width={40} height={40} /> : 
-               <Image src={navbarSection.logo} alt={navbarSection.title} width={40} height={40} />}
+               <Image src={navbarSection?.darkLogo} alt={navbarSection?.title} width={40} height={40} /> : 
+               <Image src={navbarSection?.logo} alt={navbarSection?.title} width={40} height={40} />}
                <div className="hidden lg:flex flex-col items-start text-md leading-none bg-gradient-to-r from-[#03a3d7] to-[#D247BF] bg-clip-text text-transparent ">
-                  <div>{navbarSection.title?.split(' ')[0]}</div>
-                  <div>{navbarSection.title?.split(' ')[1]}</div>
+                  <div>{navbarSection?.title?.split(' ')[0]}</div>
+                  <div>{navbarSection?.title?.split(' ')[1]}</div>
                 </div>
             </a>
           </NavigationMenuItem>
@@ -85,7 +85,7 @@ const Navbar = ({navbarSection}: {navbarSection: NavbarSectionProps}) => {
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="flex flex-col justify-center items-center gap-2 mt-4">
-                  {navbarSection.routeList?.map(({ href, label }: RouteProps) => (
+                  {navbarSection?.routeList?.map(({ href, label }: RouteProps) => (
                     <a
                       rel="noreferrer noopener"
                       key={label}
@@ -96,14 +96,14 @@ const Navbar = ({navbarSection}: {navbarSection: NavbarSectionProps}) => {
                       {label}
                     </a>
                   ))}
-                  <a rel="noreferrer noopener" href={navbarSection.donateNowLink}>    
+                  <a rel="noreferrer noopener" href={navbarSection?.donateNowLink}>    
                     <Button size="sm" >
                       Donate Now
                     </Button>
                   </a>
                   <a
                     rel="noreferrer noopener"
-                    href={navbarSection.githubLink}
+                    href={navbarSection?.githubLink}
                     target="_blank"
                     className={`w-[110px] border ${buttonVariants({
                       variant: "secondary", size:"sm"
@@ -128,7 +128,7 @@ const Navbar = ({navbarSection}: {navbarSection: NavbarSectionProps}) => {
 
           {/* desktop */}
           <nav className="hidden md:flex gap-2">
-            {navbarSection.routeList?.map((route: RouteProps, i) => (
+            {navbarSection?.routeList?.map((route: RouteProps, i) => (
               <a
                 rel="noreferrer noopener"
                 href={route.href}
@@ -143,14 +143,14 @@ const Navbar = ({navbarSection}: {navbarSection: NavbarSectionProps}) => {
           </nav>
 
           <div className="hidden md:flex gap-2 items-center">
-            <a rel="noreferrer noopener" href={navbarSection.donateNowLink}>    
+            <a rel="noreferrer noopener" href={navbarSection?.donateNowLink}>    
               <Button size="sm" >
                 Donate Now
               </Button>
             </a>
             <a
               rel="noreferrer noopener"
-              href={navbarSection.githubLink}
+              href={navbarSection?.githubLink}
               target="_blank"
               className={`border flex items-center ${buttonVariants({ variant: "secondary" ,size:"sm"})}`}
             >
