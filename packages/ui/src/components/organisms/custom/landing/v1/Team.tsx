@@ -80,7 +80,7 @@ const Team = ({teamSection}:{teamSection:TeamSectionProps}) => {
               </CardContent>
 
               <CardFooter className="flex flex-wrap items-center justify-center mx-4">
-                {team.socialNetworks.map((socialNetwork) => (
+                {team.socialNetworks?.map((socialNetwork) => (
                   <div key={socialNetwork.name}>
                     <a
                       rel="noreferrer noopener"

@@ -3,7 +3,8 @@ import { Button } from "../../../../atoms/shadcn/button";
 import { Input } from "../../../../atoms/shadcn/input";
 import { NewsletterSectionProps } from "@repo/ts-types/landing-page/newsletter";
 
-const Newsletter = ({newsletterSection}:{newsletterSection:NewsletterSectionProps}) => {
+const Newsletter = ({newsletterSection,createContactAction}:{
+  newsletterSection:NewsletterSectionProps,createContactAction:any}) => {
 
   const [email, setEmail] = useState<string>("");
   const [headingArray,setHeadingArray] = useState<string[]>([])
@@ -42,8 +43,8 @@ const Newsletter = ({newsletterSection}:{newsletterSection:NewsletterSectionProp
             onChange={(e) => setEmail(e.target.value)}
           />
           <Button onClick={()=>{
-            if (newsletterSection?.createContactAction) {
-              newsletterSection.createContactAction(email);
+            if (createContactAction) {
+              createContactAction(email);
               setEmail('');
             }
           }}>Subscribe</Button>

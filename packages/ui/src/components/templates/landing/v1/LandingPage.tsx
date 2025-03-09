@@ -13,27 +13,27 @@ import FAQ from '../../../organisms/custom/landing/v1/FAQ';
 import Pricing from '../../../organisms/custom/landing/v1/Pricing';
 import Features from '../../../organisms/custom/landing/v1/Features';
 
-const LandingPage = ({navbarSection,heroSection,aboutSection,servicesSection,featureSection,testimonialsSection,
-  projectsSection,teamSection,FAQSection,newsletterSection,pricingSection,footerSection
+const LandingPage = ({navbarSection,heroSection,aboutSection,serviceSection,featureSection,testimonialSection,
+  projectSection,teamSection,faqSection,newsletterSection,pricingSection,footerSection,functionsToUse
  }: LandingPageProps) => {
     
 
   return (
     <div className='flex flex-col items-center justify-center'>
       <Navbar navbarSection={navbarSection} />
-      <Hero heroSection={heroSection}/>
+      <Hero heroSection={heroSection} services={serviceSection?.services} testimonials={testimonialSection?.testimonials} 
+      teamList={teamSection?.teamList} projects={projectSection?.projects}/>
       {aboutSection && <About aboutSection={aboutSection} />}
-      {featureSection && featureSection.featureList.length>0 && featureSection.featuresWithDescription.length>0
-       && <Features featureSection={featureSection} />}
-      {servicesSection && servicesSection.services.length>0 && <Services servicesSection={servicesSection} />}
-      {projectsSection && projectsSection.projects.length>0 && <Projects projectsSection={projectsSection} />}
-      {testimonialsSection && testimonialsSection.testimonials.length>0 && 
-       <Testimonials testimonialsSection={testimonialsSection}/>}
+      {featureSection  && (featureSection.featureList.length>0 || featureSection.featuresWithDescription.length>0) && 
+       <Features featureSection={featureSection} />}
+      {serviceSection && <Services serviceSection={serviceSection} />}
+      {projectSection && <Projects projectSection={projectSection} />}
+      {testimonialSection && <Testimonials testimonialSection={testimonialSection}/>}
       {teamSection && teamSection.teamList.length>0 &&<Team teamSection={teamSection} />}
-      {newsletterSection && <Newsletter newsletterSection={newsletterSection}/>}
+      {newsletterSection && <Newsletter newsletterSection={newsletterSection} createContactAction={functionsToUse?.createContactAction}/>}
       {pricingSection && pricingSection.pricingList.length>0 && <Pricing pricingSection={pricingSection}/>}
 
-      {FAQSection && FAQSection.faqList.length>0 && <FAQ FAQSection={FAQSection}/>} 
+      {faqSection && faqSection.faqList.length>0 && <FAQ FAQSection={faqSection}/>} 
       {footerSection &&  <Footer footerSection={footerSection}/>}
     </div>
   );

@@ -24,7 +24,7 @@ export const services: ServiceProps[] = [
     }
   ];
 
-export const servicesSection:ServiceSectionProps = {
+export const serviceSection:ServiceSectionProps = {
     heading: "Client-Centric Services",
     description: `These are some of the services that I offer to my clients. I am always looking to improve and 
     add more services`,

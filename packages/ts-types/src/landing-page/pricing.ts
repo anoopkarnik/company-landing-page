@@ -2,6 +2,10 @@ export enum PopularPlanType {
     NO = 0,
     YES = 1,
   }
+
+  export interface BenefitProps {
+    title: string;
+  }
   
   export interface PricingProps {
     title: string;
@@ -11,7 +15,7 @@ export enum PopularPlanType {
     href: string;
     description: string;
     buttonText: string;
-    benefitList: string[];
+    benefitList: BenefitProps[];
   }
 
 export interface PricingSectionProps {

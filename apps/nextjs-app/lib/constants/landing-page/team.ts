@@ -38,6 +38,6 @@ export const teamList: TeamProps[] = [
 export const teamSection: TeamSectionProps = {
     heading: "Our Dedicated Crew",
     description: `Some of the best people in the industry are working with us,
-    as we are the only ones in the industry of spontaneous product development..`,
+    as we are the only ones in the industry of spontaneous product development.`,
     teamList
 }

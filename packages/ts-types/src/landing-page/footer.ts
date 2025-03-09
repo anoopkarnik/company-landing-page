@@ -1,14 +1,12 @@
-export interface FooterListProps {
-    [key: string]: FooterProps[];
-  }
   
   export interface FooterProps {
     label: string;
     href: string;
+    type: string;                                                                                       
   }
   
   export interface FooterSectionProps {
-    footerList: FooterListProps;
+    footerList: FooterProps[];
     creator: string;
     creatorLink: string;
     title: string;

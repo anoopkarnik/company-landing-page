@@ -3,8 +3,14 @@ import { buttonVariants } from "../../../../atoms/shadcn/button";
 import HeroCards  from "./HeroCards";
 import { useEffect, useState } from "react";
 import { HeroSectionProps } from "@repo/ts-types/landing-page/hero";
+import { ServiceProps } from "@repo/ts-types/landing-page/services";
+import { TestimonialProps } from "@repo/ts-types/landing-page/testimonials";
+import { ProjectProps } from "@repo/ts-types/landing-page/projects";
+import { TeamProps } from "@repo/ts-types/landing-page/team";
 
-const Hero = ({heroSection}:{heroSection:HeroSectionProps}) => {
+const Hero = ({heroSection,services,testimonials,projects,teamList}:{
+  heroSection:HeroSectionProps ,services:ServiceProps[] | undefined,testimonials:TestimonialProps[] | undefined,
+  projects:ProjectProps[] | undefined, teamList:TeamProps[]  | undefined}) => {
     const [taglineArray,setTaglineArray] = useState<string[]>([])
     useEffect(()=>{
         if(heroSection.tagline){
@@ -53,8 +59,8 @@ const Hero = ({heroSection}:{heroSection:HeroSectionProps}) => {
 
       {/* Hero cards sections */}
       <div className="z-10">
-        <HeroCards testimonials={heroSection.testimonials} teamList={heroSection.teamList} 
-        services={heroSection.services} projects={heroSection.projects}/>
+        <HeroCards testimonials={testimonials} teamList={teamList} 
+        services={services} projects={projects}/>
       </div>
 
       {/* Shadow effect */}

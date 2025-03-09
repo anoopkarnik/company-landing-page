@@ -4,9 +4,13 @@ export interface FeatureWithDescriptionProps {
     description: string;
   }
 
+export interface FeatureListProps {
+  title: string;
+}
+
 export interface FeaturesProps {
 featuresWithDescription: FeatureWithDescriptionProps[];
-featureList: string[];
+featureList: FeatureListProps[];
 }
 
 export interface FeatureSectionProps extends FeaturesProps {

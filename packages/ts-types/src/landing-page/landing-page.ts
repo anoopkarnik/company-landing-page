@@ -1,5 +1,5 @@
 import { AboutSectionProps } from "./about";
-import { FAQSectionProps } from "./faq";
+import { faqSectionProps } from "./faq";
 import { FeatureSectionProps } from "./features";
 import { FooterSectionProps } from "./footer";
 import { HeroSectionProps } from "./hero";
@@ -15,13 +15,16 @@ export interface LandingPageProps  {
   navbarSection: NavbarSectionProps;
   heroSection: HeroSectionProps;
   aboutSection?: AboutSectionProps;
-  servicesSection?: ServiceSectionProps;
+  serviceSection?: ServiceSectionProps;
   featureSection?: FeatureSectionProps;
-  testimonialsSection?: TestimonialSectionProps;
-  projectsSection?: ProjectSectionProps;
+  testimonialSection?: TestimonialSectionProps;
+  projectSection?: ProjectSectionProps;
   teamSection?: TeamSectionProps;
-  FAQSection?: FAQSectionProps;
+  faqSection?: faqSectionProps;
   newsletterSection?: NewsletterSectionProps;
   pricingSection?: PricingSectionProps;
-  footerSection: FooterSectionProps
+  footerSection: FooterSectionProps;
+  functionsToUse?: {
+    createContactAction?: any;
+  };
 }

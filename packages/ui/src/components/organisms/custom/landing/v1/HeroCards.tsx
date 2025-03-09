@@ -1,4 +1,4 @@
-import { HeroCardsProps } from "@repo/ts-types/landing-page/hero";
+import { TestimonialProps } from "@repo/ts-types/landing-page/testimonials";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../../atoms/shadcn/avatar";
 import {
   Card,
@@ -9,19 +9,21 @@ import {
   CardFooter,
 } from "../../../../molecules/shadcn/card";
 import { LightbulbIcon } from "lucide-react";
+import { TeamProps } from "@repo/ts-types/landing-page/team";
+import { ServiceProps } from "@repo/ts-types/landing-page/services";
+import { ProjectProps } from "@repo/ts-types/landing-page/projects";
 
-const HeroCards = ({testimonials,teamList,services,projects}:HeroCardsProps) => {
+const HeroCards = ({testimonials,teamList,services,projects}:{testimonials:TestimonialProps[] | undefined,
+  teamList:TeamProps[] | undefined, services:ServiceProps[] | undefined,projects:ProjectProps[] | undefined
+}) => {
   return (
     <div className="hidden xl:flex flex-row flex-wrap gap-8 relative w-[700px] h-[500px]">
       {/* Testimonial */}
       <Card className="absolute w-[340px] -top-[15px] drop-shadow-xl shadow-black/10 dark:shadow-white/10">
         <CardHeader className="flex flex-row items-center gap-4 pb-2">
-          <Avatar>
-            <AvatarImage
-              alt=""
-              src={testimonials?.[0]?.image}
-            />
-            <AvatarFallback>SH</AvatarFallback>
+          <Avatar className="h-10 w-10 ">
+              <AvatarImage src={testimonials && testimonials[0]?.image} className="h-full w-full object-contain" />
+              <AvatarFallback>{testimonials && testimonials[0]?.userName.slice(0,1)}</AvatarFallback>
           </Avatar>
 
           <div className="flex flex-col">

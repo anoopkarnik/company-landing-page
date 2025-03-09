@@ -1,13 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
-import { FooterSectionProps } from "@repo/ts-types/landing-page/footer";
+import { FooterProps, FooterSectionProps } from "@repo/ts-types/landing-page/footer";
 
 const Footer = ({footerSection}:{footerSection:FooterSectionProps}) => {
+    const [footerTypes, setFooterTypes] = useState<any>([]);
     const {theme} = useTheme();
 
     useEffect(()=>{
-  
+        const types = footerSection.footerList?.map(footer=>footer.type);
+        setFooterTypes(new Set(types));
     },[theme,footerSection.footerList])
 
     
@@ -30,10 +32,10 @@ const Footer = ({footerSection}:{footerSection:FooterSectionProps}) => {
                     </div>
                 </a>
             </section>
-            {footerSection.footerList && Object.keys(footerSection.footerList)?.map((footer:string)=>(
-                <div key={footer} className="flex flex-col gap-2">
-                    <h3 className="text-paragraph">{footer}</h3>
-                    {footerSection.footerList[footer]?.map((item)=>(
+            {[...footerTypes]?.map((type:string)=>(
+                <div key={type} className="flex flex-col gap-2">
+                    <h3 className="text-paragraph">{type}</h3>
+                    {footerSection.footerList?.filter(footer => footer.type===type)?.map((item)=>(
                         <div key={item.label}>
                             <a
                                 rel="noreferrer noopener"
@@ -42,7 +44,6 @@ const Footer = ({footerSection}:{footerSection:FooterSectionProps}) => {
                             >
                             {item.label}
                             </a>
-
                         </div>
                     ))}
                 </div>

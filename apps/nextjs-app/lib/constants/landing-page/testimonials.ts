@@ -44,7 +44,7 @@ export const testimonials: TestimonialProps[] = [
     },
   ];
 
-export const testimonialsSection: TestimonialSectionProps = {
+export const testimonialSection: TestimonialSectionProps = {
     heading: "Discover Why People Love This SaaS Landing Page Code",
     description: `These are some of the testimonials that we have received from our clients. `,
     testimonials

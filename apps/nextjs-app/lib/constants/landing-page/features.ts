@@ -1,9 +1,9 @@
-import { FeatureWithDescriptionProps } from "@repo/ts-types/landing-page/features";
+import { FeatureListProps, FeatureWithDescriptionProps } from "@repo/ts-types/landing-page/features";
 
 export const featuresWithDescription: FeatureWithDescriptionProps[] = [
 ];
 
-export const featureList: string[] = [
+export const featureList: FeatureListProps[] = [
 ];
 
 export const featureSection = {

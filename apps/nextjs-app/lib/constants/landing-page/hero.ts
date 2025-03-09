@@ -13,9 +13,5 @@ export const appointmentLink = "https://topmate.io/anoop_karnik"
 export const heroSection: HeroSectionProps = {
     tagline,
     description,
-    appointmentLink,
-    testimonials,
-    services,
-    teamList,
-    projects
+    appointmentLink
 }
