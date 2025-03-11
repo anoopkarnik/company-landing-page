@@ -173,10 +173,12 @@ export interface FooterSectionPropsFooterSection
 export interface HeroSectionPropsHeroSection extends Struct.ComponentSchema {
   collectionName: 'components_hero_section_props_hero_sections';
   info: {
+    description: '';
     displayName: 'heroSection';
   };
   attributes: {
     appointmentLink: Schema.Attribute.String;
+    blogLink: Schema.Attribute.String;
     description: Schema.Attribute.Text;
     documentationLink: Schema.Attribute.String;
     tagline: Schema.Attribute.Text;
@@ -383,6 +385,65 @@ export interface ServiceSectionPropsServiceSection
   };
 }
 
+export interface SharedMedia extends Struct.ComponentSchema {
+  collectionName: 'components_shared_media';
+  info: {
+    displayName: 'Media';
+  };
+  attributes: {
+    file: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+  };
+}
+
+export interface SharedQuote extends Struct.ComponentSchema {
+  collectionName: 'components_shared_quotes';
+  info: {
+    displayName: 'quote';
+  };
+  attributes: {
+    body: Schema.Attribute.Text;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface SharedRichText extends Struct.ComponentSchema {
+  collectionName: 'components_shared_rich_texts';
+  info: {
+    displayName: 'Rich text';
+    icon: 'book';
+  };
+  attributes: {
+    body: Schema.Attribute.RichText;
+  };
+}
+
+export interface SharedSeo extends Struct.ComponentSchema {
+  collectionName: 'components_shared_seos';
+  info: {
+    displayName: 'Seo';
+  };
+  attributes: {
+    metaDescription: Schema.Attribute.Text;
+    metaTitle: Schema.Attribute.String;
+    shareImage: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios'
+    >;
+  };
+}
+
+export interface SharedSlider extends Struct.ComponentSchema {
+  collectionName: 'components_shared_sliders';
+  info: {
+    displayName: 'Slider';
+  };
+  attributes: {
+    files: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios',
+      true
+    >;
+  };
+}
+
 export interface SocialNetworkPropsSocialNetwork
   extends Struct.ComponentSchema {
   collectionName: 'components_social_network_props_social_networks';
@@ -529,6 +590,11 @@ declare module '@strapi/strapi' {
       'route-props.route': RoutePropsRoute;
       'service-props.service': ServicePropsService;
       'service-section-props.service-section': ServiceSectionPropsServiceSection;
+      'shared.media': SharedMedia;
+      'shared.quote': SharedQuote;
+      'shared.rich-text': SharedRichText;
+      'shared.seo': SharedSeo;
+      'shared.slider': SharedSlider;
       'social-network-props.social-network': SocialNetworkPropsSocialNetwork;
       'team-list-props.team-list': TeamListPropsTeamList;
       'team-section-props.team-section': TeamSectionPropsTeamSection;
