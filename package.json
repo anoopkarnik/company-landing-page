@@ -1,7 +1,7 @@
 {
   "name": "company-landing-page",
   "private": false,
-  "version": "2.2.4",
+  "version": "2.2.5",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
