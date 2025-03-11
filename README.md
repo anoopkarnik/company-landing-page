@@ -1,10 +1,8 @@
-Here’s an updated version of the first README, following the structure and style of the second one while keeping relevant information intact.
-
----
-
 # 🚀 COMPANY LANDING PAGE BOILERPLATE  
 
-### A Modern, Minimal Landing Page for Any Company with Next.js & Strapi(Built with Turborepo)  
+### A Modern, Minimal Landing Page for Any Company with Next.js & Strapi(Built with Turborepo)
+
+![Alt text](https://strapi.bayesian-labs.com/uploads/logo_7e017fdb35.png)
 
 🔹 **Minimal & Clean UI**  
 🔹 **Built with ShadCN UI & Resend for Email Subscriptions**
@@ -57,7 +55,7 @@ npm run dev #Admin Username - guest@bayesian-labs.com #Admin Password - Password
 
 ---
 
-## 🛠 Modifying the Landing Page  
+## 🛠 Modifying the Landing Page Data
 
 ### Option 1: Edit Directly in Code
 
@@ -70,12 +68,29 @@ Modify legal pages by updating variables inside:
 📂 `apps/nextjs-app/lib/constants/appDetails.tsx`
 
 
-### Option 2: Use Strapi CMS (No-Code Editing)
+### Option 2: Use Strapi CMS
 
 1) Open Strapi at localhost:1337
-2) Navigate to Content Manager (Sidebar → "Single Types").
-3) Click on "company-landing-page" to edit your profile details.
+2) Navigate to Content Manager (Sidebar).
+3) Click on "companyLandingPage" under "SINGLE TYPES" to edit your profile details.
 4) Save & Publish to see changes reflected instantly!
+
+---
+
+## 🛠 Configuring the Landing Page Data 
+
+### Option 1: Data from Files
+
+By default, the landing page displays information from files.
+
+### Option 2: Data from Strapi CMS
+
+If you prefer to fetch data from Strapi CMS instead of files, follow these steps:
+
+1) Click on ⚙️ Settings icon located at the bottom left of the page. This will open a settings panel on the right side.
+2) Enter the password (default: "password"). To customize this, update the SETTINGS_PASSWORD environment variable. Then, click Verify.
+3) Once verified, toggle the switch to change the data source from file-based to CMS-based.
+4) To revert back to file-based data, simply toggle the switch again.
 
 ---
 
@@ -137,4 +152,5 @@ We welcome contributions! To contribute:
 
 ## 📜 License  
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.  
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
