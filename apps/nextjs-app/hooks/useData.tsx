@@ -21,6 +21,7 @@ import { contactUs } from "../lib/constants/legal/contactUs";
 
 export const useData = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [constantsType, setConstantsType] = useState("file");
 
   const [navbarSectionState, setNavbarSectionState] = useState(navbarSection);
   const [heroSectionState, setHeroSectionState] = useState(heroSection);
@@ -40,13 +41,14 @@ export const useData = () => {
   const [cancellationRefundPoliciesState, setCancellationRefundPoliciesState] = useState(cancellationRefundPolicies);
   const [contactUsState, setContactUsState] = useState(contactUs);
 
-  const [constantsType, setConstantsType] = useState<string>(process.env.NEXT_PUBLIC_BASE_DATA_SOURCE || "file");
-
   useEffect(() => {
-    if (constantsType === "cms") {
+    const storedConstantsType = localStorage.getItem("constantsType") || "file";
+    setConstantsType(storedConstantsType);
+
+    if (storedConstantsType === "cms") {
       updateDataFromStrapiCms();
     } else {
-      setIsLoading(false); // ✅ Mark as loaded for file-based data
+      setIsLoading(false);
     }
   }, []);
 
@@ -75,9 +77,8 @@ export const useData = () => {
     } catch (error) {
       console.error("Error fetching CMS data:", error);
     } finally {
-      setIsLoading(false); // ✅ Ensure loading state is turned off
+      setIsLoading(false);
     }
-
   };
 
   const updateDataFromFiles = () => {
@@ -103,9 +104,11 @@ export const useData = () => {
     if (constantsType === "file") {
       await updateDataFromStrapiCms();
       setConstantsType("cms");
+      localStorage.setItem("constantsType", "cms");
     } else {
       updateDataFromFiles();
       setConstantsType("file");
+      localStorage.setItem("constantsType", "file");
     }
   };
 

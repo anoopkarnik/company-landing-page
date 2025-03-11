@@ -1,7 +1,8 @@
 "use client"
-import { Switch } from '@repo/ui/molecules/shadcn/switch';
+
 import React from 'react'
 import {  useGlobalData } from '../../context/DataContext';
+import Settings from '@repo/ui/organisms/custom/landing/v1/Settings';
 
 
 const Layout= ({ children }: { children: React.ReactNode }) => {
@@ -10,10 +11,7 @@ const Layout= ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
       {children}
-      <div className='fixed bottom-0 left-0 flex items-center justify-center gap-2 p-4'>
-        <Switch onClick={data.handleConstantsType} />
-        <p className='text-xs font-light text-gray-500 ml-2'>{data.constantsType}</p>
-      </div>
+      <Settings data={data} />
     </div>
   );
 };
