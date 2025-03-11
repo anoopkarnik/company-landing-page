@@ -19,6 +19,9 @@ A beautifully designed and highly customizable landing page template powered by 
 Start your Next.js app and Strapi CMS locally:
 
 ```sh
+
+# Start Nextjs Landing Page App
+cd apps/nextjs-app
 npm run dev
 
 # Start Strapi CMS separately
