@@ -1,5 +1,5 @@
-import { ExternalLink } from "lucide-react";
-import { buttonVariants } from "../../../../atoms/shadcn/button";
+import { ExternalLink, BookIcon } from "lucide-react";
+import { Button, buttonVariants } from "../../../../atoms/shadcn/button";
 import HeroCards  from "./HeroCards";
 import { useEffect, useState } from "react";
 import { HeroSectionProps } from "@repo/ts-types/landing-page/hero";
@@ -7,12 +7,14 @@ import { ServiceProps } from "@repo/ts-types/landing-page/services";
 import { TestimonialProps } from "@repo/ts-types/landing-page/testimonials";
 import { ProjectProps } from "@repo/ts-types/landing-page/projects";
 import { TeamProps } from "@repo/ts-types/landing-page/team";
+import { useRouter } from "next/navigation";
 
 
 const Hero = ({heroSection,services,testimonials,projects,teamList}:{
   heroSection:HeroSectionProps ,services:ServiceProps[] | undefined,testimonials:TestimonialProps[] | undefined,
   projects:ProjectProps[] | undefined, teamList:TeamProps[]  | undefined}) => {
     const [taglineArray,setTaglineArray] = useState<string[]>([])
+    const router = useRouter()
     useEffect(()=>{
         if(heroSection.tagline){
             setTaglineArray(heroSection.tagline.split(" "))
@@ -42,7 +44,22 @@ const Hero = ({heroSection,services,testimonials,projects,teamList}:{
           {heroSection.description}
         </p>
 
-        <div className="space-y-4 md:space-y-0 md:space-x-4">
+        <div className="flex items-center space-y-4 md:space-y-0 md:space-x-4">
+        {heroSection.documentationLink && <div>
+            <Button
+              variant="default"
+              onClick={() => heroSection.documentationLink && router.push(heroSection.documentationLink)}
+            ><BookIcon size={20} /> Documentation
+            </Button>
+            </div>}
+            { heroSection.blogLink &&           
+            <Button
+             className="flex items-center gap-2"
+              variant="outline"
+              onClick={() => heroSection.blogLink && router.push(heroSection.blogLink)}
+            > <BookIcon size={20} />
+            Read the Blogs
+            </Button>}
             
           {heroSection.appointmentLink && <a
             rel="noreferrer noopener"
@@ -55,6 +72,7 @@ const Hero = ({heroSection,services,testimonials,projects,teamList}:{
             <div>Book an Appointment</div>
             <ExternalLink size={16}/>
           </a>}
+
         </div>
       </div>
 
