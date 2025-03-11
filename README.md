@@ -50,7 +50,7 @@ npm run dev
 
 # Start Strapi CMS (In a separate terminal)
 cd apps/strapi-cms
-npm run dev #Admin Username - guest@bayesian-labs.com #Admin Password - Password1
+npm run dev #Username - guest@bayesian-labs.com Password - Password1
 ```
 
 ---
@@ -70,7 +70,7 @@ Modify legal pages by updating variables inside:
 
 ### Option 2: Use Strapi CMS
 
-1) Open Strapi at localhost:1337
+1) Open Strapi at localhost:1337 (Username - guest@bayesian-labs.com Password - Password1)
 2) Navigate to Content Manager (Sidebar).
 3) Click on "companyLandingPage" under "SINGLE TYPES" to edit your profile details.
 4) Save & Publish to see changes reflected instantly!
@@ -91,6 +91,23 @@ If you prefer to fetch data from Strapi CMS instead of files, follow these steps
 2) Enter the password (default: "password"). To customize this, update the SETTINGS_PASSWORD environment variable. Then, click Verify.
 3) Once verified, toggle the switch to change the data source from file-based to CMS-based.
 4) To revert back to file-based data, simply toggle the switch again.
+
+---
+
+
+## 📜 Managing Blogs: Add, Edit, or Delete
+
+Easily manage blog posts in Strapi CMS by following these steps:
+
+1) Open Strapi at localhost:1337 (Username - guest@bayesian-labs.com Password - Password1)
+2) Navigate to Content Manager (Sidebar).
+3) Click on "Author" under "COLLECTION TYPES" to create, delete and edit existing author details.
+4) Click on "Category" under "COLLECTION TYPES" to create, delete and edit existing category details.
+5) Click on "Article" under "COLLECTION TYPES" where there is a list of blogs published and in
+draft.
+6) Click on an article and modify title, description, slug(id), cover image, author, categories,
+and blocks having Rich text(mdx) or Quote or Files, etc.
+7) Save & Publish to see changes reflected instantly!
 
 ---
 
