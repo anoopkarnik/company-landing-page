@@ -2,7 +2,7 @@
 
 ### A Modern, Minimal Landing Page for Any Company with Next.js & Strapi(Built with Turborepo)
 
-![Alt text](https://strapi.bayesian-labs.com/uploads/company_landing_page_3bd66bcc87.png)
+![Alt text](https://strapi.bayesian-labs.com/uploads/company_landing_page_8e99b299b1.png)
 
 🔹 **Minimal & Clean UI**  
 🔹 **Built with ShadCN UI & Resend for Email Subscriptions**
