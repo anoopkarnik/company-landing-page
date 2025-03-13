@@ -6,7 +6,7 @@ export const Statistics = ({users, subscribers, products, downloads}:StatisticsP
    
     return (
       <section id="statistics">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="space-y-2 text-center">
               <h2 className="text-3xl sm:text-4xl font-bold ">Users</h2>
               <p className="text-xl text-muted-foreground">{users}</p>

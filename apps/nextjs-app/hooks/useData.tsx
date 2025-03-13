@@ -42,7 +42,7 @@ export const useData = () => {
   const [contactUsState, setContactUsState] = useState(contactUs);
 
   useEffect(() => {
-    const storedConstantsType = localStorage.getItem("constantsType") || "file";
+    const storedConstantsType = localStorage.getItem("constantsType") || "cms";
     setConstantsType(storedConstantsType);
 
     if (storedConstantsType === "cms") {

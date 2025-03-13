@@ -2,10 +2,12 @@ import Image from "next/image";
 import { Statistics } from "./Statistics";
 import { AboutSectionProps } from "@repo/ts-types/landing-page/about";
 import { useEffect, useState } from "react";
+import { useDeviceType } from "../../../../../hooks/use-device";
 
 
 const About = ({aboutSection}:{aboutSection:AboutSectionProps}) => {
   const [headingArray,setHeadingArray] = useState<string[]>([])
+  const device = useDeviceType()
   useEffect(()=>{
       if(aboutSection.heading){
           setHeadingArray(aboutSection.heading.split(" "))
@@ -19,12 +21,12 @@ const About = ({aboutSection}:{aboutSection:AboutSectionProps}) => {
     >
       <div className="bg-muted/50 border rounded-lg py-12">
         <div className="px-6 flex flex-col-reverse md:flex-row gap-8 md:gap-12">
-          <Image
+          {device === "desktop" && <Image
             src="/pilot.png"
             alt=""
-            width={300}
-            height={300}
-          />
+            width={400}
+            height={50}
+          />}
           <div className="flex flex-col justify-between">
             <div className="pb-6">
               <h2 className="text-3xl md:text-4xl font-bold text-left leading-tight">
