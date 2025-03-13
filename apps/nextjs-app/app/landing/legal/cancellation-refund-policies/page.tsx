@@ -2,7 +2,7 @@
 
 import React from 'react';
 import CancellationRefundPoliciesPage from '@repo/ui/templates/landing/v1/CancellationRefundPoliciesPage';
-import { useGlobalData } from '../../../context/DataContext';
+import { useGlobalData } from '../../../../context/DataContext';
 import LoadingPage from '@repo/ui/templates/landing/v1/LoadingPage';
 
 const CancellationRefundPolicies = () => {
@@ -14,8 +14,7 @@ const CancellationRefundPolicies = () => {
         }
   return (
     <>
-        <CancellationRefundPoliciesPage cancellationRefundPolicies={data.cancellationRefundPoliciesState} 
-        navbarSection={data.navbarSectionState} />
+        <CancellationRefundPoliciesPage cancellationRefundPolicies={data.cancellationRefundPoliciesState}  />
     </>
   );
 }

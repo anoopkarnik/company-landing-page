@@ -21,7 +21,8 @@ import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import { NavbarSectionProps, RouteProps } from "@repo/ts-types/landing-page/navbar";
 
-const Navbar = ({navbarSection}: {navbarSection: NavbarSectionProps}) => {
+const Navbar = ({navbarSection,showLandingRoutes=true}: {
+  navbarSection: NavbarSectionProps,showLandingRoutes?:boolean}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const {theme} = useTheme();
   const [starCount, setStarCount] = useState<number>(0);
@@ -91,16 +92,11 @@ const Navbar = ({navbarSection}: {navbarSection: NavbarSectionProps}) => {
                       key={label}
                       href={href}
                       onClick={() => setIsOpen(false)}
-                      className={buttonVariants({ variant: "ghost" })}
+                      className={`rounded-sm ${buttonVariants({ variant: "ghost" })}`}
                     >
                       {label}
                     </a>
                   ))}
-                  <a rel="noreferrer noopener" href={navbarSection?.donateNowLink}>    
-                    <Button size="sm" >
-                      Donate Now
-                    </Button>
-                  </a>
                   <a
                     rel="noreferrer noopener"
                     href={navbarSection?.githubLink}
@@ -121,12 +117,18 @@ const Navbar = ({navbarSection}: {navbarSection: NavbarSectionProps}) => {
                     </svg>
                     {starCount}
                   </a>
+                  <a rel="noreferrer noopener" href={navbarSection?.donateNowLink}>    
+                    <Button size="sm" className="rounded-sm">
+                      Donate Now
+                    </Button>
+                  </a>
                 </nav>
               </SheetContent>
             </Sheet>
           </span>
 
           {/* desktop */}
+          {showLandingRoutes && 
           <nav className="hidden md:flex gap-2">
             {navbarSection?.routeList?.map((route: RouteProps, i) => (
               <a
@@ -140,19 +142,13 @@ const Navbar = ({navbarSection}: {navbarSection: NavbarSectionProps}) => {
                 {route.label}
               </a>
             ))}
-          </nav>
-
+          </nav>}
           <div className="hidden md:flex gap-2 items-center">
-            <a rel="noreferrer noopener" href={navbarSection?.donateNowLink}>    
-              <Button size="sm" >
-                Donate Now
-              </Button>
-            </a>
             <a
               rel="noreferrer noopener"
               href={navbarSection?.githubLink}
               target="_blank"
-              className={`border flex items-center ${buttonVariants({ variant: "secondary" ,size:"sm"})}`}
+              className={`border flex items-center rounded-sm ${buttonVariants({ variant: "secondary" ,size:"sm"})}`}
             >
               <GitHubLogoIcon className="mr-2 w-5 h-5" />
 
@@ -165,6 +161,11 @@ const Navbar = ({navbarSection}: {navbarSection: NavbarSectionProps}) => {
                 <path d="M12 .587l3.668 7.429 8.332 1.151-6.064 5.868 1.516 8.252-7.452-3.915-7.452 3.915 1.516-8.252-6.064-5.868 8.332-1.151z" />
               </svg>
               {starCount}
+            </a>
+            <a rel="noreferrer noopener" href={navbarSection?.donateNowLink}>    
+              <Button size="sm" className="rounded-sm" >
+                Donate Now
+              </Button>
             </a>
 
             {/* <ModeToggle /> */}

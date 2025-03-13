@@ -47,7 +47,8 @@ const Hero = ({heroSection,services,testimonials,projects,teamList}:{
         <div className="flex items-center space-y-4 md:space-y-0 md:space-x-4">
         {heroSection.documentationLink && <div>
             <Button
-              variant="default"
+            className="flex items-center gap-2"
+              variant="outline"
               onClick={() => heroSection.documentationLink && router.push(heroSection.documentationLink)}
             ><BookIcon size={20} /> Documentation
             </Button>

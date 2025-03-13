@@ -13,14 +13,13 @@ import FAQ from '../../../organisms/custom/landing/v1/FAQ';
 import Pricing from '../../../organisms/custom/landing/v1/Pricing';
 import Features from '../../../organisms/custom/landing/v1/Features';
 
-const LandingPage = ({navbarSection,heroSection,aboutSection,serviceSection,featureSection,testimonialSection,
+const LandingPage = ({heroSection,aboutSection,serviceSection,featureSection,testimonialSection,
   projectSection,teamSection,faqSection,newsletterSection,pricingSection,footerSection,functionsToUse
  }: LandingPageProps) => {
     
 
   return (
     <div className='flex flex-col items-center justify-center'>
-      <Navbar navbarSection={navbarSection} />
       <Hero heroSection={heroSection} services={serviceSection?.services} testimonials={testimonialSection?.testimonials} 
       teamList={teamSection?.teamList} projects={projectSection?.projects}/>
       {aboutSection && <About aboutSection={aboutSection} />}

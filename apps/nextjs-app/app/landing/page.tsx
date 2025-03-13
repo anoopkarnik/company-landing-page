@@ -5,6 +5,7 @@ import { useToast } from "../../../../packages/ui/src/hooks/use-toast";
 import { createContactAction } from "../_actions/email";
 
 import { useGlobalData } from "../../context/DataContext";
+import Navbar from "@repo/ui/organisms/custom/landing/v1/Navbar";
 
 export default function Landing() {
 
@@ -37,8 +38,8 @@ export default function Landing() {
 
   return (
     <div className="relative">
+      <Navbar navbarSection={data.navbarSectionState} />
       <LandingPage
-        navbarSection={data.navbarSectionState}
         heroSection={data.heroSectionState}
         aboutSection={data.aboutSectionState}
         featureSection={data.featureSectionState}
