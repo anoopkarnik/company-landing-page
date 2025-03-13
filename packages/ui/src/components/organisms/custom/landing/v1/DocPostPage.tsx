@@ -3,19 +3,22 @@
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 import { motion } from "framer-motion";
 import { useRouter } from 'next/navigation';
-import { CircleChevronLeft } from 'lucide-react';
 import { components } from '../../../../atoms/mdx/mdxComponents';
 import { docProps } from '@repo/ts-types/landing-page/doc';
+import { formatDistanceToNow } from "date-fns";
 
 const DocPostPage = ({ docPost, mdxSource }: { docPost: docProps; mdxSource: MDXRemoteSerializeResult }) => {
   const router = useRouter();
   return (
     <div className="container max-w-5xl mx-auto px-6 py-16  my-10 relative">
-      <CircleChevronLeft className='absolute top-4 left-4 cursor-pointer opacity-80 hover:opacity-100 select-none outline-none' 
-      onClick={()=>router.back()}/>
-          <h1 className="text-5xl font-serif font-bold drop-shadow-sm mb-4 text-primary">
-            {docPost.title}
-          </h1>
+      <div className="leading-normal mb-10">
+        <h1 className="text-5xl font-serif font-bold drop-shadow-sm text-primary ">
+          {docPost.title}
+        </h1>
+        <p className="text-description ">
+          Last Updated {formatDistanceToNow(new Date(docPost.updatedAt), { addSuffix: true })}
+        </p>
+      </div>
 
       <motion.article
         initial={{ opacity: 0, y: 20 }}

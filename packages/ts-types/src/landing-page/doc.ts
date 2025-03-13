@@ -17,4 +17,6 @@ export interface docProps {
     order: number;
     category: docCategoryProps;
     blocks: blockProps[];
+    updatedAt: string;
+    createdAt: string;
 }

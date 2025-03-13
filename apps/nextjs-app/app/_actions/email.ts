@@ -1,6 +1,6 @@
 "use server"
 
-import {createContact} from "@repo/resend-email/mail"
+import {createContact} from "@repo/email/resend/index"
 
 export const createContactAction = async (email:string) => {
     // add to contact list

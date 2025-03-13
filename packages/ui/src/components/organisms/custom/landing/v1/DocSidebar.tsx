@@ -27,7 +27,7 @@ const DocSidebar = ({ docs, docCategories, navbarSection }: {
                     {theme === "dark" ?
                         <Image src={navbarSection?.darkLogo} alt={navbarSection?.title} width={40} height={40} /> : 
                         <Image src={navbarSection?.logo} alt={navbarSection?.title} width={40} height={40} />}
-                        <div className="hidden lg:flex flex-col items-start text-md leading-none bg-gradient-to-r from-[#03a3d7] to-[#D247BF] bg-clip-text text-transparent ">
+                        <div className="flex flex-col items-start text-md leading-none bg-gradient-to-r from-[#03a3d7] to-[#D247BF] bg-clip-text text-transparent ">
                         <div>{navbarSection?.title?.split(' ')[0]}</div>
                         <div>{navbarSection?.title?.split(' ')[1]}</div>
                         </div>
@@ -49,7 +49,7 @@ const DocSidebar = ({ docs, docCategories, navbarSection }: {
                     {categoryDocs.map((doc) => (
                         <SidebarMenuButton asChild tooltip={doc.title} 
                         className={cn("cursor-pointer",pathname===doc.slug && "bg-sidebar-accent")}
-                        onClick={() => router.push(doc.slug as string)}>
+                        onClick={() => router.push("/landing/doc/" + doc.slug as string)}>
 
                                 <span>{doc.title}</span>
 

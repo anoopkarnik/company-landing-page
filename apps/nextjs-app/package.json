@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@repo/analytics": "*",
-    "@repo/resend-email": "*",
+    "@repo/email": "*",
     "@repo/ts-types": "*",
     "@repo/typescript-config": "*",
     "@repo/ui": "*",
