@@ -1,25 +1,27 @@
-import React from 'react';
+"use client"
+import React, { useEffect, useState } from 'react';
 import { getCompanyDetails, getDocCategories, getDocs } from '../../_actions/strapi';
-import { Alert, AlertDescription, AlertTitle } from '@repo/ui/atoms/shadcn/alert';
-import { AlertCircleIcon, InboxIcon } from 'lucide-react';
+import {  InboxIcon } from 'lucide-react';
 import DocSidebar from '@repo/ui/organisms/custom/landing/v1/DocSidebar';
 import { SidebarProvider, SidebarTrigger } from '@repo/ui/organisms/shadcn/sidebar';
 
-export default async function DocsLayout({ children }: { children: React.ReactNode }) {
-    const docs = await getDocs();
-    const docCategories = await getDocCategories();
-    const companyDetails = await getCompanyDetails();
+export default function DocsLayout({ children }: { children: React.ReactNode }) {
 
-    // Handle API errors
-    if (!docs || !docCategories) {
-        return (
-            <Alert variant={"destructive"}>
-                <AlertCircleIcon className='w-4 h-4'/>
-                <AlertTitle>Error</AlertTitle>
-                <AlertDescription>Something went wrong, Please try again later</AlertDescription>
-            </Alert>
-        );
-    }
+    const [docs, setDocs] = useState([]);
+    const [docCategories, setDocCategories] = useState([]);
+    const [companyDetails, setCompanyDetails] = useState<any>({});
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const docs = await getDocs();
+            setDocs(docs);
+            const docCategories = await getDocCategories();
+            setDocCategories(docCategories);
+            const companyDetails = await getCompanyDetails();
+            setCompanyDetails(companyDetails);
+        };
+        fetchData();
+    }, []);
 
     // Handle empty docs
     if (docs.length === 0) {

@@ -1,3 +1,4 @@
+"use server"
 import React from 'react'
 import { getBlogs } from '../../_actions/strapi'
 import { Alert, AlertDescription, AlertTitle } from '@repo/ui/atoms/shadcn/alert';
