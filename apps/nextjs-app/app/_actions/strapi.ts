@@ -20,7 +20,7 @@ export const getCompanyDetails = async () => {
             maxBodyLength: Infinity,
             url,
             headers: { 
-              'Authorization': "Bearer " +process.env.STRAPI_TOKEN || ""
+              'Authorization': `Bearer ${process.env.STRAPI_TOKEN ?? ""}`
             }
           };
           const response  = await axios.request(config);
@@ -48,7 +48,7 @@ export const getLegalDetails = async () => {
           maxBodyLength: Infinity,
           url,
           headers: { 
-            'Authorization': "Bearer " +process.env.STRAPI_TOKEN || ""
+            'Authorization': `Bearer ${process.env.STRAPI_TOKEN ?? ""}`
           }
         };
         const response  = await axios.request(config);
@@ -72,7 +72,7 @@ export const getBlogs = async () => {
           maxBodyLength: Infinity,
           url,
           headers: { 
-            'Authorization': "Bearer " +process.env.STRAPI_TOKEN || ""
+            'Authorization': `Bearer ${process.env.STRAPI_TOKEN ?? ""}`
           }
         };
         const response  = await axios.request(config);
@@ -95,7 +95,7 @@ export const getBlogPost = async (slug:string) => {
         maxBodyLength: Infinity,
         url,
         headers: { 
-          'Authorization': "Bearer " +process.env.STRAPI_TOKEN || ""
+          'Authorization': `Bearer ${process.env.STRAPI_TOKEN ?? ""}`
         }
       };
       const response  = await axios.request(config);
@@ -118,7 +118,7 @@ export const getDocCategories = async () => {
           maxBodyLength: Infinity,
           url,
           headers: { 
-            'Authorization': "Bearer " +process.env.STRAPI_TOKEN || ""
+            'Authorization': `Bearer ${process.env.STRAPI_TOKEN ?? ""}`
           }
         };
         const response  = await axios.request(config);
@@ -141,7 +141,7 @@ export const getDocs = async () => {
           maxBodyLength: Infinity,
           url,
           headers: { 
-            'Authorization': "Bearer " +process.env.STRAPI_TOKEN || ""
+            'Authorization': `Bearer ${process.env.STRAPI_TOKEN ?? ""}`
           }
         };
         const response  = await axios.request(config);
@@ -164,7 +164,7 @@ export const getDocPost = async (slug:string) => {
         maxBodyLength: Infinity,
         url,
         headers: { 
-          'Authorization': "Bearer " +process.env.STRAPI_TOKEN || ""
+          'Authorization': `Bearer ${process.env.STRAPI_TOKEN ?? ""}`
         }
       };
       const response  = await axios.request(config);
