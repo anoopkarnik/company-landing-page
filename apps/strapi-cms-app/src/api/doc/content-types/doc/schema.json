@@ -1,0 +1,51 @@
+{
+  "kind": "collectionType",
+  "collectionName": "docs",
+  "info": {
+    "singularName": "doc",
+    "pluralName": "docs",
+    "displayName": "Doc",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "slug": {
+      "type": "uid",
+      "required": true
+    },
+    "project": {
+      "type": "enumeration",
+      "enum": [
+        "company-landing-page",
+        "project-1",
+        "project-2"
+      ],
+      "required": true
+    },
+    "order": {
+      "type": "integer",
+      "required": true
+    },
+    "category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::doc-category.doc-category",
+      "inversedBy": "docs"
+    },
+    "blocks": {
+      "type": "dynamiczone",
+      "components": [
+        "shared.rich-text"
+      ]
+    }
+  }
+}

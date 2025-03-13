@@ -41,11 +41,8 @@ cd apps/strapi-cms
 npm run dev #Username - guest@bayesian-labs.com Password - Password1
 ```
 
----
+Then read the [docs](https://bayesian-labs.com/landing/doc) for more information.
 
-Then read the [docs](https://bayesian-labs/landing/doc) for more information.
-
----
 
 ## 🤝 Contributing  
 

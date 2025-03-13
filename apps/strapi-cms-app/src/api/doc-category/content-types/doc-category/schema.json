@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "doc_categories",
+  "info": {
+    "singularName": "doc-category",
+    "pluralName": "doc-categories",
+    "displayName": "DocCategory"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "slug": {
+      "type": "uid"
+    },
+    "order": {
+      "type": "integer"
+    },
+    "docs": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::doc.doc",
+      "mappedBy": "category"
+    }
+  }
+}

@@ -189,6 +189,7 @@ export interface NavbarSectionPropsNavbarSection
   extends Struct.ComponentSchema {
   collectionName: 'components_navbar_section_props_navbar_sections';
   info: {
+    description: '';
     displayName: 'navbarSection';
   };
   attributes: {
@@ -198,6 +199,8 @@ export interface NavbarSectionPropsNavbarSection
     >;
     donateNowLink: Schema.Attribute.String;
     githubLink: Schema.Attribute.String;
+    githubRepositoryName: Schema.Attribute.String;
+    githubUsername: Schema.Attribute.String;
     logo: Schema.Attribute.String;
     logoMedia: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     routeList: Schema.Attribute.Component<'route-props.route', true>;

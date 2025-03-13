@@ -12,13 +12,15 @@
   },
   "attributes": {
     "title": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "description": {
       "type": "text"
     },
     "slug": {
-      "type": "uid"
+      "type": "uid",
+      "required": true
     },
     "cover": {
       "type": "media",
