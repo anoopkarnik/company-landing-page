@@ -1,21 +1,21 @@
-"use server"
-import React from 'react'
+"use client"
+import React, { useEffect, useState } from 'react'
 import { getBlogs } from '../../_actions/strapi'
-import { Alert, AlertDescription, AlertTitle } from '@repo/ui/atoms/shadcn/alert';
-import { AlertCircleIcon, InboxIcon } from 'lucide-react';
+import { InboxIcon } from 'lucide-react';
 import BlogListPage from '@repo/ui/templates/landing/v1/BlogListPage';
 
-export default async function Blogs() {
-    const blogs = await getBlogs();
-    if (!blogs){
-        return (
-            <Alert variant={"destructive"}>
-                <AlertCircleIcon className='w-4 h-4'/>
-                <AlertTitle>Error</AlertTitle>
-                <AlertDescription>Something went wrong, Please try again later</AlertDescription>
-            </Alert>
-        )
-    }
+export default function  Blogs() {
+    const [blogs, setBlogs] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const blogs = await getBlogs();
+            setBlogs(blogs);
+        };
+        fetchData();
+    }, []);
+
+
     if (blogs.length === 0){
         return (
             <div className='flex flex-col gap-4 h-full items-center'>
