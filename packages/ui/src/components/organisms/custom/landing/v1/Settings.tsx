@@ -51,7 +51,8 @@ const Settings = ({ data }: { data: any }) => {
       <SheetTrigger asChild>
         <div
           ref={triggerRef}
-          className='fixed bottom-4 left-4 flex items-center justify-center gap-2 p-4 rounded-full bg-sidebar cursor-pointer'
+          className='fixed bottom-4 left-4 flex items-center justify-center gap-2 p-4 
+          rounded-full bg-sidebar cursor-pointer opacity-80 hover:opacity-100 transition-all duration-300'
         >
           <SettingsIcon className='w-6 h-6 text-primary' />
         </div>

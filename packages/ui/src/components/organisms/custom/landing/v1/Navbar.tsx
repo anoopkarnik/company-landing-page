@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -30,7 +30,7 @@ const Navbar = ({navbarSection,showLandingRoutes=true}: {
   useEffect(() => {
     const fetchStarCount = async () => {
       try {
-        const response = await fetch("https://api.github.com/repos/"+navbarSection.githubUsername+"/"+ navbarSection.githubRepositoryName);
+        const response = await fetch(`https://api.github.com/repos/${navbarSection.githubUsername}/${navbarSection.githubRepositoryName}`);
         if (response.ok) {
           const data = await response.json();
           setStarCount(data.stargazers_count);
@@ -46,6 +46,7 @@ const Navbar = ({navbarSection,showLandingRoutes=true}: {
     }
 
   }, [theme,navbarSection]);
+  
 
   return (
     <header className="sticky border-b-[1px] top-0 z-40 w-full bg-background font-geistMono">
@@ -106,15 +107,6 @@ const Navbar = ({navbarSection,showLandingRoutes=true}: {
                     })}`}
                   >
                       <GitHubLogoIcon className="mr-2 w-5 h-5" />
-
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="yellow"
-                      className="w-4 h-4 mx-1 "
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12 .587l3.668 7.429 8.332 1.151-6.064 5.868 1.516 8.252-7.452-3.915-7.452 3.915 1.516-8.252-6.064-5.868 8.332-1.151z" />
-                    </svg>
                     {starCount}
                   </a>
                   <a rel="noreferrer noopener" href={navbarSection?.donateNowLink}>    
@@ -151,15 +143,6 @@ const Navbar = ({navbarSection,showLandingRoutes=true}: {
               className={`border flex items-center rounded-sm ${buttonVariants({ variant: "secondary" ,size:"sm"})}`}
             >
               <GitHubLogoIcon className="mr-2 w-5 h-5" />
-
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="yellow"
-                className="w-4 h-4 mx-1"
-                viewBox="0 0 24 24"
-              >
-                <path d="M12 .587l3.668 7.429 8.332 1.151-6.064 5.868 1.516 8.252-7.452-3.915-7.452 3.915 1.516-8.252-6.064-5.868 8.332-1.151z" />
-              </svg>
               {starCount}
             </a>
             <a rel="noreferrer noopener" href={navbarSection?.donateNowLink}>    
