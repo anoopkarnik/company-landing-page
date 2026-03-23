@@ -14,6 +14,7 @@ import { faqSection } from "../lib/constants/landing-page/faq";
 import { pricingSection } from "../lib/constants/landing-page/pricing";
 import { featureSection } from "../lib/constants/landing-page/features";
 import { getCompanyDetails, getLegalDetails } from "../app/_actions/strapi";
+import { getNotionCompanyDetails } from "../app/_actions/notion";
 import { termsOfService } from "../lib/constants/legal/termsOfService";
 import { privacyPolicy } from "../lib/constants/legal/privacyPolicy";
 import { cancellationRefundPolicies } from "../lib/constants/legal/cancellationRefundPolicies";
@@ -42,11 +43,14 @@ export const useData = () => {
   const [contactUsState, setContactUsState] = useState(contactUs);
 
   useEffect(() => {
-    const storedConstantsType = localStorage.getItem("constantsType") || "cms";
+    const envDefault = process.env.NEXT_PUBLIC_CMS === "notion" ? "notion" : "file";
+    const storedConstantsType = localStorage.getItem("constantsType") || envDefault;
     setConstantsType(storedConstantsType);
 
     if (storedConstantsType === "cms") {
       updateDataFromStrapiCms();
+    } else if (storedConstantsType === "notion") {
+      updateDataFromNotion();
     } else {
       setIsLoading(false);
     }
@@ -81,6 +85,31 @@ export const useData = () => {
     }
   };
 
+  const updateDataFromNotion = async () => {
+    setIsLoading(true);
+    try {
+      const companyDetails = await getNotionCompanyDetails();
+      if (companyDetails) {
+        setNavbarSectionState(companyDetails.navbarSection);
+        setHeroSectionState(companyDetails.heroSection);
+        setAboutSectionState(companyDetails.aboutSection);
+        setFeatureSectionState(companyDetails.featureSection);
+        setServiceSectionState(companyDetails.serviceSection);
+        setProjectSectionState(companyDetails.projectSection);
+        setTestimonialSectionState(companyDetails.testimonialSection);
+        setTeamSectionState(companyDetails.teamSection);
+        setFaqSectionState(companyDetails.faqSection);
+        setPricingSectionState(companyDetails.pricingSection);
+        setNewsletterSectionState(companyDetails.newsletterSection);
+        setFooterSectionState(companyDetails.footerSection);
+      }
+    } catch (error) {
+      console.error("Error fetching Notion data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const updateDataFromFiles = () => {
     setNavbarSectionState(navbarSection);
     setHeroSectionState(heroSection);
@@ -100,16 +129,16 @@ export const useData = () => {
     setContactUsState(contactUs);
   };
 
-  const handleConstantsType = async () => {
-    if (constantsType === "file") {
+  const handleConstantsType = async (newType: "file" | "notion" | "cms") => {
+    if (newType === "cms") {
       await updateDataFromStrapiCms();
-      setConstantsType("cms");
-      localStorage.setItem("constantsType", "cms");
+    } else if (newType === "notion") {
+      await updateDataFromNotion();
     } else {
       updateDataFromFiles();
-      setConstantsType("file");
-      localStorage.setItem("constantsType", "file");
     }
+    setConstantsType(newType);
+    localStorage.setItem("constantsType", newType);
   };
 
   return {

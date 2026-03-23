@@ -1,0 +1,334 @@
+html {
+    scroll-behavior: smooth;
+  }
+
+  /* ── Hero 3D Orbital Scene ── */
+  .hero-3d-scene {
+    --sphere-tx: 0px;
+    --sphere-ty: 0px;
+    --glow-tx: 0px;
+    --glow-ty: 0px;
+    position: relative;
+    width: 420px;
+    height: 420px;
+    perspective: 900px;
+    perspective-origin: center center;
+    cursor: grab;
+  }
+
+  .hero-3d-scene:active {
+    cursor: grabbing;
+  }
+
+  /* Tilt wrapper — receives the mouse-driven 3D rotation */
+  .hero-3d-tilt {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+
+  /* soft ambient glow behind the sphere — tracks mouse */
+  .hero-orb-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%, rgba(3,163,215,0.35), rgba(210,71,191,0.25), transparent 70%);
+    filter: blur(32px);
+    animation: hero-glow-pulse 3s ease-in-out infinite;
+    z-index: 0;
+  }
+
+  /* central sphere */
+  .hero-orb-sphere {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80px;
+    height: 80px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%,
+      #61DAFB 0%,
+      #1fc0f1 30%,
+      #D247BF 65%,
+      #a01a8f 100%);
+    box-shadow:
+      0 0 30px 8px rgba(3, 163, 215, 0.5),
+      0 0 60px 20px rgba(210, 71, 191, 0.25),
+      inset 0 0 20px rgba(255,255,255,0.15);
+    animation: hero-sphere-breathe 4s ease-in-out infinite;
+    z-index: 1;
+  }
+
+  /* shared ring base */
+  .hero-orb-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    border-style: solid;
+  }
+
+  /* Ring 1 — inner, tilted steeply */
+  .hero-orb-ring-1 {
+    width: 160px;
+    height: 160px;
+    margin-top: -80px;
+    margin-left: -80px;
+    border-width: 2px;
+    border-color: rgba(3,163,215,0.9) transparent rgba(3,163,215,0.2) transparent;
+    animation: hero-orbit-1 3s linear infinite;
+  }
+
+  /* Ring 2 — mid, different axis */
+  .hero-orb-ring-2 {
+    width: 260px;
+    height: 260px;
+    margin-top: -130px;
+    margin-left: -130px;
+    border-width: 1.5px;
+    border-color: rgba(210,71,191,0.8) transparent rgba(210,71,191,0.15) transparent;
+    animation: hero-orbit-2 5s linear infinite;
+  }
+
+  /* Ring 3 — outer, near-flat */
+  .hero-orb-ring-3 {
+    width: 360px;
+    height: 360px;
+    margin-top: -180px;
+    margin-left: -180px;
+    border-width: 1px;
+    border-color: transparent rgba(245,150,211,0.55) transparent rgba(61,218,251,0.3);
+    animation: hero-orbit-3 8s linear infinite;
+  }
+
+  /* orbiting dot tracks */
+  .hero-orbit-track {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    border: none;
+  }
+
+  .hero-orbit-track-1 {
+    width: 160px;
+    height: 160px;
+    margin-top: -80px;
+    margin-left: -80px;
+    animation: hero-orbit-1 3s linear infinite;
+  }
+
+  .hero-orbit-track-2 {
+    width: 260px;
+    height: 260px;
+    margin-top: -130px;
+    margin-left: -130px;
+    animation: hero-orbit-2 5s linear infinite reverse;
+  }
+
+  .hero-orbit-track-3 {
+    width: 360px;
+    height: 360px;
+    margin-top: -180px;
+    margin-left: -180px;
+    animation: hero-orbit-3 8s linear infinite reverse;
+  }
+
+  .hero-orbit-dot {
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    margin-left: -5px;
+    border-radius: 50%;
+    background: #61DAFB;
+    box-shadow: 0 0 8px 3px rgba(3,163,215,0.8);
+  }
+
+  .hero-orbit-dot-2 {
+    background: #D247BF;
+    box-shadow: 0 0 10px 4px rgba(210,71,191,0.8);
+    width: 12px;
+    height: 12px;
+    margin-left: -6px;
+  }
+
+  .hero-orbit-dot-3 {
+    background: #F596D3;
+    box-shadow: 0 0 8px 3px rgba(245,150,211,0.7);
+    top: auto;
+    bottom: -5px;
+  }
+
+  @keyframes hero-glow-pulse {
+    0%, 100% { opacity: 0.7; transform: translate(calc(-50% + var(--glow-tx, 0px)), calc(-50% + var(--glow-ty, 0px))) scale(1); }
+    50%       { opacity: 1;   transform: translate(calc(-50% + var(--glow-tx, 0px)), calc(-50% + var(--glow-ty, 0px))) scale(1.15); }
+  }
+
+  @keyframes hero-sphere-breathe {
+    0%, 100% {
+      transform: translate(calc(-50% + var(--sphere-tx, 0px)), calc(-50% + var(--sphere-ty, 0px))) scale(1);
+      box-shadow: 0 0 30px 8px rgba(3,163,215,0.5),
+                  0 0 60px 20px rgba(210,71,191,0.25),
+                  inset 0 0 20px rgba(255,255,255,0.15);
+    }
+    50% {
+      transform: translate(calc(-50% + var(--sphere-tx, 0px)), calc(-50% + var(--sphere-ty, 0px))) scale(1.08);
+      box-shadow: 0 0 50px 16px rgba(3,163,215,0.65),
+                  0 0 100px 36px rgba(210,71,191,0.35),
+                  inset 0 0 30px rgba(255,255,255,0.2);
+    }
+  }
+
+  @keyframes hero-orbit-1 {
+    from { transform: rotateX(72deg) rotateZ(0deg); }
+    to   { transform: rotateX(72deg) rotateZ(360deg); }
+  }
+
+  @keyframes hero-orbit-2 {
+    from { transform: rotateX(40deg) rotateY(20deg) rotateZ(0deg); }
+    to   { transform: rotateX(40deg) rotateY(20deg) rotateZ(-360deg); }
+  }
+
+  @keyframes hero-orbit-3 {
+    from { transform: rotateX(14deg) rotateY(50deg) rotateZ(0deg); }
+    to   { transform: rotateX(14deg) rotateY(50deg) rotateZ(360deg); }
+  }
+
+  /* Click ripple expanding from the sphere */
+  .hero-click-ripple {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80px;
+    height: 80px;
+    margin-top: -40px;
+    margin-left: -40px;
+    border-radius: 50%;
+    border: 2px solid rgba(97, 218, 251, 0.8);
+    pointer-events: none;
+    z-index: 10;
+    animation: hero-ripple-expand 0.8s ease-out forwards;
+  }
+
+  @keyframes hero-ripple-expand {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+      border-color: rgba(97, 218, 251, 0.8);
+    }
+    100% {
+      transform: scale(5);
+      opacity: 0;
+      border-color: rgba(210, 71, 191, 0.4);
+    }
+  }
+
+  /* Cursor spotlight effect */
+  .cursor-spotlight {
+    position: fixed;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, hsl(var(--primary) / 0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s ease;
+    will-change: left, top;
+  }
+
+  .dark .cursor-spotlight {
+    background: radial-gradient(circle, hsl(var(--primary) / 0.08) 0%, transparent 70%);
+  }
+
+  /* Dark mode card glow enhancements */
+  .dark .card-glow {
+    box-shadow: 0 0 0 1px hsl(var(--border)), 0 4px 24px -4px hsl(var(--primary) / 0.08);
+  }
+
+  .dark .card-glow:hover {
+    box-shadow: 0 0 0 1px hsl(var(--primary) / 0.3), 0 8px 32px -4px hsl(var(--primary) / 0.15);
+  }
+
+  /* Enhanced dark mode hero glow */
+  .dark .hero-orb-sphere {
+    box-shadow:
+      0 0 40px 12px rgba(3, 163, 215, 0.6),
+      0 0 80px 28px rgba(210, 71, 191, 0.35),
+      inset 0 0 25px rgba(255,255,255,0.2);
+  }
+
+  .dark .hero-orb-glow {
+    opacity: 0.9;
+  }
+
+  /* HeroCards background shadow */
+  .shadow {
+    position: absolute;
+    background: hsl(var(--primary) / 0%);
+    border-radius: 24px;
+    rotate: 35deg;
+    z-index: -1;
+    width: 260px;
+    top: 200px;
+    height: 400px;
+    filter: blur(150px);
+    will-change: transform;
+    animation: shadow-slide infinite 4s linear alternate;
+  }
+
+  @keyframes shadow-slide {
+    from {
+      background: hsl(var(--primary) / 20%);
+      right: 460px;
+    }
+    to {
+      background: hsl(var(--primary) / 80%);
+      right: 160px;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .shadow {
+      top: 70px;
+    }
+
+    @keyframes shadow-slide {
+      from {
+        background: hsl(var(--primary) / 20%);
+        right: 460px;
+      }
+      to {
+        background: hsl(var(--primary) / 50%);
+        right: 160px;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .shadow {
+      top: 70px;
+      width: 100px;
+      height: 350px;
+      filter: blur(60px);
+    }
+
+    @keyframes shadow-slide {
+      from {
+        background: hsl(var(--primary) / 20%);
+        right: 280px;
+      }
+      to {
+        background: hsl(var(--primary) / 30%);
+        right: 100px;
+      }
+    }
+  }
