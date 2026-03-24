@@ -12,7 +12,7 @@ import { companyName } from "../lib/constants/appDetails";
 import { Analytics } from "@vercel/analytics/react";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { TRPCReactProvider } from "@/trpc/client";
-import Support from "@/blocks/Support";
+import Support from "@/blocks/support/Support";
 
 export const metadata: Metadata = {
   title: companyName,

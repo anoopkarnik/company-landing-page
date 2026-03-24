@@ -14,7 +14,6 @@ import { MenuIcon } from "lucide-react";
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ModeToggle } from './ModeToggle'
 import { useTRPC } from '@/trpc/client'
 import { useSuspenseQuery } from '@tanstack/react-query'
 
@@ -211,7 +210,7 @@ const NavbarSection = ({ showLandingRoutes = true }: { showLandingRoutes?: boole
               </Button>
             </a>
 
-            <ModeToggle />
+
           </div>
         </ul>
       </nav>

@@ -104,7 +104,7 @@ const HeroSection = () => {
             {heroSection.description}
           </p>
 
-          <div className="flex items-center space-y-4 md:space-y-0 md:space-x-4">
+          <div className="flex items-center  gap-2 flex-wrap justify-center lg:justify-start">
             <div>
               <Button
                 className="flex items-center gap-2"
@@ -125,7 +125,7 @@ const HeroSection = () => {
               rel="noreferrer noopener"
               href={heroSection.appointmentLink}
               target="_blank"
-              className={`w-full md:w-1/3 text-lg flex items-center gap-1 bg-gradient-to-r from-[#61DAFB] via-[#1fc0f1] to-[#03a3d7] text-white border-0 hover:opacity-90 hover:shadow-lg hover:shadow-[#03a3d7]/25 transition-all duration-300 ${buttonVariants({
+              className={`w-full md:w-1/3 text-lg flex items-center gap-1 text-white border-0 hover:opacity-90 hover:shadow-lg hover:shadow-[#03a3d7]/25 transition-all duration-300 ${buttonVariants({
                 variant: "default",
               })}`}
             >

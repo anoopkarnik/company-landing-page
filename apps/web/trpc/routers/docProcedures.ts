@@ -1,4 +1,4 @@
-import { fetchDocumentation } from "@/lib/functions/fetchDocumentationFromNotion";
+import { fetchDocumentation } from "@/lib/functions/fetchDocumentationFromNotion copy";
 import { DocumentationProps } from "@/lib/ts-types/doc";
 import { redis } from "@/server/redis";
 import { createTRPCRouter, baseProcedure } from "@/trpc/init";

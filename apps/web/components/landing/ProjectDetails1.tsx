@@ -47,7 +47,7 @@ const ProjectDetails1 = ({ project }: { project: ProjectProps }) => {
 
         {(showDetails || device == "desktop") &&
           <>
-            <div className='flex items-center justify-center gap-4 flex-wrap mt-6 pb-2'>
+            <div className='flex items-center justify-center gap-4 flex-wrap pb-2'>
               {project.openSourceDetails?.link && <a href={project.openSourceDetails.link} title="GitHub" target='_blank'>
                 <SiGithub size={22} className='opacity-50 hover:opacity-100 transition-all duration-300' />
               </a>}

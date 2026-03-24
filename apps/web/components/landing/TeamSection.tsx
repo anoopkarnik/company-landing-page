@@ -70,26 +70,26 @@ const TeamSection = () => {
               <Card
                 className="bg-muted/50 relative mt-8 flex flex-col justify-center items-center hover:-translate-y-2 hover:shadow-xl dark:hover:shadow-primary/10 transition-all duration-300 group"
               >
-                <CardHeader className="mt-8 !flex flex-col justify-center items-center pb-2">
+                <CardHeader className="mt-8 !flex flex-col justify-center items-center pb-2 w-full">
                   <Image
                     src={team.imageUrl}
                     alt={`${team.name} ${team.position}`}
                     width={96}
                     height={96}
                     unoptimized
-                    className="absolute -top-12 rounded-full w-24 h-24 aspect-square object-cover ring-4 ring-background group-hover:ring-primary/20 transition-all duration-300"
+                    className="absolute -top-12 rounded-full w-24 h-24 aspect-square object-cover ring-4 ring-transparent group-hover:ring-primary/20 transition-all duration-300"
                   />
-                  <CardTitle className="text-center text-lg font-bold pt-6 ">{team.name}</CardTitle>
+                  <CardTitle className="text-center text-lg font-bold ">{team.name}</CardTitle>
                   <CardDescription className="text-primary font-medium text-sm">
                     {team.position}
                   </CardDescription>
                 </CardHeader>
 
-                <CardContent className="text-center pb-2">
+                <CardContent className="text-center">
                   <p>{team.description}</p>
                 </CardContent>
 
-                <CardFooter className="flex items-center justify-center gap-2 pt-2 pb-4">
+                <CardFooter className="flex items-center justify-center gap-2">
                   {team.socialNetworks?.map((socialNetwork: SociaNetworksProps, idx: number) => (
                     <a
                       key={`${socialNetwork.name}-${idx}`}

@@ -36,7 +36,7 @@ const ProjectModal = ({ project }: { project: ProjectProps }) => {
                 className={cn(`
                     fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex flex-col
                      shadow-lg p-4 rounded-md 
-                    max-h-[90vh] w-[95%] sm:w-[80%] md:w-[70%] lg:w-[60%] xl:w-[50%] 
+                    max-h-[90vh] w-full min-w-[80%]
                     overflow-hidden
                 `)}
             >

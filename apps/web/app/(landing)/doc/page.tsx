@@ -1,9 +1,11 @@
 import React from 'react'
 
-const page = () => {
+const DocPage = () => {
   return (
-    <div>page</div>
+    <div className='flex flex-col items-center justify-center h-full'>
+      <p className='text-muted-foreground'>Please select a documentation from the sidebar</p>
+    </div>
   )
 }
 
-export default page
+export default DocPage

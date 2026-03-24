@@ -1,11 +1,11 @@
-export interface DocumentationProps {
+export interface BlogsProps {
     title: string;
     logo: string;
     darkLogo: string;
-    docs: DocProps[];
+    blogs: BlogProps[];
 }
 
-export interface DocProps {
+export interface BlogProps {
     id: string;
     Name: string;
     Type: string;
