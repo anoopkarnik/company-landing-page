@@ -237,7 +237,7 @@ html {
     width: 300px;
     height: 300px;
     border-radius: 50%;
-    background: radial-gradient(circle, hsl(var(--primary) / 0.06) 0%, transparent 70%);
+    background: radial-gradient(circle, color-mix(in oklch, var(--primary) 6%, transparent) 0%, transparent 70%);
     pointer-events: none;
     z-index: 1;
     transform: translate(-50%, -50%);
@@ -246,16 +246,16 @@ html {
   }
 
   .dark .cursor-spotlight {
-    background: radial-gradient(circle, hsl(var(--primary) / 0.08) 0%, transparent 70%);
+    background: radial-gradient(circle, color-mix(in oklch, var(--primary) 8%, transparent) 0%, transparent 70%);
   }
 
   /* Dark mode card glow enhancements */
   .dark .card-glow {
-    box-shadow: 0 0 0 1px hsl(var(--border)), 0 4px 24px -4px hsl(var(--primary) / 0.08);
+    box-shadow: 0 0 0 1px var(--border), 0 4px 24px -4px color-mix(in oklch, var(--primary) 8%, transparent);
   }
 
   .dark .card-glow:hover {
-    box-shadow: 0 0 0 1px hsl(var(--primary) / 0.3), 0 8px 32px -4px hsl(var(--primary) / 0.15);
+    box-shadow: 0 0 0 1px color-mix(in oklch, var(--primary) 30%, transparent), 0 8px 32px -4px color-mix(in oklch, var(--primary) 15%, transparent);
   }
 
   /* Enhanced dark mode hero glow */
@@ -270,65 +270,116 @@ html {
     opacity: 0.9;
   }
 
-  /* HeroCards background shadow */
-  .shadow {
+  /* ── Section background shadow (shared base) ── */
+  .shadow,
+  .shadow-right,
+  .shadow-left {
     position: absolute;
-    background: hsl(var(--primary) / 0%);
+    background: transparent;
     border-radius: 24px;
-    rotate: 35deg;
     z-index: -1;
     width: 260px;
     top: 200px;
     height: 400px;
     filter: blur(150px);
     will-change: transform;
-    animation: shadow-slide infinite 4s linear alternate;
+    pointer-events: none;
   }
 
-  @keyframes shadow-slide {
+  /* Right-side shadow (default) */
+  .shadow,
+  .shadow-right {
+    rotate: 35deg;
+    animation: shadow-slide-right infinite 4s linear alternate;
+  }
+
+  /* Left-side shadow */
+  .shadow-left {
+    rotate: -35deg;
+    animation: shadow-slide-left infinite 4s linear alternate;
+  }
+
+  @keyframes shadow-slide-right {
     from {
-      background: hsl(var(--primary) / 20%);
+      background: color-mix(in oklch, var(--primary) 20%, transparent);
       right: 460px;
     }
     to {
-      background: hsl(var(--primary) / 80%);
+      background: color-mix(in oklch, var(--primary) 80%, transparent);
       right: 160px;
     }
   }
 
+  @keyframes shadow-slide-left {
+    from {
+      background: color-mix(in oklch, var(--primary) 20%, transparent);
+      left: 460px;
+    }
+    to {
+      background: color-mix(in oklch, var(--primary) 80%, transparent);
+      left: 160px;
+    }
+  }
+
   @media (max-width: 1024px) {
-    .shadow {
+    .shadow,
+    .shadow-right,
+    .shadow-left {
       top: 70px;
     }
 
-    @keyframes shadow-slide {
+    @keyframes shadow-slide-right {
       from {
-        background: hsl(var(--primary) / 20%);
+        background: color-mix(in oklch, var(--primary) 20%, transparent);
         right: 460px;
       }
       to {
-        background: hsl(var(--primary) / 50%);
+        background: color-mix(in oklch, var(--primary) 50%, transparent);
         right: 160px;
+      }
+    }
+
+    @keyframes shadow-slide-left {
+      from {
+        background: color-mix(in oklch, var(--primary) 20%, transparent);
+        left: 460px;
+      }
+      to {
+        background: color-mix(in oklch, var(--primary) 50%, transparent);
+        left: 160px;
       }
     }
   }
 
   @media (max-width: 768px) {
-    .shadow {
+    .shadow,
+    .shadow-right,
+    .shadow-left {
       top: 70px;
       width: 100px;
       height: 350px;
       filter: blur(60px);
     }
 
-    @keyframes shadow-slide {
+    @keyframes shadow-slide-right {
       from {
-        background: hsl(var(--primary) / 20%);
+        background: color-mix(in oklch, var(--primary) 20%, transparent);
         right: 280px;
       }
       to {
-        background: hsl(var(--primary) / 30%);
+        background: color-mix(in oklch, var(--primary) 30%, transparent);
         right: 100px;
+      }
+    }
+
+    @keyframes shadow-slide-left {
+      from {
+        background: color-mix(in oklch, var(--primary) 20%, transparent);
+        left: 280px;
+      }
+      to {
+        background: color-mix(in oklch, var(--primary) 30%, transparent);
+        left: 100px;
       }
     }
   }
