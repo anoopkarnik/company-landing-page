@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { Button } from "@workspace/ui/components/shadcn/button";
 import { Input } from "@workspace/ui/components/shadcn/input";
-import { KeyRound, Palette, Database, LogOut, Shield, Sun, Moon, Monitor, FileCode } from "lucide-react";
+import { KeyRound, Palette, Database, LogOut, Shield, Sun, Moon, Monitor } from "lucide-react";
 import NavbarSection from "@/components/landing/NavbarSection";
 
 type Tab = "password" | "theme" | "cms";

@@ -1,4 +1,4 @@
-import { TermsOfServiceProps } from "@repo/ts-types/landing-page/legal";
+import { TermsOfServiceProps } from "@/lib/ts-types/legal";
 import { supportEmailAddress,siteName,companyLegalName,country, websiteUrl,lastUpdated,version,address } from "../appDetails";
 
 export const termsOfService:TermsOfServiceProps = {

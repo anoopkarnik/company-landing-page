@@ -1,4 +1,3 @@
-import type { Config } from "tailwindcss";
 export default {
   theme: {
     container: {
@@ -44,4 +43,4 @@ export default {
       }
     },
   },
-} satisfies Config;
+};

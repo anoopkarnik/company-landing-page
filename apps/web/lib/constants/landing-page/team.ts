@@ -1,4 +1,4 @@
-import { TeamProps, TeamSectionProps } from "@repo/ts-types/landing-page/team";
+import { TeamProps, TeamSectionProps } from "@/lib/ts-types/landing";
 
 export const teamList: TeamProps[] = [
     {

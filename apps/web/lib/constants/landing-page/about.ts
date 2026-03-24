@@ -1,4 +1,4 @@
-import { AboutSectionProps } from "@repo/ts-types/landing-page/about"
+import { AboutSectionProps } from "@/lib/ts-types/landing";
 
 export const companyDetails = ` We are a team of passionate innovative developers who can help you build your next 
 project - from scratch to production. Each of our team members can have skills of a project manager, full stack 

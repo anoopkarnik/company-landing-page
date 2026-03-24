@@ -34,7 +34,7 @@ const Message = ({ setActivePanel }: { setActivePanel: any }) => {
             <div className="space-y-1.5 text-center sm:text-left">
                 <h3 className="text-lg font-semibold tracking-tight">Contact Us</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                    Have questions or want to collaborate? Send us a message and we'll get back to you shortly.
+                    Have questions or want to collaborate? Send us a message and we&apos;ll get back to you shortly.
                 </p>
             </div>
             <div className="space-y-3">

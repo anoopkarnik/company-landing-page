@@ -1,4 +1,4 @@
-import { ProjectProps, ProjectSectionProps } from "@repo/ts-types/landing-page/projects";
+import { ProjectProps, ProjectSectionProps } from "@/lib/ts-types/landing";
 
 
 

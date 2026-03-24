@@ -1,4 +1,4 @@
-import { ServiceProps, ServiceSectionProps } from "@repo/ts-types/landing-page/services";
+import { ServiceProps, ServiceSectionProps } from "@/lib/ts-types/landing";
 
 export const services: ServiceProps[] = [
     {

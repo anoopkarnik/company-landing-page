@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useTheme } from "next-themes";
 import { FooterSectionProps } from "@/lib/ts-types/landing";
 import { AnimatedSection } from "@workspace/ui/components/custom/AnimatedSection";
@@ -29,7 +30,7 @@ const FooterSection = () => {
             <AnimatedSection>
                 <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 my-10">
                     <section className="hidden lg:flex col-span-1 font-cyberdyne">
-                        <a
+                        <Link
                             rel="noreferrer noopener"
                             href="/"
                             className="ml-2 flex items-center gap-2"
@@ -45,7 +46,7 @@ const FooterSection = () => {
                                 <div>{footerSection.title?.split(' ')[0]}</div>
                                 <div>{footerSection.title?.split(' ')[1]}</div>
                             </div>
-                        </a>
+                        </Link>
                     </section>
                     {[...footerTypes]?.map((type: string, typeIdx: number) => (
                         <div key={`${type}-${typeIdx}`} className="flex flex-col gap-2">

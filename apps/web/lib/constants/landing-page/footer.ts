@@ -1,4 +1,4 @@
-import { FooterProps, FooterSectionProps } from "@repo/ts-types/landing-page/footer";
+import { FooterProps, FooterSectionProps } from "@/lib/ts-types/landing";
 import { creator, creatorLink, title, logo, darkLogo } from "../appDetails";
 
 export const footerList: FooterProps[] =  [

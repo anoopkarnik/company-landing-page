@@ -1,4 +1,4 @@
-import { NewsletterSectionProps } from "@repo/ts-types/landing-page/newsletter";
+import { NewsletterSectionProps } from "@/lib/ts-types/landing";
 import { supportEmailAddress } from "../appDetails";
 
 export const newsletterSection:NewsletterSectionProps  = {

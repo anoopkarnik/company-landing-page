@@ -13,6 +13,7 @@ import { Button, buttonVariants } from "@workspace/ui/components/shadcn/button";
 import { MenuIcon } from "lucide-react";
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
+import Link from 'next/link';
 import { ModeToggle } from './ModeToggle'
 import { useTRPC } from '@/trpc/client'
 import { useSuspenseQuery } from '@tanstack/react-query'
@@ -56,7 +57,7 @@ const NavbarSection = ({ showLandingRoutes = true }: { showLandingRoutes?: boole
       <nav className="mx-auto w-full">
         <ul className="h-14 px-4 sm:px-6 w-full flex items-center justify-between">
           <li className="font-bold flex list-none">
-            <a
+            <Link
               rel="noreferrer noopener"
               href="/"
               className="ml-2 flex items-center gap-2 font-cyberdyne"
@@ -72,7 +73,7 @@ const NavbarSection = ({ showLandingRoutes = true }: { showLandingRoutes?: boole
                 <div>{navbarSection?.title?.split(' ')[0]}</div>
                 <div>{navbarSection?.title?.split(' ')[1]}</div>
               </div>
-            </a>
+            </Link>
           </li>
 
 

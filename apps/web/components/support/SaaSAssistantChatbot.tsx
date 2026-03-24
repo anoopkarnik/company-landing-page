@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@workspace/ui/components/shadcn/button";
 import { Textarea } from "@workspace/ui/components/shadcn/textarea";
 import { ChatBubbleIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
-import { Skeleton } from "@workspace/ui/components/shadcn/skeleton";
 import { FaRobot } from "react-icons/fa";
 import { useTRPC } from "@/trpc/client";
 import { useMutation } from "@tanstack/react-query";

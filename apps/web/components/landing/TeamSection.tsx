@@ -1,4 +1,5 @@
-import { TeamSectionProps, TeamProps, SociaNetworksProps } from "@/lib/ts-types/landing";
+import { TeamProps, SociaNetworksProps } from "@/lib/ts-types/landing";
+import Image from "next/image";
 import {
   Card,
   CardContent,
@@ -70,9 +71,12 @@ const TeamSection = () => {
                 className="bg-muted/50 relative mt-8 flex flex-col justify-center items-center hover:-translate-y-2 hover:shadow-xl dark:hover:shadow-primary/10 transition-all duration-300 group"
               >
                 <CardHeader className="mt-8 !flex flex-col justify-center items-center pb-2">
-                  <img
+                  <Image
                     src={team.imageUrl}
                     alt={`${team.name} ${team.position}`}
+                    width={96}
+                    height={96}
+                    unoptimized
                     className="absolute -top-12 rounded-full w-24 h-24 aspect-square object-cover ring-4 ring-background group-hover:ring-primary/20 transition-all duration-300"
                   />
                   <CardTitle className="text-center text-lg font-bold pt-6 ">{team.name}</CardTitle>

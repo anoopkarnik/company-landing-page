@@ -1,4 +1,4 @@
-import { ContactUsProps } from "@repo/ts-types/landing-page/legal";
+import { ContactUsProps } from "@/lib/ts-types/legal";
 import { supportEmailAddress,companyLegalName,lastUpdated,contactNumber,address } from "../appDetails";
 
 export const contactUs:ContactUsProps = {

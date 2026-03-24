@@ -1,4 +1,4 @@
-import { AboutSectionProps, FooterSectionProps, HeroSectionProps, LandingPageProps, NavbarSectionProps, ProjectSectionProps, ServiceSectionProps, TeamSectionProps, TestimonialSectionProps } from "@/lib/ts-types/landing";
+import { AboutSectionProps, FooterSectionProps, HeroSectionProps, NavbarSectionProps, ProjectSectionProps, ServiceSectionProps, TeamSectionProps, TestimonialSectionProps } from "@/lib/ts-types/landing";
 import { queryAllNotionDatabase } from "@workspace/cms/notion/database/queryDatabase";
 import { CancellationRefundPoliciesProps, ContactUsProps, PrivacyPolicyProps, TermsOfServiceProps } from "@/lib/ts-types/legal";
 

@@ -24,8 +24,6 @@ const LegalPageLayout = ({
     children,
     title,
     lastUpdated,
-    navbarSection,
-    footerSection,
     tableOfContents,
 }: LegalPageLayoutProps) => {
     const { scrollYProgress } = useScroll();

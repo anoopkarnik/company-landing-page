@@ -5,6 +5,9 @@
     "paths": {
       "@/*": [
         "./*"
+      ],
+      "@repo/ts-types/*": [
+        "./lib/ts-types/*"
       ]
     },
     "plugins": [

@@ -80,6 +80,12 @@ export interface HeroSectionProps  {
   }
 
 
+
+export interface RouteProps {
+    href: string;
+    label: string;
+  }
+
 export interface NavbarSectionProps {
     donateNowLink?: string;
     githubLink: string;
@@ -88,6 +94,7 @@ export interface NavbarSectionProps {
     title: string;
     logo: string;
     darkLogo: string;
+    routeList?: RouteProps[];
   }
 
 
@@ -178,15 +185,34 @@ export interface ServiceProps {
   }
 
   export interface TestimonialProps {
-    imageUrl: string;
+    image?: string;
     name: string;
-    userName: string;
     comment: string;
-    position: string;
+    position?: string;
   }
 
 export interface TestimonialSectionProps {
-    testimonials: TestimonialProps[];
+    testimonials: TestimonialProps[];  
     heading: string;
     description: string;
+}
+
+export interface FeatureListProps {
+    title: string;
+    description: string;
+}
+
+export interface FeatureWithDescriptionProps {
+    title: string;
+    description: string;
+    icon?: string;
+}
+
+export interface PricingProps {
+    title: string;
+    popular?: boolean;
+    price: string;
+    description: string;
+    buttonText?: string;
+    benefitList?: string[];
 }
