@@ -51,7 +51,7 @@ const NewsletterSection = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
               <Button
-                className="bg-gradient-to-r from-[#61DAFB] via-[#1fc0f1] to-[#03a3d7] text-white border-0 hover:opacity-90 hover:shadow-lg hover:shadow-[#03a3d7]/25 transition-all duration-300"
+                className="text-white border-0 hover:opacity-90 hover:shadow-lg hover:shadow-[#03a3d7]/25 transition-all duration-300"
                 onClick={() => {
                   // if (createContactAction) {
                   //   createContactAction(email);
