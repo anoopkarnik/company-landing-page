@@ -4,8 +4,23 @@ import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { Button } from "@workspace/ui/components/shadcn/button";
 import { Input } from "@workspace/ui/components/shadcn/input";
-import { KeyRound, Palette, Database, LogOut, Shield, Sun, Moon, Monitor } from "lucide-react";
+import { KeyRound, Palette, Database, LogOut, Shield, Sun, Moon, Monitor, Settings2, Loader2, LayoutPanelTop, Home, Sparkles, MessageSquareQuote, Package, Users, PanelBottom, ShieldCheck, Info } from "lucide-react";
 import NavbarSection from "@/components/landing/NavbarSection";
+import { useTRPC } from "@/trpc/client";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/shadcn/tabs";
+import { Card, CardContent } from "@workspace/ui/components/shadcn/card";
+import type { CmsFormValues } from "@/lib/zod/cms";
+import { NavbarTabContent } from "@/blocks/admin/NavbarTabContent";
+import { HeroTabContent } from "@/blocks/admin/HeroTabContent";
+import { AboutTabContent } from "@/blocks/admin/AboutTabContent";
+import { ServicesTabContent } from "@/blocks/admin/ServicesTabContent";
+import { ProjectsTabContent } from "@/blocks/admin/ProjectsTabContent";
+import { TestimonialsTabContent } from "@/blocks/admin/TestimonialsTabContent";
+import { TeamTabContent } from "@/blocks/admin/TeamTabContent";
+import { FooterTabContent } from "@/blocks/admin/FooterTabContent";
+import { LegalTabContent } from "@/blocks/admin/LegalTabContent";
 
 type Tab = "password" | "theme" | "cms";
 
@@ -23,6 +38,31 @@ export default function AdminPage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordMessage, setPasswordMessage] = useState<{ text: string; success: boolean } | null>(null);
+
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+  const { data: landingInfo, isLoading: isLoadingCMS } = useQuery(trpc.landing.getLandingInfoFromNotion.queryOptions());
+
+  const updateLandingInfoMutation = useMutation(
+    trpc.landing.updateLandingInfo.mutationOptions({
+      onSuccess: () => {
+        toast.success("CMS updated successfully!", {
+          description: "Your landing page Notion database has been updated."
+        });
+        queryClient.invalidateQueries(trpc.landing.getLandingInfoFromNotion.queryFilter());
+      },
+      onError: (error) => {
+        console.error("Failed to update CMS:", error);
+        toast.error("Failed to update CMS", {
+          description: error.message || "Please check server logs for details."
+        });
+      }
+    })
+  );
+
+  const handleCmsSave = (values: Partial<CmsFormValues>) => {
+    updateLandingInfoMutation.mutate(values as any);
+  };
 
   useEffect(() => {
     const auth = localStorage.getItem(ADMIN_AUTH_KEY);
@@ -224,10 +264,53 @@ export default function AdminPage() {
           )}
 
           {activeTab === "cms" && (
-            <div className="max-w-md">
-              <h2 className="text-xl font-semibold mb-1">Data Source</h2>
-              <p className="text-sm text-muted-foreground mb-6">Choose where your landing page content is loaded from</p>
+            <div className="max-w-5xl">
+              <div className="mb-8 flex items-start gap-4">
+                <div className="rounded-xl bg-primary/10 p-3">
+                  <Settings2 className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold tracking-tight">Content Management</h2>
+                  <p className="text-muted-foreground mt-1 text-sm">
+                    Update your landing page content. Changes sync directly to Notion.
+                  </p>
+                </div>
+              </div>
 
+              <Card className="min-h-[500px]">
+                {isLoadingCMS ? (
+                  <div className="flex flex-col justify-center items-center h-[400px] gap-3">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    <p className="text-sm text-muted-foreground">Loading CMS data...</p>
+                  </div>
+                ) : (
+                  <CardContent>
+                    <Tabs defaultValue="navbar" className="w-full">
+                      <TabsList className="flex flex-wrap w-full h-auto gap-1 mb-8 justify-start bg-muted/50 p-1.5 rounded-lg">
+                        <TabsTrigger value="navbar" className="flex items-center gap-1.5 text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm"><LayoutPanelTop className="w-3.5 h-3.5" /> Navbar</TabsTrigger>
+                        <TabsTrigger value="hero" className="flex items-center gap-1.5 text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm"><Home className="w-3.5 h-3.5" /> Hero</TabsTrigger>
+                        <TabsTrigger value="about" className="flex items-center gap-1.5 text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm"><Info className="w-3.5 h-3.5" /> About</TabsTrigger>
+                        <TabsTrigger value="services" className="flex items-center gap-1.5 text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm"><Sparkles className="w-3.5 h-3.5" /> Services</TabsTrigger>
+                        <TabsTrigger value="projects" className="flex items-center gap-1.5 text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm"><Package className="w-3.5 h-3.5" /> Projects</TabsTrigger>
+                        <TabsTrigger value="testimonials" className="flex items-center gap-1.5 text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm"><MessageSquareQuote className="w-3.5 h-3.5" /> Testimonials</TabsTrigger>
+                        <TabsTrigger value="team" className="flex items-center gap-1.5 text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm"><Users className="w-3.5 h-3.5" /> Team</TabsTrigger>
+                        <TabsTrigger value="footer" className="flex items-center gap-1.5 text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm"><PanelBottom className="w-3.5 h-3.5" /> Footer</TabsTrigger>
+                        <TabsTrigger value="legal" className="flex items-center gap-1.5 text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm"><ShieldCheck className="w-3.5 h-3.5" /> Legal</TabsTrigger>
+                      </TabsList>
+
+                      <TabsContent value="navbar"><NavbarTabContent initialData={landingInfo} onSave={handleCmsSave} isSaving={updateLandingInfoMutation.isPending} /></TabsContent>
+                      <TabsContent value="hero"><HeroTabContent initialData={landingInfo} onSave={handleCmsSave} isSaving={updateLandingInfoMutation.isPending} /></TabsContent>
+                      <TabsContent value="about"><AboutTabContent initialData={landingInfo} onSave={handleCmsSave} isSaving={updateLandingInfoMutation.isPending} /></TabsContent>
+                      <TabsContent value="services"><ServicesTabContent initialData={landingInfo} onSave={handleCmsSave} isSaving={updateLandingInfoMutation.isPending} /></TabsContent>
+                      <TabsContent value="projects"><ProjectsTabContent initialData={landingInfo} onSave={handleCmsSave} isSaving={updateLandingInfoMutation.isPending} /></TabsContent>
+                      <TabsContent value="testimonials"><TestimonialsTabContent initialData={landingInfo} onSave={handleCmsSave} isSaving={updateLandingInfoMutation.isPending} /></TabsContent>
+                      <TabsContent value="team"><TeamTabContent initialData={landingInfo} onSave={handleCmsSave} isSaving={updateLandingInfoMutation.isPending} /></TabsContent>
+                      <TabsContent value="footer"><FooterTabContent initialData={landingInfo} onSave={handleCmsSave} isSaving={updateLandingInfoMutation.isPending} /></TabsContent>
+                      <TabsContent value="legal"><LegalTabContent initialData={landingInfo} onSave={handleCmsSave} isSaving={updateLandingInfoMutation.isPending} /></TabsContent>
+                    </Tabs>
+                  </CardContent>
+                )}
+              </Card>
             </div>
           )}
         </main>

@@ -9,7 +9,7 @@ import {
 import { MessageCircleQuestion } from "lucide-react";
 import { TiMessage } from "react-icons/ti";
 import { FaRobot, FaCalendarAlt } from "react-icons/fa";
-import { IoNewspaper } from "react-icons/io5";
+import { IoBriefcase, IoNewspaper } from "react-icons/io5";
 
 // 🔹 import your separate chatbot component
 import SaaSAssistantChatbot from "@/components/support/SaaSAssistantChatbot";
@@ -96,6 +96,16 @@ const Support = () => {
                                     <IoNewspaper size={24} />
                                 </div>
                                 <div className="text-center text-xs font-medium">Documentation</div>
+                            </div>
+                            <div
+                                className="group flex flex-col items-center gap-3 p-4 rounded-xl cursor-pointer 
+                  bg-muted/50 hover:bg-muted transition-all duration-200 border border-transparent hover:border-border/50"
+                                onClick={() => router.push("/blog")}
+                            >
+                                <div className="bg-green-500/10 text-indigo-500 group-hover:bg-indigo-500/20 group-hover:scale-110 transition-all duration-300 rounded-full p-3 flex items-center justify-center">
+                                    <IoBriefcase size={24} />
+                                </div>
+                                <div className="text-center text-xs font-medium">Blog</div>
                             </div>
 
                             {appointmentLink && <a

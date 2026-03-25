@@ -50,10 +50,10 @@ export const landingRouter = createTRPCRouter({
 
             //About Section
             about: z.string().optional(),
-            users: z.string().optional(),
-            subscribers: z.string().optional(),
-            downloads: z.string().optional(),
-            totalProducts: z.string().optional(),
+            users: z.number().optional(),
+            subscribers: z.number().optional(),
+            downloads: z.number().optional(),
+            productsCount: z.number().optional(),
 
             // Services
             serviceHeading: z.string().optional(),
@@ -116,7 +116,7 @@ export const landingRouter = createTRPCRouter({
             creator: z.string().optional(),
             creatorLink: z.string().optional(),
             footer: z.array(z.object({
-                id: z.string(),
+                id: z.string().optional(),
                 title: z.string(),
                 href: z.string().optional(),
                 type: z.string().optional(),
@@ -170,10 +170,10 @@ export const landingRouter = createTRPCRouter({
 
             // Sections
             if (input.about !== undefined) properties.push({ name: "about", type: "text", value: input.about });
-            if (input.users !== undefined) properties.push({ name: "users", type: "text", value: input.users });
-            if (input.subscribers !== undefined) properties.push({ name: "subscribers", type: "text", value: input.subscribers });
-            if (input.downloads !== undefined) properties.push({ name: "downloads", type: "text", value: input.downloads });
-            if (input.totalProducts !== undefined) properties.push({ name: "totalProducts", type: "text", value: input.totalProducts });
+            if (input.users !== undefined) properties.push({ name: "users", type: "number", value: input.users });
+            if (input.subscribers !== undefined) properties.push({ name: "subscribers", type: "number", value: input.subscribers });
+            if (input.downloads !== undefined) properties.push({ name: "downloads", type: "number", value: input.downloads });
+            if (input.productsCount !== undefined) properties.push({ name: "products", type: "number", value: input.productsCount });
 
             if (input.serviceHeading !== undefined) properties.push({ name: "serviceHeading", type: "text", value: input.serviceHeading });
             if (input.serviceDescription !== undefined) properties.push({ name: "serviceDescription", type: "text", value: input.serviceDescription });
@@ -213,6 +213,7 @@ export const landingRouter = createTRPCRouter({
                 items: T[] | undefined,
                 mapToProperties: (item: T) => any[]
             ) {
+                console.log(`[syncArray] dbId=${dbId}, items count=${items?.length ?? 'undefined'}`);
                 if (!items || !dbId) return;
 
                 // Fetch current state
@@ -255,14 +256,14 @@ export const landingRouter = createTRPCRouter({
             }
 
             // Sync services
-            await syncArray(process.env.SERVICES_DATABASE_ID, input.services, (s) => [
+            await syncArray(process.env.SERVICE_DATABASE_ID, input.services, (s) => [
                 { name: "title", type: "title", value: s.title },
                 { name: "description", type: "text", value: s.description },
-                { name: "image", type: "file_url", value: s.imageUrl }
-            ]);
+                { name: "image", type: "file_url", value: s.imageUrl || "" }
+            ].filter((prop: any) => prop.value !== ""));
 
             // Sync products
-            await syncArray(process.env.PRODUCTS_DATABASE_ID, input.products, (p) => [
+            await syncArray(process.env.PRODUCT_DATABASE_ID, input.products, (p) => [
                 { name: "Name", type: "title", value: p.title },
                 { name: "Description", type: "text", value: p.description },
                 { name: "Image", type: "file_url", value: p.imageUrl },

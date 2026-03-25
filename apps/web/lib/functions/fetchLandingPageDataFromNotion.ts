@@ -108,8 +108,10 @@ export async function fetchLandingPageData(): Promise<any> {
         heading: landingPageData.serviceHeading?.[0],
         description: landingPageData.serviceDescription?.[0],
         services: serviceSectionResults.results.map((item:any) => ({
+            id: item.id,
             title: item.title,
             description: item.description?.[0],
+            imageUrl: item.image?.[0],
         }))
     }
 
@@ -117,6 +119,7 @@ export async function fetchLandingPageData(): Promise<any> {
         heading: landingPageData.productHeading?.[0],
         description: landingPageData.productDescription?.[0],
         projects: projectSectionResults.results.map((item:any) => ({
+            id: item.id,
             title: item.Name || "",
             description: item.Description?.[0],
             demoImage: item.Image?.[0],
@@ -150,6 +153,7 @@ export async function fetchLandingPageData(): Promise<any> {
         heading: landingPageData.testimonialHeading?.[0],
         description: landingPageData.testimonialDescription?.[0],
         testimonials: testimonialSectionResults.results.map((item:any) => ({
+            id: item.id,
             name: item.name,
             userName: item.name, // mapped name as username since original schema lacks it
             position: item.position?.[0],
@@ -162,6 +166,7 @@ export async function fetchLandingPageData(): Promise<any> {
         heading: landingPageData.teamHeading?.[0],
         description: landingPageData.teamDescription?.[0],
         teamList: teamSectionResults.results.map((item:any) => ({
+            id: item.id,
             name: item.Name || item.name,
             position: item.position?.[0],
             description: item.comment?.[0],
@@ -177,6 +182,7 @@ export async function fetchLandingPageData(): Promise<any> {
         creator: landingPageData.creator?.[0],
         creatorLink: landingPageData.creatorLink,
         footerList: footerSectionResults.results.map((item:any) => ({
+            id: item.id,
             label: item.title,
             href: item.href?.[0]?.trim(),
             type: item.type,
