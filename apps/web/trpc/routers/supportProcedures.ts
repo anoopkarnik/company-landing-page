@@ -1,22 +1,13 @@
 import { createTRPCRouter, baseProcedure } from "@/trpc/init";
 import { sendSupportEmail, createContact } from "@workspace/email/resend/index";
-import { fetchLandingPageData } from "@/lib/functions/fetchLandingPageDataFromNotion";
-import { redis } from "@/server/redis";
+import { getCachedLandingPageData } from "@/lib/functions/cms-cache";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { headers } from "next/headers";
-import { ratelimit, chatRateLimit } from "@/server/ratelimit";
-
-const LANDING_PAGE_CACHE_KEY = "saas-company:landing-page:notion:v1";
+import { getChatRateLimit, getRatelimit } from "@/server/ratelimit";
 
 async function getSupportEmail(): Promise<string> {
-  if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
-    const cached = await redis.get<Awaited<ReturnType<typeof fetchLandingPageData>>>(LANDING_PAGE_CACHE_KEY);
-    if (cached?.contactUs?.supportEmailAddress) {
-      return cached.contactUs.supportEmailAddress;
-    }
-  }
-  const data = await fetchLandingPageData();
+  const data = await getCachedLandingPageData();
   return data.contactUs?.supportEmailAddress || "";
 }
 
@@ -28,29 +19,36 @@ async function getRateLimitIdentifier() {
 }
 
 export const supportRouter = createTRPCRouter({
-    sendSupportMessage: baseProcedure
+  sendSupportMessage: baseProcedure
     .input(
       z.object({
         subject: z.string().min(1, "Subject is required"),
         email: z.string().email().min(1, "Email is required"),
         message: z.string().min(1, "Message is required"),
-      })
+      }),
     )
     .mutation(async ({ input }) => {
       const identifier = await getRateLimitIdentifier();
-      const { success } = await ratelimit.limit(identifier);
-      if (!success) {
-        throw new TRPCError({
-          code: "TOO_MANY_REQUESTS",
-          message: "Rate limit exceeded. Please try again later.",
-        });
+      const ratelimit = getRatelimit();
+      if (ratelimit) {
+        const { success } = await ratelimit.limit(identifier);
+        if (!success) {
+          throw new TRPCError({
+            code: "TOO_MANY_REQUESTS",
+            message: "Rate limit exceeded. Please try again later.",
+          });
+        }
       }
 
       const { subject, email, message } = input;
       const supportEmail = await getSupportEmail();
-      let newSubject = subject + " from " + email + " for " + process.env.NEXT_PUBLIC_SAAS_NAME ;
-      const res = await sendSupportEmail(supportEmail, newSubject, message)
-
+      let newSubject =
+        subject +
+        " from " +
+        email +
+        " for " +
+        process.env.NEXT_PUBLIC_SAAS_NAME;
+      const res = await sendSupportEmail(supportEmail, newSubject, message);
 
       if (!res) {
         throw new Error("Failed to send support message");
@@ -58,20 +56,23 @@ export const supportRouter = createTRPCRouter({
 
       return { success: true };
     }),
-   subscribeToNewsletter: baseProcedure
+  subscribeToNewsletter: baseProcedure
     .input(
       z.object({
         email: z.string().email().min(1, "Email is required"),
-      })
+      }),
     )
     .mutation(async ({ input }) => {
       const identifier = await getRateLimitIdentifier();
-      const { success } = await ratelimit.limit(identifier);
-      if (!success) {
-        throw new TRPCError({
-          code: "TOO_MANY_REQUESTS",
-          message: "Rate limit exceeded. Please try again later.",
-        });
+      const ratelimit = getRatelimit();
+      if (ratelimit) {
+        const { success } = await ratelimit.limit(identifier);
+        if (!success) {
+          throw new TRPCError({
+            code: "TOO_MANY_REQUESTS",
+            message: "Rate limit exceeded. Please try again later.",
+          });
+        }
       }
 
       const { email } = input;
@@ -85,21 +86,24 @@ export const supportRouter = createTRPCRouter({
 
       return { success: true };
     }),
-    chatWithSaaSAssistant: baseProcedure
+  chatWithSaaSAssistant: baseProcedure
     .input(
       z.object({
         message: z.string().min(1, "Message is required"),
-      })
+      }),
     )
     .mutation(async ({ input }) => {
       const identifier = await getRateLimitIdentifier();
       // Use higher limit for chat
-      const { success } = await chatRateLimit.limit(identifier);
-      if (!success) {
-        throw new TRPCError({
-          code: "TOO_MANY_REQUESTS",
-          message: "You are sending messages too quickly. Please slow down.",
-        });
+      const chatRateLimit = getChatRateLimit();
+      if (chatRateLimit) {
+        const { success } = await chatRateLimit.limit(identifier);
+        if (!success) {
+          throw new TRPCError({
+            code: "TOO_MANY_REQUESTS",
+            message: "You are sending messages too quickly. Please slow down.",
+          });
+        }
       }
 
       const { message } = input;
