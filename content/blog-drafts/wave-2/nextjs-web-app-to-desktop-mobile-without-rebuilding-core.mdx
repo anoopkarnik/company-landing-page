@@ -1,0 +1,261 @@
+# From a Next.js Web App to Desktop and Mobile Without Rebuilding the Core
+
+**The short answer:** do not turn one Next.js page tree into three compromised applications. Keep identity, data, entitlements, validation and business operations behind one backend contract; move reusable TypeScript into purpose-specific packages; then build a secure Electron renderer and an Expo client as separate product surfaces. You reuse the product’s **core**, while allowing navigation, storage, permissions and UI to fit each platform.
+
+This is the architecture behind the web, desktop and mobile surfaces in [SaaS Forge](https://github.com/anoopkarnik/saas-forge). It reduces duplicate domain work, but it is not “write once, ship everywhere.” Native distribution adds real authentication, security, release and UX responsibilities.
+
+## First ask whether an installed app is justified
+
+A responsive web application should usually come first. It has the fastest release cycle, no store review and immediate access through a URL. Add an installed surface when it unlocks a concrete user outcome.
+
+Desktop is useful when the product needs:
+
+- long-running presence beside a user’s work;
+- operating-system notifications, tray behavior or file access;
+- offline or local processing;
+- keyboard-heavy workflows;
+- an installable distribution expected by the target audience.
+
+Mobile is useful when the product needs:
+
+- capture at the moment of activity;
+- camera, location, notifications or sharing integration;
+- brief, frequent actions away from a desk;
+- store distribution or a home-screen experience;
+- offline-tolerant field workflows.
+
+If the requirement is only “it should work on a phone,” improve responsive web and progressive enhancement first. Every new client creates another release channel and security surface.
+
+## Decide what “the core” contains
+
+The durable product core is not the Next.js component tree. It is the set of rules and contracts that define the product:
+
+```text
+                         Product backend
+            auth | APIs | jobs | data | entitlements
+                           /    |    \
+                          /     |     \
+                  Next.js    Electron    Expo
+                    web       desktop    mobile
+                          \     |     /
+                   types | schemas | domain helpers
+```
+
+Share these when they are platform-neutral:
+
+- domain types and state machines;
+- Zod or equivalent validation schemas;
+- authorization and entitlement semantics;
+- typed API inputs and outputs;
+- formatting and calculation helpers;
+- analytics event vocabulary;
+- design tokens and content labels;
+- test fixtures for common business behavior.
+
+Keep these platform-specific:
+
+- routing and navigation;
+- filesystem, camera, sharing and notification adapters;
+- secure local storage;
+- deep-link and OAuth callback handling;
+- Electron IPC and window lifecycle;
+- mobile gestures, safe areas and accessibility interactions;
+- app packaging, signing, updates and store metadata.
+
+Trying to reuse a browser-only component that assumes `window`, cookies and DOM elements inside React Native usually costs more than reusing its schema and rebuilding the screen natively.
+
+## Put the backend contract at the center
+
+The web application often begins with Server Components, Server Functions or Route Handlers close to the UI. Next.js supports this model well: its App Router separates server and client components, and Route Handlers expose HTTP endpoints. But desktop and mobile cannot import a production server function across the network.
+
+Before adding clients, identify the product operations:
+
+```text
+getCurrentUser()
+listProjects(cursor, filter)
+createProject(input)
+getEntitlement()
+updateProfile(input)
+submitSupportMessage(input)
+```
+
+Expose them through a versioned HTTP or typed RPC boundary. Keep database credentials, provider secrets and authorization checks on the server. A client can hide a button, but the server must reject an unauthorized operation.
+
+SaaS Forge uses tRPC-style contracts for product operations. Its Electron renderer talks to the web API through a configured base URL, while the Expo client calls the same backend for documentation, CMS, support and billing-related data. The database remains the shared system of record rather than being copied into each client.
+
+### Design the API for unreliable clients
+
+Mobile networks disappear; laptops sleep; a user taps twice. APIs used by installed clients need:
+
+- explicit timeouts and retry guidance;
+- idempotency for writes;
+- pagination and bounded payloads;
+- stable error codes, not only English messages;
+- optimistic-concurrency or conflict behavior;
+- backward compatibility during staged app updates;
+- observability by client version and correlation ID.
+
+The website and server can deploy together. Store-installed clients may remain old for weeks, so an API change cannot assume every caller updated immediately.
+
+## Structure the monorepo around purpose
+
+Expo officially supports workspace monorepos, and Turborepo documents internal packages as a way to share code in one workspace. A useful layout is:
+
+```text
+apps/
+  web/          Next.js and server routes
+  desktop/      Electron main, preload and renderer
+  mobile/       Expo Router and native screens
+packages/
+  auth/         shared auth configuration, types and validation
+  database/     server-side schema and data client
+  ui/           web/Electron components and design tokens
+  contracts/    API inputs, outputs and shared domain types
+  config/       lint and TypeScript configuration
+```
+
+Package boundaries should express runtime boundaries. A mobile package may import a validation schema; it must not bundle a server database client. An Electron renderer may consume browser-compatible UI; it must not receive unrestricted Node APIs simply because both use TypeScript.
+
+Turborepo can understand package and task dependencies from workspace manifests. That helps order builds and tests, but package design still matters. Give each internal package one clear purpose and a deliberate export surface.
+
+## Build the web product first—but extract before it hardens
+
+A sensible sequence is:
+
+1. Validate the primary journey on responsive web.
+2. Move input schemas, domain types and calculations out of route components.
+3. Define authenticated API operations for features needed by external clients.
+4. Add contract tests and authorization tests.
+5. Build one installed surface around a real platform advantage.
+6. Observe adoption before copying the entire feature list.
+
+Do not wait until the web app has hundreds of direct database calls inside components. Extraction is easiest while domain boundaries are still visible.
+
+At the same time, avoid premature abstraction. Two screens that look similar do not automatically deserve a universal component. Share after the stable common behavior is understood.
+
+## Desktop: Electron is a security boundary, not a browser shortcut
+
+Electron combines a privileged main process with renderer processes. That enables desktop features, but it increases the consequence of unsafe web content. Electron’s official security checklist recommends secure content, disabled Node integration for remote content, context isolation, process sandboxing, restricted navigation, validated IPC senders and a current Electron version.
+
+A safer structure is:
+
+```text
+Main process
+  owns windows, protocol links and privileged OS operations
+        |
+   narrow preload bridge
+        |
+Local renderer bundle
+  owns React UI and calls the remote product API
+```
+
+Do not expose raw `ipcRenderer`, filesystem or shell access to the page. Define narrow operations, validate every argument and verify which renderer sent the message. Restrict navigation and external URLs.
+
+SaaS Forge’s audited desktop configuration sets renderer sandboxing and context isolation on and Node integration off; tests assert those flags. Its desktop app uses a local Electron/Vite renderer, shared auth/UI packages, a configurable API URL and deep-link handling. That is materially different from loading an arbitrary production website with Node privileges.
+
+Desktop authentication also needs a return path from the system browser. Electron documents registering a custom protocol and handling platform-specific app lifecycle events. Treat incoming deep links as untrusted input: parse an allowlisted scheme and path, validate state and never execute a supplied command or arbitrary URL.
+
+Packaging is another product. Define application ID, signing, icons, release channels, auto-update policy and rollback. SaaS Forge includes Linux Snap packaging commands; [the separate Electron and Snap Store guide](/blog/create-a-desktop-app-of-your-site-and-publish-to-ubuntu-snapstore) covers that path in more detail. Other operating systems need their own signing and distribution work.
+
+## Mobile: share auth semantics, build native flows
+
+Expo supports monorepos managed through common package-manager workspaces, and current versions configure Metro automatically when the standard Expo Metro configuration is used. Check every internal dependency for React Native compatibility; a package that assumes the DOM or Node built-ins does not become native because it lives in `packages/`.
+
+Authentication is the first major difference from web:
+
+- web sessions commonly rely on browser cookies;
+- native clients need secure persistence and authenticated request plumbing;
+- social sign-in returns through a deep link or universal/app link;
+- development schemes differ from production schemes.
+
+Better Auth’s official Expo integration uses its Expo client plugin, `expo-secure-store` for session data/cookies and configured trusted origins for app schemes. It explicitly warns that broad development-origin patterns should remain development-only. Expo recommends development builds for stable authentication callback URLs rather than relying on Expo Go behavior.
+
+SaaS Forge’s Expo client includes Better Auth’s Expo integration, SecureStore, Expo Linking and WebBrowser dependencies. It maintains native screens and components while importing shared auth schemas and types. That is the right kind of reuse: one account model and validation contract, with a mobile-specific user experience.
+
+### Treat offline behavior as a state problem
+
+An installed app is not automatically offline-capable. Decide per operation:
+
+- read from cached data and show its age;
+- queue a safe idempotent mutation;
+- block an operation that requires current authorization or price;
+- surface a conflict instead of silently overwriting server state.
+
+Do not cache secrets or sensitive business data in general-purpose storage. Use platform-secure storage for the minimal credential material and define deletion behavior on sign-out or account removal.
+
+## Payments and entitlements across clients
+
+Keep plan, subscription and entitlement state on the backend. Desktop and mobile can initiate an allowed checkout or open a provider-hosted flow, but a success redirect is not the authority for unlocking a feature. Verified provider events update local entitlement state idempotently; every client reads that state through the same authenticated API.
+
+Native-store billing rules may apply when selling digital functionality in distributed mobile or desktop apps. Those rules and regional exceptions change. Review the current store policy for the product and distribution channel rather than assuming the web checkout can be copied into every client.
+
+## Test the shared core and each surface separately
+
+A multi-platform verification matrix should include:
+
+| Layer | What to prove |
+|---|---|
+| Contracts | inputs parse, outputs remain compatible, error codes are stable |
+| Authorization | every client receives the same server-side allow/deny decision |
+| Web | server/client boundaries, responsive behavior, browser session flow |
+| Desktop | sandbox flags, IPC allowlist, deep links, navigation restrictions, packaging |
+| Mobile | secure-session persistence, app links, offline/reconnect, permissions, native accessibility |
+| End to end | one account and entitlement behave consistently across all selected surfaces |
+
+Run platform builds in CI, but do not describe them as healthy without current evidence. Store release checks, signing and physical-device testing remain separate from a successful TypeScript build.
+
+## What SaaS Forge demonstrates—and what it does not
+
+The public repository reviewed on 1 September 2026 contains Next.js, Electron and Expo apps plus shared auth, database and UI packages. The desktop and mobile clients implement authentication, settings, documentation, support and administration surfaces to different degrees. It demonstrates a real multi-application foundation, not merely three empty folders.
+
+It does not mean every web feature has native parity or that every shared component is portable. The mobile UI is intentionally separate in many places. AI modules remain experimental. The presence of build and publish commands is not a claim that current CI, every store submission or every operating-system package is green.
+
+That limitation is healthy. Platform expansion should follow user value and verified release evidence, not a checkbox labelled “mobile included.”
+
+## Frequently asked questions
+
+### Can I reuse my Next.js components in Electron?
+
+Many client-side React components can be shared because Electron renderers use web technologies. Keep Next.js server-only imports out, and maintain Electron’s preload/IPC boundary. Shared browser UI does not justify exposing Node privileges.
+
+### Can I reuse them in Expo?
+
+Usually not unchanged if they render DOM elements or depend on browser APIs. Reuse schemas, types, calculations, design tokens and headless state. Build platform-appropriate React Native views.
+
+### Should desktop and mobile connect directly to PostgreSQL?
+
+No. They should call an authenticated application API. Database credentials and authorization logic remain on trusted server infrastructure.
+
+### How do users stay signed in across platforms?
+
+They share one server-side identity model, but each client uses platform-appropriate session storage and callback handling. Browser cookie behavior should not be copied blindly into native storage.
+
+### Do I need a monorepo?
+
+No, but it can make internal packages, coordinated changes and contract tests easier when multiple TypeScript apps evolve together. It also adds tooling complexity. Separate repositories can work if versioned packages and API contracts are managed carefully.
+
+### Which client should I add first?
+
+Choose the platform with a workflow the website cannot serve well. For file-heavy desk work that may be desktop; for capture and notifications it may be mobile. Do not build both only to mirror a dashboard.
+
+## Expand the product without duplicating its identity
+
+The goal is one product with several appropriate surfaces—not several products that happen to use the same logo. A stable backend contract and well-chosen shared packages let a founder validate on web and add installed experiences without replacing the account, database and domain model.
+
+[Read the SaaS Forge case study](/case-studies/saas-forge), [inspect the source architecture](https://github.com/anoopkarnik/saas-forge), or [discuss a web-to-native product roadmap](/#start-project).
+
+## Sources
+
+- [SaaS Forge repository](https://github.com/anoopkarnik/saas-forge)
+- [SaaS Forge desktop application README](https://github.com/anoopkarnik/saas-forge/blob/main/apps/desktop/README.md)
+- [SaaS Forge mobile application README](https://github.com/anoopkarnik/saas-forge/blob/main/apps/mobile/README.md)
+- [Turborepo: Internal packages](https://turborepo.dev/docs/core-concepts/internal-packages)
+- [Expo: Work with monorepos](https://docs.expo.dev/guides/monorepos/)
+- [Better Auth: Expo integration](https://better-auth.com/docs/integrations/expo)
+- [Expo: Linking overview](https://docs.expo.dev/linking/overview/)
+- [Electron: Security](https://www.electronjs.org/docs/latest/tutorial/security)
+- [Electron: Process model](https://www.electronjs.org/docs/latest/tutorial/process-model)
+- [Electron: Deep links](https://www.electronjs.org/docs/latest/tutorial/launch-app-from-url-in-another-app)
+- [Next.js: Server and Client Components](https://nextjs.org/docs/app/getting-started/server-and-client-components)
+- [Next.js: Route Handlers](https://nextjs.org/docs/app/getting-started/route-handlers)
+

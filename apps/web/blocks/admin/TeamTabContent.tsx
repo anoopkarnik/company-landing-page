@@ -22,6 +22,7 @@ export function TeamTabContent({ initialData, onSave, isSaving }: SectionTabProp
     const { fields, append, remove } = useFieldArray({
         control: form.control,
         name: "team",
+        keyName: "_formId",
     });
 
     useEffect(() => {
@@ -67,7 +68,7 @@ export function TeamTabContent({ initialData, onSave, isSaving }: SectionTabProp
 
                 <div className="space-y-4">
                     {fields.map((field, index) => (
-                        <div key={field.id} className="relative border rounded-lg p-4 bg-muted/30">
+                        <div key={field._formId} className="relative border rounded-lg p-4 bg-muted/30">
                             <div className="flex items-center justify-between mb-3">
                                 <span className="text-xs font-medium text-muted-foreground">
                                     {form.watch(`team.${index}.id`) ? "Existing" : "New"} Member #{index + 1}

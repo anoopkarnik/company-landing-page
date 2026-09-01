@@ -79,6 +79,9 @@ export function ImageUploadField({ value, onChange, uploadUrl = "/api/cms/upload
                 />
             </div>
             {value && (
+                // CMS previews may point at arbitrary administrator-supplied URLs,
+                // so Next Image cannot safely predeclare their remote hosts.
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                     src={value}
                     alt="Preview"

@@ -1,0 +1,182 @@
+# AI Agents vs Workflows vs Traditional Automation: What Should You Build?
+
+**The short answer:** use traditional automation when the rules are stable, use an AI-assisted workflow when one bounded step needs judgment, and use an agent only when the route to the outcome cannot be specified in advance. Most business processes do not need a fully autonomous agent. They need a dependable workflow with a small, measured AI component and a human decision before any costly or irreversible action.
+
+Calling every automation an “AI agent” makes architecture harder to discuss. A scheduled database sync, a document-classification pipeline and a research assistant may all move work without constant human input, but they have different failure modes. The useful question is not whether a system feels intelligent. It is **who chooses the next step: code, a model, or a person?**
+
+## The three patterns in plain language
+
+### Traditional automation follows explicit rules
+
+Traditional automation is code or configuration that maps known inputs to known actions. A cron job exports yesterday’s orders. A webhook copies a paid invoice into an accounting system. A validation service rejects a record when a required field is absent.
+
+The path is deterministic even when the data changes:
+
+```text
+event -> validate -> transform -> write -> notify
+```
+
+This is usually the right default for arithmetic, access control, financial state changes, database constraints, compliance checks and stable system-to-system integrations. It is inexpensive to execute, straightforward to test and relatively easy to audit.
+
+Its limitation is equally clear: a rule only handles the situations its author anticipated. When an inbox message can express the same request in hundreds of ways, a growing maze of regular expressions and branches becomes fragile.
+
+### An AI workflow has a route chosen in advance
+
+An AI workflow places one or more model calls inside a predefined process. Code still controls the sequence; the model handles a bounded task such as classification, extraction, summarization or drafting.
+
+```text
+email -> validate attachment -> AI extracts fields -> schema check
+      -> low confidence? human review : update CRM
+```
+
+Anthropic’s architecture guidance uses a similar distinction: workflows orchestrate models and tools along predefined code paths, while agents dynamically direct their own process and tool use. The same guidance recommends starting with the simplest approach and adding complexity only when it produces measurable improvement.
+
+A workflow is often the best production compromise. It gives a model room to interpret messy language without giving it authority over the whole operation.
+
+### An agent chooses how to pursue the goal
+
+An agent receives an objective, observes its environment, selects tools, evaluates the result and decides what to do next. The number and order of steps may differ for every request.
+
+```text
+goal -> plan -> choose tool -> act -> inspect result
+                         ^                 |
+                         |------ revise ---|
+```
+
+That flexibility is valuable for open-ended research, diagnosing unfamiliar technical failures or modifying a codebase where the affected files cannot be known in advance. It also introduces variable cost, latency and a larger failure surface. One wrong assumption can influence several later actions.
+
+An agent is not automatically more capable than a well-designed workflow. It is simply allowed to make more control-flow decisions.
+
+## A practical comparison
+
+| Question | Traditional automation | AI-assisted workflow | Agent |
+|---|---|---|---|
+| Who selects the next step? | Code or rules | Code, with bounded model decisions | Model within defined limits |
+| Best input | Structured and predictable | Messy input with a repeatable process | Open-ended input with an unpredictable path |
+| Output consistency | High | Medium to high with validation | Variable |
+| Typical latency and model cost | Lowest | Moderate and bounded | Highest and variable |
+| Ease of testing | Exact assertions | Dataset and threshold evaluation | Trajectory, tool and outcome evaluation |
+| Human review | Usually exception-based | Confidence or risk-based | Checkpoints and permission boundaries |
+| Good examples | Syncs, calculations, validation | OCR cleanup, routing, report drafts | Research, investigation, contextual code changes |
+
+The categories can be combined. A production system might use deterministic code for permissions and billing, an AI workflow to interpret a request, and an agent inside a sandbox to investigate only the unusual cases.
+
+## Use a five-question decision test
+
+### 1. Can the correct path be written as rules?
+
+If a knowledgeable operator can express the process as a stable flowchart, begin with ordinary automation. Do not pay model cost for converting a date, checking a status or moving data between known fields.
+
+If the path is fixed but one input is ambiguous, isolate that ambiguity. Let a model classify the request, then hand control back to deterministic code.
+
+### 2. Is there an objective way to verify the output?
+
+Automation becomes safer when the system can check its own work. A JSON schema can validate extracted fields. A database can enforce uniqueness. A calculation can be recomputed. A generated answer can be checked against retrieved source passages.
+
+If correctness is subjective or expensive to verify, give the system less authority. Drafting a client email for review may be sensible; deciding to issue a large refund from an ambiguous complaint is not.
+
+### 3. What happens when it is wrong?
+
+Classify actions by reversibility and impact:
+
+- **Low impact and reversible:** tag a lead, draft a summary, suggest a category.
+- **Medium impact:** update a CRM field, schedule a follow-up, create a support ticket.
+- **High impact or irreversible:** transfer money, delete records, change permissions, publish externally or send a binding communication.
+
+Higher-impact actions need stronger authentication, allowlisted tools, input validation, idempotency, logs and usually explicit approval. A human-in-the-loop control is not an admission that the AI failed; it is an intentional authorization boundary.
+
+### 4. How much variation is genuinely useful?
+
+An agent earns its complexity when useful paths cannot be enumerated. Researching an unfamiliar market may require different searches for every question. Investigating a production incident may require inspecting logs, then code, then deployment configuration depending on what each step reveals.
+
+If every run uses the same five API calls in the same order, an agent is hiding a workflow that should have been explicit.
+
+### 5. Can you evaluate it before granting autonomy?
+
+Collect representative examples, including ambiguous and adversarial cases. Define what success, escalation and unacceptable failure mean. Measure the simplest version first. Then compare whether retrieval, a multi-step workflow or an agent materially improves the result.
+
+For agents, evaluate more than the final answer. Inspect tool selection, arguments, permission requests, stop conditions, unnecessary steps and recovery after a tool fails. Anthropic’s agent-evaluation guidance emphasizes that agents operate across multiple turns and modify state; evaluating a single response is therefore insufficient.
+
+## When not to use AI
+
+AI is usually the wrong component when:
+
+1. **Exact rules already solve the task.** Tax calculations, authorization checks and referential integrity belong in code and database constraints.
+2. **There is no tolerance for an invented value.** A model can help locate a value, but a validated source must remain authoritative.
+3. **The available data is too small or unreliable to evaluate quality.** A convincing demo is not evidence of dependable performance.
+4. **Sensitive data cannot be sent to the proposed provider or region.** First resolve retention, access, residency and contractual requirements.
+5. **The process itself is broken.** Automating an undefined approval chain creates faster confusion.
+6. **The economics do not work.** Variable multi-turn inference may cost more than the manual task, especially at high volume.
+7. **Nobody owns exceptions.** Every production automation needs an operator who can inspect, replay or safely resolve failures.
+
+The alternative is not always “do nothing.” Improve the form, add a database constraint, expose a better API, create a deterministic workflow or reduce the number of hand-offs first.
+
+## A safer reference architecture
+
+A useful business automation separates authority from interpretation:
+
+1. **Ingress:** authenticate the webhook, capture a stable event ID and store the original payload.
+2. **Deterministic validation:** check required fields, file types, limits and business invariants.
+3. **Bounded intelligence:** ask a model for structured output against a schema, with only the context needed for the task.
+4. **Verification:** reject invalid structures, compare values against source data and calculate a confidence or risk signal.
+5. **Policy gate:** decide in code whether the action is allowed, needs review or must stop.
+6. **Human checkpoint:** show the source, proposed action and uncertainty—not just an approve button.
+7. **Idempotent execution:** apply an action once even if a webhook or retry arrives twice.
+8. **Evidence:** record inputs, model and prompt version, tool calls, decision, outcome and reviewer.
+
+This design lets teams increase automation gradually. A new model can improve the interpretation step without becoming the authority for permissions, money or destructive changes.
+
+## Examples from real project patterns
+
+In a [financial-document OCR pipeline](/case-studies/financial-document-ocr-pipeline), the repeatable route was more valuable than autonomy: receive an image, identify the table type, apply the appropriate OCR configuration, validate the output and write rows to a sheet. AI-assisted extraction can handle visual variation, but spreadsheet shape and numeric validation remain deterministic.
+
+In a [voice-driven restaurant ordering system](/case-studies/voice-driven-restaurant-ordering), natural conversation is useful at the edge. Menu items, variants and prices still come from tools and structured data. The conversational system should not invent a product merely because the request sounds plausible.
+
+For an unfamiliar code upgrade, the changed files and conflicts may not be predictable. That is a better agent candidate—but it still belongs on a branch, with scoped filesystem access, tests and human review before merge.
+
+## Limitations to state before launch
+
+No architecture eliminates model variability. Structured outputs can fail validation; tools can return stale or partial data; external APIs can succeed after a client times out; a human can approve the wrong proposal. “Human in the loop” also becomes meaningless if reviewers lack context or approve alerts mechanically.
+
+An initial system should therefore have conservative permissions and an explicit fallback. Increase autonomy only after observing real executions and measuring the failure modes. The correct endpoint may remain a workflow permanently.
+
+## Frequently asked questions
+
+### Is n8n an AI agent?
+
+n8n is a workflow automation platform. A workflow can call models or contain an AI Agent node, but the platform itself does not make every workflow agentic. The deciding factor is whether predefined logic or a model controls the next action.
+
+### Are agents better than workflows?
+
+Not universally. Agents handle open-ended paths; workflows provide greater predictability for known processes. The better design is the least complex one that meets the measured requirement.
+
+### Can a workflow include human approval?
+
+Yes. n8n documents “send and wait” approval operations, the Wait node for more complex approvals and human review for AI tool calls. Approval should be placed before a consequential action and include enough evidence for a real decision.
+
+### How do I test an AI workflow?
+
+Build a versioned dataset of representative inputs and expected properties. Test extraction accuracy, routing, policy violations, latency and cost. Include malformed inputs and provider failures. For an agent, also evaluate its tool-call trajectory and stopping behavior.
+
+### When should an agent be allowed to write data?
+
+Only after its identity and scope are constrained, arguments are validated and the write is reversible or protected by approval. Use idempotency keys and audit records. Start with read-only access whenever possible.
+
+### Can I add AI to an existing automation later?
+
+Usually. A modular workflow can introduce AI only at the ambiguous step while preserving existing integrations, policy checks and observability. This is often safer than replacing a stable process wholesale.
+
+## Build the smallest system that solves the real problem
+
+If you have a repetitive process but are unsure whether it needs rules, an AI workflow or an agent, start with the exceptions and consequences—not the fashionable label. I can map the process, identify the narrowest useful AI boundary and design the retries, review path and evidence around it.
+
+[Explore AI and n8n automation services](/#services) or [describe the process you want to improve](/#start-project).
+
+## Sources
+
+- [Anthropic: Building effective agents](https://www.anthropic.com/research/building-effective-agents)
+- [Anthropic: Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)
+- [n8n documentation: Human-in-the-loop for AI tool calls](https://docs.n8n.io/advanced-ai/human-in-the-loop-tools/)
+- [n8n documentation: Error handling](https://docs.n8n.io/flow-logic/error-handling/)
+- [n8n documentation: All executions and retries](https://docs.n8n.io/workflows/executions/all-executions/)
+

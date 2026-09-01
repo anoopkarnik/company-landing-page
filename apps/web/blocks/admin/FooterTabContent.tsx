@@ -20,6 +20,7 @@ export function FooterTabContent({ initialData, onSave, isSaving }: SectionTabPr
     const { fields, append, remove } = useFieldArray({
         control: form.control,
         name: "footer",
+        keyName: "_formId",
     });
 
     useEffect(() => {
@@ -64,7 +65,7 @@ export function FooterTabContent({ initialData, onSave, isSaving }: SectionTabPr
 
                 <div className="space-y-4">
                     {fields.map((field, index) => (
-                        <div key={field.id} className="relative border rounded-lg p-4 bg-muted/30">
+                        <div key={field._formId} className="relative border rounded-lg p-4 bg-muted/30">
                             <div className="flex items-center justify-between mb-3">
                                 <span className="text-xs font-medium text-muted-foreground">
                                     {form.watch(`footer.${index}.id`) ? "Existing" : "New"} Link #{index + 1}

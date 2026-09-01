@@ -1,0 +1,45 @@
+{
+  "title": "Vibe-Coding Platform vs SaaS Boilerplate vs Custom Development: Cost, Ownership and Scale",
+  "slug": "vibe-coding-vs-saas-boilerplate-vs-custom-development",
+  "type": "MVP & SaaS",
+  "category": "MVP & SaaS",
+  "excerpt": "A practical comparison of vibe-coding platforms, SaaS boilerplates and custom development across speed, cost, ownership, India payments, scaling and upgrades.",
+  "seoTitle": "Vibe Coding vs Boilerplate vs Custom Build",
+  "seoDescription": "Compare vibe-coding platforms, SaaS boilerplates and custom development by speed, ownership, cost, India payments, scale and upgrade path.",
+  "canonicalUrl": "/blog/vibe-coding-vs-saas-boilerplate-vs-custom-development",
+  "tags": [
+    "vibe coding",
+    "SaaS boilerplate",
+    "custom development",
+    "SaaS Forge",
+    "code ownership",
+    "vendor lock-in"
+  ],
+  "author": "Anoop Karnik Dasika",
+  "relatedServiceSlugs": [
+    "mvp-development",
+    "data-ai-integration"
+  ],
+  "relatedCaseStudySlugs": [
+    "saas-forge",
+    "life-os"
+  ],
+  "coverPrompt": "16:9 wide editorial illustration for Bayesian Labs showing three elegant pathways toward one finished SaaS product: an AI prompt-driven path, a modular component-foundation path, and a bespoke architecture path. The paths visibly differ in flexibility and structure but converge on a polished product core. Dark near-black background with violet, cyan and emerald accents, refined dimensional geometry, premium engineering consultancy look, generous negative space. No text, no labels, no logos, no watermark, no copyrighted user interface.",
+  "altText": "Three development paths converging on a finished SaaS product",
+  "imageCaption": "Conceptual comparison of platform-assisted, boilerplate-based and custom product development paths.",
+  "sourceUrls": [
+    "https://github.com/anoopkarnik/saas-forge",
+    "https://better-auth.com/docs/integrations/next",
+    "https://nextjs.org/docs/app/getting-started/deploying",
+    "https://razorpay.com/docs/payments/subscriptions/supported-payment-methods/",
+    "https://git-scm.com/docs/git-merge",
+    "https://git-scm.com/docs/git-rerere",
+    "https://owasp.org/www-project-application-security-verification-standard/"
+  ],
+  "claimNotes": [
+    "The three categories overlap; the comparison deliberately avoids universal claims about all vibe-coding platforms or boilerplates.",
+    "SaaS Forge feature claims are grounded in the current public repository README as checked on 2026-09-01.",
+    "The article does not claim that AI resolves every merge safely or automatically.",
+    "Payment provider coverage and limits can change and must be verified at implementation time."
+  ]
+}

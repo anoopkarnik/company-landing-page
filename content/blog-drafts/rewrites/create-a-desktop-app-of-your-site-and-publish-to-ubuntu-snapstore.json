@@ -1,0 +1,36 @@
+{
+  "title": "Turn a Next.js Site into a Secure Electron App and Publish It to the Snap Store",
+  "slug": "create-a-desktop-app-of-your-site-and-publish-to-ubuntu-snapstore",
+  "type": "Product Engineering",
+  "category": "Product Engineering",
+  "excerpt": "A current, security-first guide to wrapping a deployed Next.js application with Electron, building a strictly confined Snap and releasing it through Ubuntu's Snap Store.",
+  "seoTitle": "Next.js to Electron and Ubuntu Snap Store",
+  "seoDescription": "Wrap a Next.js site in a secure Electron shell, build a core24 Snap with electron-builder and publish it safely to Ubuntu's Snap Store.",
+  "canonicalUrl": "/blog/create-a-desktop-app-of-your-site-and-publish-to-ubuntu-snapstore",
+  "tags": [
+    "Electron",
+    "Next.js",
+    "Snap Store",
+    "Ubuntu",
+    "desktop app",
+    "application security"
+  ],
+  "author": "Anoop Karnik Dasika",
+  "relatedServiceSlugs": ["mvp-development"],
+  "relatedCaseStudySlugs": ["saas-forge", "life-os"],
+  "coverAsset": "electron-snap-store-desktop-app.webp",
+  "coverPrompt": "16:9 wide editorial illustration for Bayesian Labs showing a web application becoming a secure Linux desktop package: a polished desktop window, shielded Electron shell, packaging stages and an Ubuntu-style software parcel represented only by abstract geometry. Premium dark charcoal background, deep violet with cyan and emerald accents, subtle glassmorphism, crisp 3D depth, ample negative space, sophisticated technical consultancy aesthetic. No text, no letters, no logos, no watermark, no people, no copyrighted interface.",
+  "altText": "Abstract desktop application window moving through a secure packaging pipeline into a Linux package",
+  "imageCaption": "A web product becomes a distributable Linux desktop application through a hardened Electron shell and Snap packaging pipeline.",
+  "sourceUrls": [
+    "https://www.electronjs.org/docs/latest/",
+    "https://www.electronjs.org/docs/latest/tutorial/security",
+    "https://www.electron.build/docs/snap/",
+    "https://snapcraft.io/docs/releasing-your-app/"
+  ],
+  "claimNotes": [
+    "The tutorial describes a thin desktop client for a trusted HTTPS web application, not an offline Next.js bundle.",
+    "Electron and electron-builder configuration can change; the commands were checked against official documentation in September 2026.",
+    "Store acceptance and review outcomes are controlled by Canonical and are not guaranteed."
+  ]
+}

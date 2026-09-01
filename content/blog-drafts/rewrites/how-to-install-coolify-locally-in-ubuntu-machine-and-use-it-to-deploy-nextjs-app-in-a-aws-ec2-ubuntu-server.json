@@ -1,0 +1,33 @@
+{
+  "title": "Deploy a Next.js App to AWS EC2 with Self-Hosted Coolify",
+  "slug": "how-to-install-coolify-locally-in-ubuntu-machine-and-use-it-to-deploy-nextjs-app-in-a-aws-ec2-ubuntu-server",
+  "type": "DevOps",
+  "category": "DevOps",
+  "excerpt": "A production-minded guide to installing Coolify on an Ubuntu LTS EC2 instance, securing network access, deploying Next.js from Git and operating it after launch.",
+  "seoTitle": "Deploy Next.js to AWS EC2 with Coolify",
+  "seoDescription": "Install Coolify on Ubuntu LTS in AWS EC2, configure secure inbound rules, deploy Next.js from Git and add HTTPS, health checks and backups.",
+  "canonicalUrl": "/blog/how-to-install-coolify-locally-in-ubuntu-machine-and-use-it-to-deploy-nextjs-app-in-a-aws-ec2-ubuntu-server",
+  "tags": ["Coolify", "Next.js", "AWS EC2", "Ubuntu", "self-hosting", "DevOps"],
+  "author": "Anoop Karnik Dasika",
+  "relatedServiceSlugs": ["mvp-development"],
+  "relatedCaseStudySlugs": ["saas-forge", "life-os"],
+  "coverAsset": "coolify-nextjs-aws-ec2.webp",
+  "coverPrompt": "16:9 wide editorial illustration for Bayesian Labs showing a production deployment pipeline from source control through automated container builds into a secured cloud server, reverse proxy and healthy public web endpoint. Premium dark charcoal background, deep violet with cyan and emerald accents, subtle glassmorphism, crisp 3D depth, ample negative space, sophisticated technical consultancy aesthetic. No text, no letters, no logos, no watermark, no people, no copyrighted interface.",
+  "altText": "Abstract Next.js deployment pipeline connecting source control to a secured cloud server and web endpoint",
+  "imageCaption": "Coolify coordinates builds, containers and reverse-proxy routing while the EC2 instance remains your operational responsibility.",
+  "sourceUrls": [
+    "https://coolify.io/docs/get-started/installation",
+    "https://coolify.io/docs/knowledge-base/server/firewall",
+    "https://next.coolify.io/docs/applications/builds/nixpacks/deploy",
+    "https://coolify.io/docs/knowledge-base/environment-variables",
+    "https://coolify.io/docs/knowledge-base/health-checks",
+    "https://coolify.io/docs/knowledge-base/domains",
+    "https://nextjs.org/docs/app/getting-started/deploying",
+    "https://nextjs.org/docs/app/guides/self-hosting"
+  ],
+  "claimNotes": [
+    "This is a self-hosted deployment pattern; Coolify does not transfer infrastructure security, backups or incident response to a managed provider.",
+    "Exact EC2 sizing and AWS cost depend on region, traffic, build load and attached services; the article deliberately avoids a universal size or price.",
+    "Coolify documentation evolves quickly; UI labels and supported build packs should be checked before a production migration."
+  ]
+}

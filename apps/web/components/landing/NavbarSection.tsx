@@ -1,5 +1,15 @@
-"use client"
+"use client";
+
 import { useEffect, useState } from "react";
+import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import { ArrowRight, MenuIcon } from "lucide-react";
+import { useTheme } from "next-themes";
+import Image from "next/image";
+import Link from "next/link";
+import { useSuspenseQuery } from "@tanstack/react-query";
+
+import { useTRPC } from "@/trpc/client";
+import { Button } from "@workspace/ui/components/shadcn/button";
 import {
   Sheet,
   SheetContent,
@@ -8,211 +18,180 @@ import {
   SheetTrigger,
 } from "@workspace/ui/components/shadcn/sheet";
 
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
-import { Button, buttonVariants } from "@workspace/ui/components/shadcn/button";
-import { MenuIcon } from "lucide-react";
-import { useTheme } from 'next-themes';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useTRPC } from '@/trpc/client'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { ModeToggle } from "./ModeToggle";
 
-const NavbarSection = ({ showLandingRoutes = true }: { showLandingRoutes?: boolean } = {}) => {
+const routes = [
+  { label: "Services", href: "#services" },
+  { label: "Case studies", href: "#case-studies" },
+  { label: "Selected work", href: "#selected-work" },
+  { label: "Process", href: "#process" },
+  { label: "About", href: "#about" },
+];
+
+const NavbarSection = ({
+  showLandingRoutes = true,
+}: {
+  showLandingRoutes?: boolean;
+} = {}) => {
   const trpc = useTRPC();
-  const { data } = useSuspenseQuery(trpc.landing.getLandingInfoFromNotion.queryOptions());
-  const navbarSection = data.navbarSection;
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const { theme } = useTheme();
+  const { data } = useSuspenseQuery(trpc.landing.getLandingInfo.queryOptions());
+  const navbar = data.navbarSection;
+  const [isOpen, setIsOpen] = useState(false);
+  const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [starCount, setStarCount] = useState<number>(0);
+  const githubLink = navbar?.githubLink?.trim();
+  const donateNowLink = /^https?:\/\//.test(
+    navbar?.donateNowLink?.trim() || "",
+  )
+    ? navbar.donateNowLink.trim()
+    : null;
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  useEffect(() => setMounted(true), []);
 
-  useEffect(() => {
-    const fetchStarCount = async () => {
-      try {
-        const response = await fetch(`https://api.github.com/repos/${navbarSection.githubUsername}/${navbarSection.githubRepositoryName}`);
-        if (response.ok) {
-          const data = await response.json();
-          setStarCount(data.stargazers_count);
-        } else {
-          console.error("Failed to fetch star count");
-        }
-      } catch (error) {
-        console.log("Error fetching star count:", error);
-      }
-    };
-    if (navbarSection?.githubLink) {
-      fetchStarCount();
-    }
-
-  }, [theme, navbarSection]);
-
+  const resolveHref = (href: string) =>
+    showLandingRoutes ? href : `/${href}`;
+  const logo =
+    mounted && resolvedTheme === "dark" ? navbar?.darkLogo : navbar?.logo;
 
   return (
-    <header className="sticky border-b border-border/40 top-0 z-40 w-full bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 font-geistMono transition-shadow duration-300 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
-      <nav className="mx-auto w-full">
-        <ul className="h-14 px-4 sm:px-6 w-full flex items-center justify-between">
-          <li className="font-bold flex list-none">
-            <Link
-              rel="noreferrer noopener"
-              href="/"
-              className="ml-2 flex items-center gap-2 font-cyberdyne"
-            >
-              <Image
-                src={mounted && theme === "dark" ? navbarSection?.darkLogo : navbarSection?.logo}
-                alt={navbarSection?.title}
-                width={40}
-                height={40}
-                unoptimized
-              />
-              <div className="hidden lg:flex flex-col items-start text-md leading-none bg-gradient-to-r from-[#03a3d7] to-[#D247BF] bg-clip-text text-transparent ">
-                <div>{navbarSection?.title?.split(' ')[0]}</div>
-                <div>{navbarSection?.title?.split(' ')[1]}</div>
-              </div>
-            </Link>
-          </li>
-
-
-          <span className="flex md:hidden">
-
-            <Sheet
-              open={isOpen}
-              onOpenChange={setIsOpen}
-            >
-              <SheetTrigger className="px-2">
-                <MenuIcon onClick={() => setIsOpen(true)} className="flex md:hidden h-5 w-5" />
-              </SheetTrigger>
-
-              <SheetContent side={"left"}>
-                <SheetHeader>
-                  <SheetTitle className="font-bold text-xl">
-                    {navbarSection?.title}
-                  </SheetTitle>
-                </SheetHeader>
-                <nav className="flex flex-col justify-center items-center gap-2 mt-4">
-                  <a
-                    rel="noreferrer noopener"
-                    key={"About"}
-                    href={"#about"}
-                    onClick={() => setIsOpen(false)}
-                    className="w-full text-center text-sm font-medium text-muted-foreground hover:text-foreground py-2 px-4 rounded-md hover:bg-accent transition-colors duration-200"
-                  >
-                    About
-                  </a>
-                  <a
-                    rel="noreferrer noopener"
-                    key={"Services"}
-                    href={"#services"}
-                    onClick={() => setIsOpen(false)}
-                    className="w-full text-center text-sm font-medium text-muted-foreground hover:text-foreground py-2 px-4 rounded-md hover:bg-accent transition-colors duration-200"
-                  >
-                    Services
-                  </a>
-                  <a
-                    rel="noreferrer noopener"
-                    key={"Products"}
-                    href={"#products"}
-                    onClick={() => setIsOpen(false)}
-                    className="w-full text-center text-sm font-medium text-muted-foreground hover:text-foreground py-2 px-4 rounded-md hover:bg-accent transition-colors duration-200"
-                  >
-                    Products
-                  </a>
-                  <a
-                    rel="noreferrer noopener"
-                    key={"Testimonials"}
-                    href={"#testimonials"}
-                    onClick={() => setIsOpen(false)}
-                    className="w-full text-center text-sm font-medium text-muted-foreground hover:text-foreground py-2 px-4 rounded-md hover:bg-accent transition-colors duration-200"
-                  >
-                    Testimonials
-                  </a>
-
-                  <a
-                    rel="noreferrer noopener"
-                    href={navbarSection?.githubLink}
-                    target="_blank"
-                    className={`w-[110px] border ${buttonVariants({
-                      variant: "secondary", size: "sm"
-                    })}`}
-                  >
-                    <GitHubLogoIcon className="mr-2 w-5 h-5" />
-                    {starCount}
-                  </a>
-                  <a rel="noreferrer noopener" href={navbarSection?.donateNowLink}>
-                    <Button size="sm" className="rounded-sm">
-                      Donate Now
-                    </Button>
-                  </a>
-                </nav>
-              </SheetContent>
-            </Sheet>
+    <header className="sticky top-0 z-40 w-full border-b border-border/50 bg-background/82 shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-xl supports-[backdrop-filter]:bg-background/72">
+      <nav className="container flex h-16 items-center justify-between gap-4" aria-label="Primary navigation">
+        <Link href="/" className="flex min-w-0 items-center gap-2.5" data-track="navbar-logo">
+          {logo ? (
+            <Image
+              src={logo}
+              alt=""
+              width={36}
+              height={36}
+              className="size-9 object-contain"
+              unoptimized
+              priority
+            />
+          ) : (
+            <span className="grid size-9 place-items-center rounded-xl bg-primary font-bold text-primary-foreground">
+              {navbar?.title?.slice(0, 1) || "B"}
+            </span>
+          )}
+          <span className="truncate font-cyberdyne text-sm font-semibold sm:text-base">
+            {navbar?.title}
           </span>
+        </Link>
 
-          {/* desktop nav tabs */}
-          {showLandingRoutes &&
-            <nav className="hidden md:flex gap-1">
+        {showLandingRoutes ? (
+          <div className="hidden items-center gap-0.5 lg:flex">
+            {routes.map((route) => (
               <a
-                rel="noreferrer noopener"
-                href={"#about"}
-                key={"About"}
-                className="relative group/navitem px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200"
+                key={route.href}
+                href={resolveHref(route.href)}
+                className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
+                data-track="navbar-link"
+                data-destination={route.href.slice(1)}
               >
-                About
-                <span className="absolute -bottom-[1px] left-3 right-3 h-0.5 bg-gradient-to-r from-[#03a3d7] to-[#D247BF] rounded-full opacity-0 group-hover/navitem:opacity-100 transition-opacity duration-200" />
+                {route.label}
               </a>
-              <a
-                rel="noreferrer noopener"
-                href={"#services"}
-                key={"Services"}
-                className="relative group/navitem px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200"
-              >
-                Services
-                <span className="absolute -bottom-[1px] left-3 right-3 h-0.5 bg-gradient-to-r from-[#03a3d7] to-[#D247BF] rounded-full opacity-0 group-hover/navitem:opacity-100 transition-opacity duration-200" />
-              </a>
-
-              <a
-                rel="noreferrer noopener"
-                href={"#products"}
-                key={"Products"}
-                className="relative group/navitem px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200"
-              >
-                Products
-                <span className="absolute -bottom-[1px] left-3 right-3 h-0.5 bg-gradient-to-r from-[#03a3d7] to-[#D247BF] rounded-full opacity-0 group-hover/navitem:opacity-100 transition-opacity duration-200" />
-              </a>
-              <a
-                rel="noreferrer noopener"
-                href={"#testimonials"}
-                key={"Testimonials"}
-                className="relative group/navitem px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200"
-              >
-                Testimonials
-                <span className="absolute -bottom-[1px] left-3 right-3 h-0.5 bg-gradient-to-r from-[#03a3d7] to-[#D247BF] rounded-full opacity-0 group-hover/navitem:opacity-100 transition-opacity duration-200" />
-              </a>
-
-
-            </nav>}
-          <div className="hidden md:flex gap-2 items-center">
-            <a
-              rel="noreferrer noopener"
-              href={navbarSection?.githubLink}
-              target="_blank"
-              className={`border flex items-center rounded-sm ${buttonVariants({ variant: "secondary", size: "sm" })}`}
-            >
-              <GitHubLogoIcon className="mr-2 w-5 h-5" />
-              {starCount}
-            </a>
-            <a rel="noreferrer noopener" href={navbarSection?.donateNowLink}>
-              <Button size="sm" className="rounded-sm" >
-                Donate Now
-              </Button>
-            </a>
-
-
+            ))}
           </div>
-        </ul>
+        ) : (
+          <div className="hidden items-center gap-1 lg:flex">
+            <Link href="/case-studies" className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground">
+              Case studies
+            </Link>
+            <Link href="/blog" className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground">
+              Insights
+            </Link>
+            <Link href="/doc" className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground">
+              Documentation
+            </Link>
+          </div>
+        )}
+
+        <div className="hidden items-center gap-1.5 md:flex">
+          <ModeToggle />
+          {githubLink ? (
+            <Button asChild size="icon-sm" variant="ghost">
+              <a href={githubLink} target="_blank" rel="noreferrer noopener" aria-label="View GitHub" data-track="navbar-github">
+                <GitHubLogoIcon />
+              </a>
+            </Button>
+          ) : null}
+          {donateNowLink ? (
+            <Button asChild size="sm" variant="ghost">
+              <a
+                href={donateNowLink}
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                Donate
+              </a>
+            </Button>
+          ) : null}
+          <Button asChild size="sm" className="group">
+            <a href={resolveHref("#start-project")} data-track="navbar-project-cta">
+              Start a project
+              <ArrowRight className="transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+            </a>
+          </Button>
+        </div>
+
+        <div className="flex items-center gap-1 md:hidden">
+          <ModeToggle />
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" aria-label="Open navigation menu">
+                <MenuIcon className="size-5" aria-hidden="true" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="p-0">
+              <SheetHeader className="border-b px-5 py-5 text-left">
+                <SheetTitle>{navbar?.title}</SheetTitle>
+              </SheetHeader>
+              <div className="flex flex-1 flex-col p-5">
+                <nav className="flex flex-col" aria-label="Mobile navigation">
+                  {routes.map((route) => (
+                    <a
+                      key={route.href}
+                      href={resolveHref(route.href)}
+                      onClick={() => setIsOpen(false)}
+                      className="border-b py-4 text-base font-medium text-foreground"
+                      data-track="mobile-navbar-link"
+                    >
+                      {route.label}
+                    </a>
+                  ))}
+                  <Link href="/blog" onClick={() => setIsOpen(false)} className="border-b py-4 text-base font-medium text-foreground">
+                    Insights
+                  </Link>
+                  <Link href="/doc" onClick={() => setIsOpen(false)} className="border-b py-4 text-base font-medium text-foreground">
+                    Documentation
+                  </Link>
+                </nav>
+                <Button asChild size="lg" className="mt-7">
+                  <a href={resolveHref("#start-project")} onClick={() => setIsOpen(false)} data-track="mobile-navbar-project-cta">
+                    Start a project <ArrowRight aria-hidden="true" />
+                  </a>
+                </Button>
+                {githubLink ? (
+                  <Button asChild variant="outline" className="mt-3">
+                    <a href={githubLink} target="_blank" rel="noreferrer noopener">
+                      <GitHubLogoIcon /> View GitHub
+                    </a>
+                  </Button>
+                ) : null}
+                {donateNowLink ? (
+                  <Button asChild variant="outline" className="mt-3">
+                    <a
+                      href={donateNowLink}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                    >
+                      Donate
+                    </a>
+                  </Button>
+                ) : null}
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
       </nav>
     </header>
   );

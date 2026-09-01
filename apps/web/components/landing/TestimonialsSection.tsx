@@ -14,7 +14,7 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 
 const TestimonialsSection = () => {
   const trpc = useTRPC();
-  const { data } = useSuspenseQuery(trpc.landing.getLandingInfoFromNotion.queryOptions());
+  const { data } = useSuspenseQuery(trpc.landing.getLandingInfo.queryOptions());
   const testimonialSection = data.testimonialSection;
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);

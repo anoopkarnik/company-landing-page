@@ -1,0 +1,48 @@
+{
+  "title": "How to Upgrade a Customized SaaS Boilerplate Without Losing Your Changes",
+  "slug": "upgrade-customized-saas-boilerplate-without-losing-changes",
+  "category": "Product Engineering",
+  "excerpt": "A conflict-aware upgrade workflow using versioned template ancestry, ownership rules, migration review and evidence-based AI assistance.",
+  "seoTitle": "Upgrade a SaaS Boilerplate Without Losing Changes",
+  "seoDescription": "Use Git ancestry, upgrade branches, conflict ownership, migration review and scoped AI assistance to update a customized SaaS boilerplate safely.",
+  "canonicalUrl": "https://bayesian-labs.com/blog/upgrade-customized-saas-boilerplate-without-losing-changes",
+  "tags": [
+    "SaaS boilerplate",
+    "template drift",
+    "Git merge",
+    "SaaS Forge",
+    "AI coding agents",
+    "software maintenance",
+    "Prisma migrations"
+  ],
+  "status": "DRAFT",
+  "author": "Anoop Karnik",
+  "includeInSitemap": true,
+  "relatedServiceSlugs": [
+    "mvp-development"
+  ],
+  "relatedCaseStudySlugs": [
+    "saas-forge",
+    "life-os"
+  ],
+  "cover": {
+    "prompt": "Wide 16:9 premium editorial technology illustration, dark charcoal-black background, two luminous code branches representing an evolving template and a customized product converging through a careful three-way merge chamber, preserved custom modules glowing violet, incoming updates cyan, verified merged output emerald, subtle conflict sparks contained inside the chamber, sophisticated isometric engineering composition, no readable text, no letters, no logos, no watermark",
+    "alt": "Customized product and upstream template branches merging while preserving both sets of changes",
+    "caption": "A versioned merge base turns boilerplate upgrades into reviewable changes rather than destructive replacement. Conceptual illustration."
+  },
+  "sourceUrls": [
+    "https://github.com/anoopkarnik/saas-forge",
+    "https://github.com/anoopkarnik/saas-forge/blob/main/template-overrides/saas-boilerplate/UPGRADING.md",
+    "https://github.com/anoopkarnik/saas-forge/blob/main/docs/superpowers/completed/2026-04-06-template-branch-upgrade-workflow-design.md",
+    "https://github.com/anoopkarnik/saas-forge/blob/main/.claude/skills/boilerplate-sync/SKILL.md",
+    "https://git-scm.com/docs/git-merge",
+    "https://git-scm.com/docs/git-merge-base",
+    "https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/resolving-a-merge-conflict-using-the-command-line"
+  ],
+  "claimNotes": [
+    "SaaS Forge repository behavior was checked at public main commit 506e81d on 2026-09-01.",
+    "The shipped template contains a Claude-specific upgrade command and boilerplate-sync skill; no equivalent working Codex upgrade skill is claimed.",
+    "No automatic, conflict-free downstream upgrade or current green-CI claim is made.",
+    "Command examples must be reconciled with the UPGRADING.md and .boilerplate-version shipped in the user's actual project."
+  ]
+}

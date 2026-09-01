@@ -1,0 +1,302 @@
+# Deploy a Next.js App to AWS EC2 with Self-Hosted Coolify
+
+**Direct answer:** launch a fresh Ubuntu LTS EC2 instance, restrict its AWS security group, install Coolify with the official script, create the administrator immediately, connect a Git repository, expose the Next.js process on its internal port, point DNS to the instance and let Coolify's reverse proxy terminate HTTPS. Then add health checks, backups, resource limits and monitoring before calling the deployment production-ready.
+
+Despite the original tutorial title, Coolify does not need to run “locally” on your laptop. In this pattern, the Coolify control plane and the application both run on the EC2 instance. Your browser accesses the Coolify dashboard; Git remains the source of the application. For larger workloads, Coolify can manage separate remote servers, but one fresh instance is the clearest starting architecture.
+
+Self-hosting changes who operates the platform. Coolify automates builds, containers and reverse-proxy configuration, but you still own AWS access, operating-system patching, secrets, backups, capacity, incident response and the bill.
+
+## The deployment architecture
+
+The request path is:
+
+`visitor → DNS → EC2 security group → Coolify proxy on 80/443 → Next.js container on its internal port`
+
+The build path is:
+
+`Git repository → Coolify deployment → Nixpacks or Dockerfile → container image → health check → proxy`
+
+Do not open the Next.js port, normally `3000`, to the public internet. Next.js recommends a reverse proxy in front of a self-hosted server, and Coolify provides that layer. The proxy handles the public domain and certificate while the application listens inside the Docker network.
+
+## 1. Prepare the Next.js repository
+
+For a normal Node.js deployment, confirm these scripts work from a clean checkout:
+
+```json
+{
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  }
+}
+```
+
+Run the same production path locally:
+
+```bash
+npm ci
+npm run build
+npm run start
+```
+
+Use the package manager implied by the lockfile: `npm ci`, `pnpm install --frozen-lockfile`, `yarn install --immutable` or the equivalent for the project. Commit the lockfile and pin the Node.js major version through `engines.node`, `.nvmrc` or `.node-version`. Coolify's Nixpacks documentation says it can read those sources when selecting Node.
+
+Add a lightweight health endpoint that does not query every downstream dependency. With the App Router:
+
+```ts
+// app/api/health/route.ts
+export function GET() {
+  return Response.json({ status: "ok" });
+}
+```
+
+This proves that the process can accept an HTTP request. A separate readiness check may verify critical dependencies if traffic must never reach a partially initialized instance.
+
+Review environment variables before deployment:
+
+- browser-visible values prefixed with `NEXT_PUBLIC_` can be embedded at build time;
+- database URLs, auth secrets and API keys should be runtime secrets where possible;
+- values needed by `next build` must be marked as build variables in Coolify;
+- never commit `.env.production` or copy secrets into a Dockerfile.
+
+If Nixpacks detects the monorepo incorrectly, set the correct base directory and explicit install, build and start commands. For complex native dependencies or a tightly controlled runtime, use a reviewed Dockerfile. Next.js also supports `output: "standalone"` for a smaller production Docker image, but it is optional for the initial Nixpacks path.
+
+## 2. Launch the EC2 instance
+
+Create an EC2 instance using a currently supported Ubuntu LTS image. Coolify's automatic installer supports Ubuntu 20.04, 22.04 and 24.04 LTS at the time of this update; use its manual path for unsupported distributions or non-LTS Ubuntu.
+
+Choose capacity for both application runtime **and builds**. A small instance may serve modest traffic but fail while compiling Next.js because the build and running containers compete for memory and CPU. There is no universal EC2 size: inspect bundle size, build memory, background jobs, database placement and expected traffic. Separating a build server is a later optimization, not a substitute for measuring.
+
+Configure:
+
+- an SSH key pair you control;
+- adequate root EBS storage for Docker images, build cache and logs;
+- an Elastic IP if the public address must survive stop/start operations;
+- an instance profile only when the app genuinely needs AWS APIs, following least privilege.
+
+Do not store long-lived AWS access keys on the server if an IAM role can provide the required permission.
+
+## 3. Create a restrictive security group
+
+Use the AWS security group as the primary inbound firewall because Coolify runs on Docker and its documentation warns that Docker NAT rules can bypass expectations based on UFW alone.
+
+A practical initial inbound policy is:
+
+| Port     | Source                     | Purpose                       | After dashboard domain works            |
+| -------- | -------------------------- | ----------------------------- | --------------------------------------- |
+| 22/tcp   | Your fixed public IP `/32` | SSH administration            | Keep restricted; do not open globally   |
+| 80/tcp   | `0.0.0.0/0` and `::/0`     | HTTP and certificate issuance | Keep for redirect/certificate flow      |
+| 443/tcp  | `0.0.0.0/0` and `::/0`     | Public HTTPS                  | Keep                                    |
+| 8000/tcp | Your fixed public IP `/32` | Initial Coolify dashboard     | Close after dashboard uses HTTPS domain |
+| 6001/tcp | Your fixed public IP `/32` | Direct-IP real-time updates   | Close after dashboard domain works      |
+| 6002/tcp | Your fixed public IP `/32` | Direct-IP web terminal        | Close after dashboard domain works      |
+
+If your IP changes, update the SSH and temporary dashboard rules before connecting. Never expose SSH, the Coolify dashboard or its terminal ports to the whole internet merely to simplify setup. Do not add a public rule for port `3000`.
+
+Make sure the instance's outbound policy allows package installation, image pulls, Git access, certificate requests and the external APIs your application actually uses.
+
+## 4. Connect with SSH and install Coolify
+
+Use the Ubuntu image's documented login user and your private key:
+
+```bash
+chmod 600 production-key.pem
+ssh -i production-key.pem ubuntu@YOUR_ELASTIC_IP
+```
+
+Update packages before installing the platform:
+
+```bash
+sudo apt update
+sudo apt upgrade -y
+```
+
+Review the current official installation page and, if your server matches its prerequisites, run the recommended installer:
+
+```bash
+curl -fsSL https://cdn.coollabs.io/coolify/install.sh | sudo bash
+```
+
+Piping a network script to a privileged shell is a trust decision. The official page links the source; security-sensitive teams should inspect and pin their installation process rather than executing an unseen mutable script.
+
+The installer configures required utilities, Docker Engine, `/data/coolify`, Coolify's SSH key and the platform containers. Coolify specifically says Docker installed through Snap is unsupported.
+
+When installation finishes, visit:
+
+`http://YOUR_ELASTIC_IP:8000`
+
+Create the first administrator **immediately**. Coolify warns that whoever reaches the unclaimed registration page first can become the instance administrator. Use a unique strong password and enable any supported additional authentication controls available in the version you deploy.
+
+Back up `/data/coolify/source/.env` into a secure encrypted store. It contains installation secrets such as the key used to encrypt database values and is required for reliable restoration. Do not commit it or leave the only copy on the same disk.
+
+## 5. Put the Coolify dashboard behind its own domain
+
+Create a DNS `A` record such as `coolify.example.com` pointing to the Elastic IP. In Coolify, configure the instance domain using the full HTTPS URL:
+
+`https://coolify.example.com`
+
+Coolify's domain documentation states that an `https://` domain causes its proxy to request and renew a Let's Encrypt certificate automatically. Confirm the dashboard, live updates and web terminal all work through the domain.
+
+Then remove public inbound access to ports `8000`, `6001` and `6002` from the AWS security group. Coolify documents that dashboard traffic can use ports 80 and 443 through the proxy after a domain is configured.
+
+Keep port 22 restricted to a trusted IP or VPN. Test a second SSH session before closing the first whenever you change access rules, so a mistake does not lock you out.
+
+## 6. Create the Next.js application in Coolify
+
+Inside Coolify:
+
+1. create a project and a `production` environment;
+2. add a new Application resource;
+3. select a public repository, GitHub App or deploy key connection;
+4. choose the production branch;
+5. choose Nixpacks for automatic detection, or the repository's Dockerfile for explicit control;
+6. set the base directory for a monorepo;
+7. leave **Is it a static site?** disabled for a server-backed Next.js app;
+8. set the internal exposed port to `3000` unless the start command uses another port.
+
+Review the detected install, build and start commands rather than assuming detection is correct. A representative configuration is:
+
+| Setting               | Typical value                           |
+| --------------------- | --------------------------------------- |
+| Base directory        | `/` or `/apps/web` in a monorepo        |
+| Install command       | detected from the lockfile              |
+| Build command         | `npm run build` or workspace equivalent |
+| Start command         | `npm run start`                         |
+| Internal exposed port | `3000`                                  |
+| Static site           | disabled                                |
+
+The port is a container routing setting, not an instruction to publish EC2 port 3000. Coolify's proxy forwards the application domain to it.
+
+## 7. Add environment variables correctly
+
+Open Configuration → Environment Variables. Add only the values that application needs.
+
+Coolify distinguishes build and runtime variables. Mark a value as a build variable only when `next build` must read it. Keep credentials runtime-only wherever the framework permits. For Dockerfile builds, consider Coolify's Docker build-secret option for sensitive build inputs rather than a normal build argument.
+
+Typical variables may include:
+
+```dotenv
+NODE_ENV=production
+DATABASE_URL=postgresql://...
+AUTH_SECRET=...
+NEXT_PUBLIC_APP_URL=https://app.example.com
+```
+
+This is illustrative, not a universal Next.js environment contract. Generate secrets with a cryptographically secure tool, use different values per environment, and rotate any credential that was exposed in a deployment log or repository.
+
+## 8. Configure the application domain and HTTPS
+
+Create a DNS `A` record for `app.example.com` pointing to the Elastic IP. In the application's domain field, enter the FQDN with protocol:
+
+`https://app.example.com`
+
+Coolify will configure its reverse proxy and attempt certificate issuance. Keep ports 80 and 443 open, wait for DNS propagation, deploy the application, and inspect the certificate in the browser.
+
+Do not ignore a self-signed-certificate warning in production. It usually means DNS, reachability or certificate issuance failed; diagnose the cause before sending users to the site.
+
+## 9. Deploy and verify
+
+Start the deployment and read the complete log. Confirm:
+
+- the intended commit and branch were checked out;
+- the expected Node.js version and package manager were selected;
+- install and build commands completed without ignored errors;
+- the process listens on the configured internal port;
+- the application domain returns the current release over HTTPS.
+
+Configure a health check for `/api/health` with the expected `200` response. Coolify notes that its UI health check requires `curl` or `wget` in the container; a Dockerfile `HEALTHCHECK` can instead define the check in source control and takes precedence when both exist.
+
+Test the real application path:
+
+- authentication and callback URLs;
+- database migrations and connection limits;
+- server actions, API routes and file uploads;
+- email, object storage and third-party webhooks;
+- cache behavior after a new deployment;
+- a rollback to the previous locally available image.
+
+A green build is not proof that the application is operational.
+
+## 10. Add operations before launch
+
+### Backups
+
+Back up the Coolify configuration secrets, application databases and persistent volumes. An EBS snapshot is useful but not sufficient by itself: define retention, cross-account or off-instance copies where risk requires them, and test restoration. A backup that has never been restored is only an assumption.
+
+### Monitoring and alerts
+
+Monitor the public endpoint, certificate expiry, instance CPU, memory, disk usage and application error rate. Configure Coolify deployment and failure notifications. Send application errors to a service that survives the application container.
+
+### Resource limits and disk hygiene
+
+Coolify's application defaults may not impose container resource limits. Set reasonable CPU and memory boundaries after observing normal behavior. Watch Docker images, build cache and logs because a full root volume can stop both deployments and running services.
+
+### Updates
+
+Schedule Ubuntu security updates, Coolify upgrades and application dependency maintenance. Read release notes and maintain a rollback path. Avoid upgrading the platform immediately before an important product event without a recent backup and a tested maintenance window.
+
+### Database placement
+
+A database can run through Coolify, but co-locating the platform, app, builds and primary database creates one failure domain. For important workloads, evaluate a managed database, private networking, encryption, backups and connection pooling. The correct choice depends on recovery objectives and operating capacity, not only monthly price.
+
+## Common failure modes
+
+### The domain returns a gateway error
+
+Check that the container is healthy and listening on the internal port configured in Coolify. Do not solve an internal-port mismatch by exposing that port in the AWS security group.
+
+### The build runs out of memory
+
+Measure memory during `next build`, reduce unnecessary work, add controlled swap only as a temporary safety measure, or use a larger/dedicated build host. Repeated out-of-memory failures mean the instance is undersized for the workload.
+
+### Environment values are undefined in the browser
+
+Browser-visible `NEXT_PUBLIC_` values are normally inlined during build. Mark required values as build variables and redeploy; restarting the existing image may not change compiled client code.
+
+### HTTPS remains self-signed
+
+Verify the `A` record resolves to the current Elastic IP, ports 80 and 443 are reachable, the domain includes `https://`, and no other proxy is intercepting validation. Check Coolify proxy logs before changing certificate settings.
+
+### Git pushes do not deploy
+
+Automatic deploy behavior depends on the repository integration. Verify the GitHub App or webhook, selected branch and port 80/443 reachability. A deploy-key-only connection may need a manual webhook or deployment trigger.
+
+## Frequently asked questions
+
+### Is Coolify free?
+
+The self-hosted software is open source, but the EC2 instance, storage, bandwidth, backups, monitoring and engineering time are not free. Managed Coolify offerings have their own current pricing.
+
+### Can the EC2 instance be in a private subnet?
+
+Yes, with appropriate load balancing, outbound access, management path and Coolify architecture, but that is beyond this single-server tutorial. Do not copy the public-instance rules into a private production topology without redesigning routing and certificate issuance.
+
+### Should I use Nixpacks or a Dockerfile?
+
+Nixpacks is faster to start when it correctly detects a conventional project. A Dockerfile provides a reviewable, portable build contract and is often preferable when the app has native dependencies, monorepo complexity or strict production requirements.
+
+### Do I need Nginx in the Next.js container?
+
+Not for this pattern. Coolify's proxy sits in front of the application. Next.js recommends a reverse proxy for self-hosting, and Coolify supplies it at the platform layer.
+
+### Where should PostgreSQL run?
+
+It can run as a Coolify resource, on another instance, or as a managed AWS service. Choose based on backup, recovery, patching, availability and cost requirements. Avoid making the production database publicly reachable unless there is a specific protected access design.
+
+### How do I deploy without downtime?
+
+Use health checks and study Coolify's current rolling-deployment behavior for your build type. Also ensure database migrations are backward compatible; no container orchestration setting can make a destructive migration zero-downtime by itself.
+
+If deployment architecture is part of a larger product build, the [MVP development service](/#services) covers the application, infrastructure and handover as one production boundary. [SaaS Forge](/case-studies/saas-forge) shows the broader foundation used to keep web, desktop and mobile delivery concerns explicit.
+
+## Official references
+
+- Coolify, self-hosted installation: https://coolify.io/docs/get-started/installation
+- Coolify, firewall requirements: https://coolify.io/docs/knowledge-base/server/firewall
+- Coolify, deploying with Nixpacks: https://next.coolify.io/docs/applications/builds/nixpacks/deploy
+- Coolify, environment variables: https://coolify.io/docs/knowledge-base/environment-variables
+- Coolify, health checks: https://coolify.io/docs/knowledge-base/health-checks
+- Coolify, domains and automatic HTTPS: https://coolify.io/docs/knowledge-base/domains
+- Next.js, deployment options: https://nextjs.org/docs/app/getting-started/deploying
+- Next.js, self-hosting behind a reverse proxy: https://nextjs.org/docs/app/guides/self-hosting

@@ -1,0 +1,45 @@
+{
+  "title": "The Production SaaS Launch Checklist: 40 Requirements Beyond the Landing Page",
+  "slug": "production-saas-launch-checklist",
+  "type": "MVP & SaaS",
+  "category": "MVP & SaaS",
+  "excerpt": "A practical 40-point SaaS launch checklist covering product UX, access, data, billing, integrations, reliability, security, SEO and operational handover.",
+  "seoTitle": "Production SaaS Launch Checklist: 40 Steps",
+  "seoDescription": "Use this 40-point production SaaS checklist to verify UX, auth, data, billing, reliability, security, deployment, SEO and handover.",
+  "canonicalUrl": "/blog/production-saas-launch-checklist",
+  "tags": [
+    "SaaS launch checklist",
+    "production readiness",
+    "MVP launch",
+    "SaaS security",
+    "Next.js",
+    "SaaS Forge"
+  ],
+  "author": "Anoop Karnik Dasika",
+  "relatedServiceSlugs": [
+    "mvp-development",
+    "data-ai-integration"
+  ],
+  "relatedCaseStudySlugs": [
+    "saas-forge",
+    "life-os"
+  ],
+  "coverPrompt": "16:9 wide editorial illustration for Bayesian Labs showing a sophisticated SaaS launch control room made of eight coordinated system rings: product experience, identity, database, billing, integrations, observability, security and deployment, all converging on a glowing launch-ready product core. Dark near-black canvas, deep violet, cyan and emerald accents, elegant glass geometry, crisp technical depth, premium consultancy aesthetic, uncluttered negative space. No text, no checkmarks with labels, no numerals, no logos, no watermark, no identifiable software interface.",
+  "altText": "SaaS launch control system connecting product, identity, data, billing and operations",
+  "imageCaption": "Conceptual illustration of the product, engineering and operating systems required for a responsible SaaS launch.",
+  "sourceUrls": [
+    "https://nextjs.org/docs/app/guides/production-checklist",
+    "https://owasp.org/www-project-application-security-verification-standard/",
+    "https://www.postgresql.org/docs/current/backup.html",
+    "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments",
+    "https://razorpay.com/docs/payments/subscriptions/supported-payment-methods/",
+    "https://developers.google.com/search/docs/essentials",
+    "https://github.com/anoopkarnik/saas-forge"
+  ],
+  "claimNotes": [
+    "The checklist is a general editorial framework, not a certification, legal opinion or substitute for domain-specific review.",
+    "Release gates are recommendations and must be adjusted to data sensitivity, audience and consequence.",
+    "Payment capabilities can change and must be verified with the provider at implementation time.",
+    "SaaS Forge is not claimed to complete product-specific policy, configuration or evidence automatically."
+  ]
+}

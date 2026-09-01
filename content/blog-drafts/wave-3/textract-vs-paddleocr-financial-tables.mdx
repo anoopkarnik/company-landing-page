@@ -1,0 +1,223 @@
+# Textract vs PaddleOCR for Financial Tables: Why Table-Specific Tuning Won
+
+For ordinary document tables, a managed OCR service is often the fastest route to a useful result. For dense financial-terminal screenshots, the better choice may be the engine that lets you tune detection and reconstruction for each layout. In one six-layout automation project, Amazon Textract worked extremely well on four layouts, while a configurable PaddleOCR pipeline was the more reliable path for the two difficult ones.
+
+That conclusion is narrower than “PaddleOCR is better than Textract.” It means that **the winning OCR architecture depends on the failure mode, the degree of layout variation, and how much control the team needs after the first benchmark**.
+
+This article explains the comparison, the pipeline that followed, and the claims the retained evidence can—and cannot—support.
+
+## The job was not simply “read text from an image”
+
+The client previously used manual data entry to transfer values from financial-terminal screenshots into Google Sheets. Six screen types were in scope:
+
+- forward points;
+- curves;
+- spots;
+- volatility;
+- inflation; and
+- seasonality.
+
+They looked related because they came from the same terminal, but they were not one table template. Some mixed a chart with a data grid. Some used truncated column headings. Some showed bid and ask values in one slash-delimited cell. Negative values could appear beside positive values in the same column, with color carrying extra visual information. Rows also needed context that was not always part of the pixels.
+
+For example, the output contract could require a curve number, currency pair, or base index supplied by the operator. A text recognizer cannot infer that missing business context safely. The upload experience therefore had to collect the right parameter for the selected layout and send it through the extraction pipeline.
+
+The practical problem was:
+
+> Convert six visually different, information-dense screens into typed rows, preserve layout-specific meaning, and leave the result somewhere an operator can review.
+
+That is a document-understanding and workflow problem—not a single OCR API call.
+
+## What the project benchmark found
+
+AWS Textract was evaluated because it is managed and can return table, cell, line, word, and layout relationships. PaddleOCR was evaluated because it could be self-hosted and exposed recognition and detection controls.
+
+The builder recalls the following project-validation results:
+
+| Observation             |                                        Textract |                                                         Tuned PaddleOCR |
+| ----------------------- | ----------------------------------------------: | ----------------------------------------------------------------------: |
+| Four easier layouts     |                       100% in the project check |                                                             Also usable |
+| Two difficult layouts   |                                       Below 95% |                                                        Approached 99.9% |
+| Infrastructure          |                             Managed AWS service |                                                     Self-hosted OCR API |
+| Parameter-level control |                    Limited for the tested route | Detection thresholds, box expansion and preprocessing could be adjusted |
+| Best operational fit    | Rapid managed extraction for compatible layouts |                             Layout-specific tuning for stubborn screens |
+
+These percentages are **builder-reported validation results**, not independent benchmarks. The original labeled evaluation set and execution logs were not retained, so the figures cannot be reproduced or generalized to other financial documents. They should be read as the project’s decision evidence, not vendor league-table scores.
+
+The AWS product has also evolved. Current Textract documentation describes table analysis, layout extraction, queries, and adapters for customizing query responses. The accurate historical statement is therefore not “Textract has no customization.” It is that the integration tested for this project did not provide the detector-level controls needed to correct its two specific failure patterns within the project constraints.
+
+## Why the difficult tables failed differently
+
+OCR quality is often reported as one percentage, but a table pipeline can fail at several layers.
+
+### 1. Text detection
+
+The system must first identify which pixels form a text region. Dense characters, fine negative signs, dark backgrounds, chart lines, and narrow row spacing can cause a value to be missed or merged with a neighbor.
+
+PaddleOCR exposes controls such as the detection pixel threshold, box threshold, side-length limit, and unclip ratio. Those controls do not guarantee correctness, but they let an engineer respond to a specific visual failure instead of accepting the default segmentation.
+
+### 2. Character recognition
+
+Finding the box is not the same as reading it correctly. In financial data, confusing `8` with `3`, dropping a decimal point, or losing a minus sign changes the meaning materially. Accuracy must therefore be evaluated at the field level, not by asking whether the page “looks mostly right.”
+
+### 3. Row and column reconstruction
+
+Even perfectly recognized strings can land in the wrong row or column. Slash-delimited bid/ask pairs, repeating expiry labels, merged headers, and irregular spacing make table reconstruction a separate task from OCR.
+
+### 4. Business context
+
+Some output columns come from the upload action rather than the screenshot. The final interface used a layout selector and requested only the relevant context:
+
+- curves received an open numeric curve identifier;
+- volatility received a currency pair;
+- inflation received a base-index value;
+- spots and seasonality did not request irrelevant currency fields; and
+- forward points retained the required date and term conventions.
+
+This eliminated a dangerous class of guesses. If context is required to create the row key, the operator should provide it explicitly.
+
+## The resulting upload-to-sheet architecture
+
+The implemented flow had six stages:
+
+```text
+Layout-aware upload UI
+        |
+        v
+      n8n webhook
+        |
+        v
+Internal PaddleOCR API
+        |
+        v
+Structured row normalization
+        |
+        v
+Derived fields and row splitting
+        |
+        v
+Reviewable Google Sheet
+```
+
+### 1. Select the table contract
+
+The user chose a screen type before uploading. That selection controlled the page title, form fields, route parameter, expected columns, and downstream parser schema.
+
+### 2. Send pixels and context together
+
+The application posted the image plus the layout-specific fields to an n8n webhook. Keeping the contract explicit made debugging easier: the workflow knew which extractor settings and output schema to apply.
+
+### 3. Run the internal OCR service
+
+n8n sent the image to a container-addressable OCR API. Self-hosting introduced deployment work, but it also provided control over model versions, preprocessing, and runtime parameters.
+
+### 4. Normalize into a fixed schema
+
+OCR output is not an operational record. A constrained normalization step converted recognized text into the selected table’s expected row shape. In the retained workflow, an LLM and structured-output parser were used for this step.
+
+That model output still needs validation. A production contract should reject an unexpected number format, missing required identifier, invalid date, or wrong column count instead of allowing a plausible-looking row through.
+
+### 5. Calculate deterministic fields
+
+Where the output required a derived value, such as an average of bid and ask, ordinary code or workflow expressions calculated it. Arithmetic should not be delegated to a language model.
+
+### 6. Append to a review destination
+
+Rows were appended to Google Sheets, where an operator could inspect and use them. The supplied workflow proves the upload, OCR, normalization, split, calculation, and append path. It does **not** prove a formal confidence gate, idempotency key, retry policy, or duplicate-prevention mechanism.
+
+## The volatility screen was the useful stress test
+
+The volatility surface combined twenty-four expiries with five bid/ask pairs per row. Several values were negative, and color changed inside numeric columns. A generic “read the table” configuration had to solve too many problems at once:
+
+- preserve a small minus sign;
+- keep two values paired;
+- assign the pair to the right metric;
+- keep the expiry aligned across a dense row; and
+- ignore surrounding terminal controls.
+
+That screen exposed the core design lesson: **layout identity is a valuable input**. When a business repeatedly processes a known family of layouts, routing to a tested configuration is often safer than pretending one universal prompt or OCR preset can understand all of them.
+
+## How to measure accuracy without misleading yourself
+
+Before choosing an OCR engine, build a labeled set and define what “correct” means.
+
+For financial tables, a practical scorecard includes:
+
+| Measure                      | Why it matters                                                |
+| ---------------------------- | ------------------------------------------------------------- |
+| Required-field recall        | Missing a row identifier can make the entire row unusable.    |
+| Exact numeric match          | A nearly correct price or rate is still wrong.                |
+| Sign preservation            | Dropping a minus sign reverses meaning.                       |
+| Row/column placement         | Correct text in the wrong cell corrupts analysis.             |
+| Schema-valid row rate        | Measures whether the downstream system can accept the result. |
+| Human corrections per screen | Connects model quality to operational effort.                 |
+
+Split the sample set by layout and keep a final holdout set. Tuning and testing on the same screenshots creates an optimistic result. Store the input hash, extractor version, parameters, raw detections, normalized output, validation errors, corrections, and elapsed time for every run.
+
+## What “time saved” can responsibly mean here
+
+The six supplied sample screens contain roughly 750 visible fields. No retained time study compares manual transcription with the automated process, so a measured client KPI cannot be claimed.
+
+A scenario estimate is still useful for planning. If a representative six-screen batch previously required reading, typing, and checking every value, an upload-and-spot-check flow could plausibly remove about **20–40 minutes**, or **50–80% of active handling time**. That range is an assumption, not an observed result. Actual savings depend on image quality, review policy, correction rate, batch size, and how the sheet is used afterward.
+
+The honest way to validate it is simple:
+
+1. time at least 20 manual batches;
+2. time the same layouts through automation plus review;
+3. count corrected fields and rejected screens;
+4. compare median active handling time; and
+5. report the sample size and review standard with the result.
+
+## When to choose each approach
+
+Choose a managed service such as Textract when fast integration, managed scaling, and strong results on representative samples matter more than detector-level tuning. Choose a configurable OCR stack when the layouts are stable enough to specialize, the errors are diagnosable, data or deployment requirements favor self-hosting, and the team can own model operations.
+
+A hybrid can be better than either extreme. Route compatible layouts to the managed path and difficult layouts to the tuned path, then use the same schema validator and review queue for both. The routing decision should come from a retained benchmark—not preference for a vendor or an open-source model.
+
+## Production hardening still required
+
+Before using the workflow for operational financial data, I would add:
+
+- file-type, size, and malware controls at upload;
+- encrypted transport and restricted object retention;
+- per-layout model and parameter versioning;
+- schema and domain validation before sheet writes;
+- confidence and anomaly-based review queues;
+- idempotency keys for every submitted screen;
+- retry and dead-letter handling without duplicate rows;
+- input/output hashes and an auditable correction trail; and
+- a regression set that runs before any model or preprocessing change.
+
+The terminal screenshots and market data used in the engagement are licensed and potentially sensitive. They are deliberately not reproduced in this public article. Synthetic tables should be used for demonstrations.
+
+## Frequently asked questions
+
+### Is PaddleOCR always more accurate than Textract for tables?
+
+No. Textract performed extremely well on four of the six layouts in this project. PaddleOCR became the preferred path because its tunability helped on the two layouts that failed differently. Test your own documents.
+
+### Can Textract be customized now?
+
+AWS currently documents adapters for customizing query responses, alongside tables, layout, forms, and queries. That is not identical to tuning low-level text-detection thresholds, and it does not invalidate the 2025 project comparison. A new project should benchmark the current product rather than reuse an old decision blindly.
+
+### Why use an LLM after OCR?
+
+OCR returns text and geometry; the downstream system needs typed rows. A constrained model can help normalize irregular recognized text, but schema validation, arithmetic, identifiers, and write safety should remain deterministic.
+
+### Should low-confidence rows be written directly to the sheet?
+
+Not silently. A safer design separates accepted rows from review-required rows and records why a row was held. Confidence alone is not enough; domain rules can catch high-confidence but impossible values.
+
+### How much training data is needed?
+
+Parameter tuning may not require model training, but it does require representative labeled screenshots. Include every layout, image-quality variation, negative-value pattern, and column density that matters operationally.
+
+## Turn repeated document entry into a controlled pipeline
+
+If your team repeatedly moves table data from images or PDFs into spreadsheets and internal systems, the first useful step is a small, labeled benchmark—not a large platform commitment. [Review the anonymized OCR case study](/case-studies/financial-document-ocr-pipeline) or [describe the document workflow you want to automate](/#start-project).
+
+## Sources
+
+- [Amazon Textract: analyzing documents](https://docs.aws.amazon.com/textract/latest/dg/how-it-works-analyzing.html)
+- [Amazon Textract table extraction](https://docs.aws.amazon.com/textract/latest/dg/how-it-works-tables.html)
+- [Amazon Textract best practices](https://docs.aws.amazon.com/textract/latest/dg/textract-best-practices.html)
+- [PaddleOCR General Table Recognition v2](https://www.paddleocr.ai/main/en/version3.x/pipeline_usage/table_recognition_v2.html)

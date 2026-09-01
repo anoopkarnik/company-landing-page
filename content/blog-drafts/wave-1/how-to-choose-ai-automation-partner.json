@@ -1,0 +1,44 @@
+{
+  "title": "How to Choose an AI Automation Partner: 15 Questions Before You Hire",
+  "slug": "how-to-choose-ai-automation-partner",
+  "type": "AI Automation",
+  "category": "AI Automation",
+  "excerpt": "Fifteen diligence questions for evaluating an AI automation freelancer, agency or internal build—from failure handling and security to ownership and support.",
+  "seoTitle": "How to Choose an AI Automation Partner",
+  "seoDescription": "Ask these 15 questions before hiring an AI automation partner. Evaluate scope, reliability, security, evidence, ownership, cost and support.",
+  "canonicalUrl": "/blog/how-to-choose-ai-automation-partner",
+  "tags": [
+    "AI automation consultant",
+    "n8n agency",
+    "vendor evaluation",
+    "automation partner",
+    "AI governance",
+    "software procurement"
+  ],
+  "author": "Anoop Karnik Dasika",
+  "relatedServiceSlugs": [
+    "ai-automation",
+    "data-ai-integration"
+  ],
+  "relatedCaseStudySlugs": [
+    "voice-driven-restaurant-ordering",
+    "financial-document-ocr-pipeline",
+    "fhir-data-validation-service"
+  ],
+  "coverPrompt": "16:9 wide editorial illustration for Bayesian Labs showing a founder evaluating an abstract automation architecture at a transparent decision console, with workflow branches, security shield geometry, evidence checkpoints, ownership key and support signal represented visually. Dark near-black environment with restrained deep violet, cyan and emerald lighting, polished technical consultancy style, cinematic but clean, generous negative space. No text, no letters, no logos, no watermark, no recognizable software UI.",
+  "altText": "Decision console evaluating an automation architecture, security and evidence",
+  "imageCaption": "Conceptual illustration of the technical and commercial questions behind a dependable automation partnership.",
+  "sourceUrls": [
+    "https://owasp.org/www-project-application-security-verification-standard/",
+    "https://docs.n8n.io/privacy-and-security/what-you-can-do",
+    "https://docs.n8n.io/build/flow-logic/handle-errors-gracefully",
+    "https://docs.n8n.io/deploy/host-n8n/configure-n8n/scaling/enable-queue-mode",
+    "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments"
+  ],
+  "claimNotes": [
+    "The scorecard is an editorial evaluation framework, not an industry standard or certification.",
+    "Security guidance references OWASP ASVS but does not claim that Bayesian Labs or any featured system is ASVS-certified.",
+    "Case-study evidence is described with the limitations already recorded in the CMS.",
+    "The article avoids legal advice and recommends organization-specific confidentiality and data requirements."
+  ]
+}

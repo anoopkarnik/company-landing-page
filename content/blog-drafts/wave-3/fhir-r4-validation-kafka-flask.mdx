@@ -1,0 +1,224 @@
+# FHIR R4 Validation at Ingestion: Kafka, Flask, Diagnostics, and Configurable Rules
+
+FHIR validation is most useful near the point where records enter a data platform. A valid result can move forward with clear provenance; an invalid result can be stopped with structured diagnostics while the provider, profile, and original message are still easy to identify.
+
+That was the design of a validation platform I built while working full time as a Founding Senior Software Engineer at Mpowered Health. It covered almost fifty FHIR R4 resource types, used a separately deployed Flask validator, consumed records at a Kafka boundary, and exposed invalid records and configurable rules in a Next.js operations interface.
+
+My scope began after provider records had been imported and published to Kafka. Other teams owned those provider-to-producer connectors. I owned the validation system from the Kafka-side processing through validation, diagnostics, rule configuration, operations UI, and downstream handling.
+
+## “Valid JSON” is not “valid FHIR”
+
+A parser can confirm that a payload is syntactically valid JSON and still miss the rules that make a FHIR resource conformant and useful.
+
+The FHIR R4 specification describes several validation dimensions:
+
+- **structure:** every element is described by the specification;
+- **cardinality:** required and repeating fields obey minimum and maximum counts;
+- **value domains:** primitive and enumerated values are valid;
+- **terminology bindings:** codes conform to the expected value sets and displays;
+- **invariants:** cross-field constraints hold;
+- **profiles:** the resource follows the nominated StructureDefinition; and
+- **business rules:** contextual checks outside the base specification, such as duplicate handling or reference policies.
+
+Not every validator can prove every dimension. Terminology availability, loaded implementation guides, custom profiles, external references, and non-computable narrative rules all affect the result. Validation is a control in a larger quality system, not proof that a healthcare record is clinically complete or correct.
+
+## Why validation belongs near ingestion
+
+When an invalid record travels through mapping, storage, enrichment, and downstream APIs, the eventual failure can appear far from its cause. A missing identifier may look like a join problem. An invalid code may surface as a reporting gap. A profile mismatch may become an application exception days later.
+
+Validating at the Kafka handoff creates a simpler contract:
+
+1. identify the message and expected profile;
+2. validate the original resource;
+3. produce a normalized result and diagnostics;
+4. allow valid records to continue;
+5. route invalid records to an operational path; and
+6. preserve enough context to correct the source or rule.
+
+This does not require validation to block every downstream use. Some warnings may be acceptable, while errors and fatal issues stop processing. The policy must be explicit and versioned.
+
+## The platform architecture
+
+```text
+Provider connectors (outside my scope)
+                |
+                v
+              Kafka
+                |
+                v
+      validation consumer/service
+                |
+                v
+      Flask FHIR R4 validator <----- versioned profiles and rules
+                |
+         +------+------+
+         |             |
+         v             v
+ valid resource   invalid resource + diagnostics
+         |             |
+         v             v
+ downstream       Next.js operations UI
+ systems                 |
+                         v
+                 investigation and rule changes
+```
+
+### Kafka as the durable boundary
+
+Kafka decoupled provider ingestion from validation processing. A consumer could process a record, retain its topic/partition/offset context, and commit progress according to the application’s delivery policy.
+
+The words “exactly once” should be used carefully. Kafka documents at-most-once, at-least-once, and exactly-once semantics, with conditions around transactions and read-committed processing. A validation platform that writes to databases or external services still needs an idempotent result key. A practical key can combine source identifier, resource type, logical/version identifier, profile set, ruleset version, and payload hash.
+
+That makes reprocessing safe. The same record under the same validation configuration can return the existing result, while a new resource version or ruleset produces a traceable new evaluation.
+
+### Flask as an independently deployable validator
+
+Healthcare-specific validation and Python dependencies lived in a separate Flask service rather than the Next.js process. This kept the web application from owning validator memory, terminology assets, and Python runtime concerns, and allowed the service to scale and deploy independently.
+
+The service accepted a resource plus validation context and returned a structured result. Internally, the platform ran the R4 profile validator across almost fifty resource types. The exact resource mix and provider-specific rule set are not reproduced publicly.
+
+### Diagnostics as a product contract
+
+A boolean `valid: false` does not help an operator. FHIR uses `OperationOutcome` to represent error, warning, and informational issues. A useful internal diagnostic contract should preserve equivalent detail:
+
+```json
+{
+  "severity": "error",
+  "code": "required",
+  "resourceType": "Observation",
+  "profile": "https://example.invalid/fhir/StructureDefinition/synthetic",
+  "path": "Observation.subject",
+  "message": "A required reference is missing",
+  "ruleVersion": "synthetic-ruleset-v3"
+}
+```
+
+This is a synthetic example. It contains no patient or employer data.
+
+The important fields are severity, issue type, resource path or expression, human-readable message, profile, and rule version. Add correlation metadata separately so the UI can identify the source record without embedding protected health information in logs.
+
+## Configurable rules without turning the UI into code execution
+
+The Next.js interface showed invalid records and their diagnostics and allowed validation rules to be configured operationally. That reduced the need to redeploy validator code for every policy adjustment.
+
+Configuration still needs a safe boundary. A rule editor should not accept arbitrary executable code from the browser. Prefer a typed rule model:
+
+- resource type and profile;
+- field or FHIRPath expression from an allowed grammar;
+- comparison or presence operator;
+- expected value or terminology binding;
+- severity;
+- effective date;
+- version and author;
+- reason for change; and
+- test fixtures that must pass before activation.
+
+Separate draft, approved, active, and retired rule states. A two-person approval policy may be appropriate for changes that could block clinical data. Every validation result should record which profiles and rules were active.
+
+## Design valid and invalid paths symmetrically
+
+Teams often optimize the happy path and leave invalid records in a dead-letter topic with no ownership. A useful platform treats both outputs as products.
+
+For valid records, preserve:
+
+- the validation timestamp;
+- profile and ruleset versions;
+- payload hash;
+- source and Kafka correlation; and
+- warnings that did not block progression.
+
+For invalid records, preserve:
+
+- actionable diagnostics;
+- retry eligibility;
+- provider and resource context;
+- assignment and resolution state;
+- original versus corrected versions; and
+- the decision to replay, waive, or reject.
+
+Do not store full healthcare payloads in generic application logs. Use controlled storage, field-level redaction where practical, encryption, role-based access, retention policies, and auditable access. Whether data is regulated as PHI depends on the deployment and content; the system should be designed with that possibility from the start.
+
+## Testing across almost fifty resource types
+
+Breadth creates a regression problem. A fix for one profile can unexpectedly alter terminology or invariant behavior elsewhere. Build a versioned fixture suite containing:
+
+- minimally valid examples per supported resource/profile;
+- one failure fixture per required rule;
+- malformed JSON and unsupported resource types;
+- cardinality and invariant failures;
+- valid, invalid, and unavailable terminology cases;
+- reference and bundle edge cases relevant to the pipeline;
+- provider-specific extensions with public-safe synthetic data; and
+- performance fixtures for large resources or bundles.
+
+Run the suite on validator-library, profile-package, terminology, and configuration changes. Compare issue sets, not only pass/fail counts. A new warning can matter operationally even when the final classification is unchanged.
+
+## Observability that helps investigate data quality
+
+Track metrics by resource type, provider, profile, ruleset version, and severity without exposing patient values:
+
+| Signal                            | Operational question                                     |
+| --------------------------------- | -------------------------------------------------------- |
+| Validation throughput and latency | Is the boundary keeping up with ingestion?               |
+| Invalid-rate trend                | Did a provider feed or rule change?                      |
+| Top diagnostic codes and paths    | Which defects create the most work?                      |
+| Consumer lag                      | Is validation falling behind Kafka?                      |
+| Retry and replay count            | Are transient failures being confused with invalid data? |
+| Time to resolution                | Can operators act on diagnostics?                        |
+| Rule-version comparison           | Did a configuration change create a discontinuity?       |
+
+Alert on changes from a baseline, not only absolute error counts. A provider that normally sends 0.5% invalid resources moving to 5% may deserve attention even if another high-volume feed produces more total errors.
+
+## What the reported 80% reduction means
+
+The source project record reports an **80% reduction in data-related bugs** after validation moved earlier in the pipeline. The original measurement protocol is no longer available. I cannot responsibly reconstruct the numerator, denominator, baseline window, or classification rules now.
+
+The figure should therefore be published only as a **source-recorded prior outcome**, not as an independently verified or newly calculated metric.
+
+The more defensible engineering outcome is qualitative and architectural: invalid records became visible with actionable diagnostics closer to ingestion; rule changes became operationally configurable; and one validation service could apply consistent R4 checks across almost fifty resource types.
+
+For a new platform, define the measurement before rollout:
+
+1. classify data-related incidents by root cause;
+2. record a baseline period;
+3. define which validation-detectable incidents count;
+4. compare equal-length periods adjusted for volume;
+5. report incident severity as well as count; and
+6. retain the query and dashboard used for the result.
+
+## Frequently asked questions
+
+### Is schema validation enough for FHIR R4?
+
+No. The R4 specification describes structure, cardinality, values, terminology bindings, invariants, profiles, and contextual business rules. Different validation methods cover different subsets.
+
+### Why return OperationOutcome-style diagnostics?
+
+They communicate severity, issue type, location, and explanatory detail. That makes a failed record actionable and aligns the platform with FHIR’s established validation response model.
+
+### Should invalid resources be deleted?
+
+Usually not without a retention policy and business decision. Quarantine them in controlled storage with diagnostics and resolution state so teams can investigate, correct, or replay them safely.
+
+### How do configurable rules stay auditable?
+
+Version every rule, require an author and reason, test before activation, record approvals, and attach the active ruleset version to each validation result.
+
+### Did you build the provider ingestion connectors?
+
+No. Other teams imported provider FHIR resources and published them to Kafka. My ownership began with the validation platform consuming those records.
+
+### Is the 80% result independently verifiable?
+
+No. It is preserved as a source-recorded outcome because the original measurement method is not retained. No new calculation is invented.
+
+## Find invalid healthcare data closer to its source
+
+The most valuable validation platform is not the one with the longest rule list. It is the one that makes failures explainable, governable, and safe to replay. [Read the FHIR validation case study](/case-studies/fhir-data-validation-service) or [discuss an ingestion and data-quality problem](/#start-project).
+
+## Sources
+
+- [HL7 FHIR R4: validating resources](https://hl7.org/fhir/R4/validation.html)
+- [HL7 FHIR R4: OperationOutcome](https://hl7.org/fhir/R4/operationoutcome.html)
+- [HL7 FHIR R4: resource validation operation](https://hl7.org/fhir/R4/operation-resource-validate.html)
+- [Apache Kafka design and delivery semantics](https://kafka.apache.org/40/design/design/)

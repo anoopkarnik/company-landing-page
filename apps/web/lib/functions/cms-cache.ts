@@ -2,9 +2,11 @@ import "server-only";
 
 import { revalidateTag, unstable_cache } from "next/cache";
 
-import { fetchBlog } from "@/lib/functions/fetchBlogFromNotion";
-import { fetchDocumentation } from "@/lib/functions/fetchDocumentationFromNotion copy";
-import { fetchLandingPageData } from "@/lib/functions/fetchLandingPageDataFromNotion";
+import {
+  getBlogFromPostgres,
+  getDocumentationFromPostgres,
+} from "@/lib/functions/content-page-db";
+import { getLandingPageDataFromPostgres } from "@/lib/functions/landing-page-db";
 import {
   landingPageSnapshot,
   landingPageSnapshotSyncedAt,
@@ -13,9 +15,10 @@ import { getRedis } from "@/server/redis";
 import type { BlogsProps } from "@/lib/ts-types/blog";
 import type { DocumentationProps } from "@/lib/ts-types/doc";
 
-type LandingPageData = Awaited<ReturnType<typeof fetchLandingPageData>>;
+type LandingPageData = Awaited<
+  ReturnType<typeof getLandingPageDataFromPostgres>
+>;
 
-// Notion-hosted file URLs are signed and currently expire after 3600 seconds.
 const CACHE_TTL_SECONDS = 50 * 60;
 const cacheNamespace =
   (process.env.NEXT_PUBLIC_SAAS_NAME || "company-landing")
@@ -23,11 +26,11 @@ const cacheNamespace =
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "") || "company-landing";
 
-export const LANDING_PAGE_CACHE_KEY = `company-landing:${cacheNamespace}:landing-page:notion:v1`;
+export const LANDING_PAGE_CACHE_KEY = `company-landing:${cacheNamespace}:landing-page:postgres:v1`;
 export const LANDING_PAGE_CACHE_TAG = `company-landing:${cacheNamespace}:landing-page`;
-export const BLOG_PAGE_CACHE_KEY = `company-landing:${cacheNamespace}:blog-page:notion:v1`;
+export const BLOG_PAGE_CACHE_KEY = `company-landing:${cacheNamespace}:blog-page:postgres:v1`;
 export const BLOG_PAGE_CACHE_TAG = `company-landing:${cacheNamespace}:blog-page`;
-export const DOCUMENTATION_PAGE_CACHE_KEY = `company-landing:${cacheNamespace}:documentation-page:notion:v1`;
+export const DOCUMENTATION_PAGE_CACHE_KEY = `company-landing:${cacheNamespace}:documentation-page:postgres:v1`;
 export const DOCUMENTATION_PAGE_CACHE_TAG = `company-landing:${cacheNamespace}:documentation-page`;
 export const PUBLIC_CMS_CACHE_TTL_SECONDS = CACHE_TTL_SECONDS;
 
@@ -72,7 +75,7 @@ async function deleteRedisCache(key: string) {
 }
 
 const getLandingPageDataFromNextCache = unstable_cache(
-  async () => fetchLandingPageData(),
+  async () => getLandingPageDataFromPostgres(),
   [LANDING_PAGE_CACHE_KEY],
   {
     revalidate: CACHE_TTL_SECONDS,
@@ -81,7 +84,7 @@ const getLandingPageDataFromNextCache = unstable_cache(
 );
 
 const getBlogFromNextCache = unstable_cache(
-  async () => fetchBlog(),
+  async () => getBlogFromPostgres(),
   [BLOG_PAGE_CACHE_KEY],
   {
     revalidate: CACHE_TTL_SECONDS,
@@ -90,7 +93,7 @@ const getBlogFromNextCache = unstable_cache(
 );
 
 const getDocumentationFromNextCache = unstable_cache(
-  async () => fetchDocumentation(),
+  async () => getDocumentationFromPostgres(),
   [DOCUMENTATION_PAGE_CACHE_KEY],
   {
     revalidate: CACHE_TTL_SECONDS,
@@ -110,7 +113,7 @@ export async function getCachedLandingPageData(): Promise<LandingPageData> {
     return data;
   } catch (error) {
     console.error(
-      `[cms-cache] Landing CMS fetch failed; using generated snapshot from ${landingPageSnapshotSyncedAt}`,
+      `[cms-cache] PostgreSQL CMS fetch failed; using generated snapshot from ${landingPageSnapshotSyncedAt}`,
       error,
     );
     return landingPageSnapshot;
@@ -144,4 +147,14 @@ export async function getCachedDocumentation(): Promise<DocumentationProps> {
 export async function invalidateLandingPageCache() {
   revalidateTag(LANDING_PAGE_CACHE_TAG);
   await deleteRedisCache(LANDING_PAGE_CACHE_KEY);
+}
+
+export async function invalidateBlogCache() {
+  revalidateTag(BLOG_PAGE_CACHE_TAG);
+  await deleteRedisCache(BLOG_PAGE_CACHE_KEY);
+}
+
+export async function invalidateDocumentationCache() {
+  revalidateTag(DOCUMENTATION_PAGE_CACHE_TAG);
+  await deleteRedisCache(DOCUMENTATION_PAGE_CACHE_KEY);
 }

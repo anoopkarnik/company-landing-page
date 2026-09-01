@@ -1,0 +1,208 @@
+# Vibe-Coding Platform vs SaaS Boilerplate vs Custom Development: Cost, Ownership and Scale
+
+**Direct answer:** use a vibe-coding platform when speed of validation matters more than infrastructure control; use a SaaS boilerplate when you can maintain code and want a proven foundation without rebuilding commodity modules; choose custom development when the product’s workflow, constraints or long-term architecture are genuinely distinctive. The correct choice depends on exportability, deployment freedom, data ownership, payment support, team capability and the cost of changing direction.
+
+These categories overlap. Some AI-assisted platforms export readable code and deploy anywhere. Some “boilerplates” are thin collections of screens. Some custom projects begin from frameworks and open-source packages. Evaluate the actual product and contract instead of deciding from the label.
+
+## The three approaches in plain language
+
+### Vibe-coding platform
+
+You describe and refine the product through prompts or a visual environment. The platform may generate UI, database logic, integrations and deployment. This can be the shortest path from idea to something users can touch.
+
+The key diligence questions are whether you receive the complete source, whether it remains maintainable outside the platform, where the data lives, which runtime is required, and what pricing changes with traffic or collaborators.
+
+### SaaS boilerplate
+
+You begin with a source-code foundation that already implements common product concerns such as authentication, database access, billing, email, admin, storage and deployment. Your team builds the distinctive product workflow on top.
+
+The trade-off is that you inherit architectural opinions and upgrade responsibility. A starter saves time only when its modules work in your market and your team understands them.
+
+### Custom development
+
+The team selects frameworks, services and architecture for the specific product, while still using libraries rather than reinventing everything. This provides maximum fit and control, but discovery and foundation work cost more.
+
+Custom does not mean “write authentication or a database from scratch.” It means the system boundary and product model are chosen around the problem rather than around a preassembled starter.
+
+## Comparison table
+
+| Dimension | Vibe-coding platform | SaaS boilerplate | Custom development |
+| --- | --- | --- | --- |
+| Fastest first demo | Usually strongest | Strong | Depends on foundation |
+| Code ownership | Varies by platform and plan | Usually source-controlled; verify license | Defined in contract and repository |
+| Deployment choice | Varies from locked runtime to exportable code | Usually broad if dependencies are portable | Broad by design |
+| Initial technical skill | Low to moderate | Moderate to high | High or provided by delivery team |
+| Architecture fit | Best for supported patterns | Best when product fits starter boundaries | Highest potential fit |
+| Commodity modules | Often built in | Included as source modules | Selected and integrated |
+| Upgrade burden | Vendor manages platform; generated app may still need changes | Team merges upstream starter changes | Team upgrades frameworks and dependencies |
+| Cost visibility at scale | Depends on platform pricing and usage | Hosting and vendors chosen by owner | Hosting and vendors chosen by architecture |
+| India payment fit | Must be verified | Must be verified or adapted | Can be selected deliberately |
+| Exit effort | Ranges from easy export to rebuild | Code already exists, but starter assumptions remain | Depends on documentation and ownership |
+
+This is a decision framework, not a ranking. Vendor features and terms change; verify current documentation before committing.
+
+## Choose a vibe-coding platform when
+
+- you need to test a workflow or landing experience in days;
+- the product fits supported data and interface patterns;
+- usage is initially small and cost is acceptable;
+- the platform’s authentication, payments and integrations fit the launch market;
+- you have confirmed source export, data export and account ownership;
+- a rebuild would be acceptable if the experiment succeeds.
+
+It is especially useful for internal prototypes, concierge experiments and founder discovery. The problem begins when a temporary validation choice quietly becomes the permanent production architecture without an explicit review.
+
+Before launch, export the source if available, inspect generated dependencies, run the build outside the editor, test a database backup, and document every platform-specific runtime feature. “We can export code” is incomplete if the application still depends on proprietary backend services that are difficult to reproduce.
+
+## Choose a SaaS boilerplate when
+
+- authentication, billing, email, content and admin are required but not differentiators;
+- you or your delivery partner can read and maintain the architecture;
+- the technology choices fit expected hiring and hosting;
+- the license permits the intended use;
+- modules can be removed without breaking unrelated areas;
+- there is a credible upgrade or fork strategy.
+
+The fastest boilerplate is not necessarily the one with the longest feature list. Look for coherent boundaries, typed contracts, migrations, tests, environment documentation and a clear definition of what is actually production-ready.
+
+## Choose custom development when
+
+- the workflow is the product and does not fit common CRUD or subscription patterns;
+- security, audit or data residency materially shape the architecture;
+- there are difficult legacy or domain integrations;
+- latency, offline use or hardware access is central;
+- the organization needs long-lived internal ownership;
+- starter assumptions would require extensive removal or reversal.
+
+Custom development costs more at the beginning but can be cheaper than forcing a mismatched platform. The decision should compare total transition cost, not just first-release cost.
+
+## The five ownership questions most buyers miss
+
+### 1. Can the product build and run without the authoring platform?
+
+Ask for a clean clone, documented environment variables and a production build in an account you control. If exported code is only a snapshot, determine how future edits and schema changes will work.
+
+### 2. Who controls the production database and backups?
+
+Source code is only part of ownership. You need documented export, restore and deletion procedures for the data. Test them before the platform becomes critical.
+
+### 3. Who owns third-party accounts?
+
+Payments, email, storage, analytics, domains and model providers should normally be company-owned. Grant the builder scoped access. This simplifies billing, audit and transition.
+
+### 4. What happens when a module changes?
+
+Authentication, payment APIs and frameworks evolve. Ask whether the vendor upgrades the runtime, your team upgrades generated code, or an upstream boilerplate change must be merged.
+
+### 5. Can another competent engineer understand the system?
+
+Readable architecture, migrations, tests and a runbook matter more than whether code was first typed by a person or generated by AI. Maintainability is an observable property, not a statement about the tool used.
+
+## India-facing payments are an architecture decision
+
+A globally popular starter can still be a poor fit if its only billing integration does not support the launch market or business model. Verify onboarding eligibility, currencies, recurring payment methods, mandate behavior, webhooks, refunds, settlement and tax workflows against current provider documentation.
+
+Razorpay’s current official subscription documentation lists cards, UPI Autopay and eMandate, and notes that supported banks, apps and some limits can change. Other providers have different coverage. The correct design wraps billing events behind product entitlements instead of spreading provider-specific assumptions throughout the application.
+
+This was one motivation behind [SaaS Forge](/case-studies/saas-forge): use open, replaceable foundations such as Better Auth and PostgreSQL and retain deployment control, instead of assuming that every imported auth or payment module works for an India-based product.
+
+## How SaaS Forge approaches the middle path
+
+SaaS Forge is an MIT-licensed pnpm and Turborepo source repository. Its current public README describes Next.js web, Electron desktop, Expo mobile, Better Auth, tRPC, Prisma/PostgreSQL, email, object storage, observability, analytics, rate limiting and payment integrations, plus a scaffold/download flow. The public repository should remain the source for current feature status.
+
+The value proposition is not that every SaaS can ship unchanged. It is that a founder can start from inspectable code, keep infrastructure choices, and add product-specific work without rebuilding the same foundation.
+
+The repository also exposes an important cost that boilerplate marketing often ignores: template drift.
+
+## The template-drift problem
+
+Suppose version 1 of a starter is downloaded and modified into a real product. Version 2 improves authentication and deployment but also restructures the same files. Replacing the product with the new template would destroy product work; copying isolated files may miss dependencies.
+
+A safer upgrade process is:
+
+1. record the exact starter version used;
+2. keep product work in source control with small, reviewed changes;
+3. compare the old upstream template with the new upstream template;
+4. translate that diff into upgrade intent and affected boundaries;
+5. merge into a dedicated branch;
+6. resolve conflicts with product context;
+7. run migrations, type checks, tests and production builds;
+8. review security-sensitive behavior manually;
+9. deploy to staging and preserve rollback;
+10. record decisions that should guide the next upgrade.
+
+Git documents how merge conflicts are surfaced and resolved. `git rerere` can reuse recorded resolutions for recurring conflicts, but neither feature understands product intent by itself.
+
+SaaS Forge evolved an agent-assisted workflow in which staged upgrade files and machine-readable guidance help a coding agent reason about upstream intent and customized downstream code. That reduces the cognitive load of large merges; it does not make every merge automatic or safe. Current repository evidence is strongest for its documented template staging and sync workflow and its agent-oriented repository guidance.
+
+## How to make each option scale responsibly
+
+### For a platform-built product
+
+Confirm usage pricing, database limits, background jobs, regions, observability and data export. Load-test the critical route. Set a decision point for whether to remain, extend or migrate.
+
+### For a boilerplate product
+
+Remove unused modules, enforce authorization in the backend, keep migrations reviewable, measure real bottlenecks, and maintain an upstream version record. Do not assume a monorepo or PostgreSQL automatically creates scalability.
+
+### For custom development
+
+Prefer simple boundaries, managed infrastructure where appropriate and established open-source components. Avoid designing for hypothetical scale before measuring the application.
+
+Next.js can run as a Node.js server, in a Docker container, as a static export with limited feature support, or through adapters. That deployment flexibility is useful only when the application avoids unexamined provider-specific assumptions.
+
+## A decision worksheet
+
+Answer each question with “platform,” “boilerplate,” “custom,” or “unknown”:
+
+- Which option reaches a testable version within the current runway?
+- Which option supports required India payment and identity flows today?
+- Which option can run in company-owned infrastructure?
+- Which option provides complete source and data export?
+- Which option can the available team maintain?
+- Which option handles the most important domain constraint naturally?
+- Which option has an acceptable upgrade path?
+- Which option remains affordable at the base and high usage scenarios?
+- Which option offers the clearest security and access model?
+- Which option has the lowest credible cost if the experiment succeeds?
+
+If one column wins for validation and another wins after validation, define the transition before building. A deliberate two-stage plan is better than pretending the first tool must last forever.
+
+If you want to choose the smallest responsible path, [start a project](/#start-project) with the core user journey, launch market, expected usage and ownership requirements. You can also [inspect SaaS Forge on GitHub](https://github.com/anoopkarnik/saas-forge) and compare the actual source with this framework.
+
+## Frequently asked questions
+
+### Is vibe coding only for prototypes?
+
+No. Some platform-built applications can operate in production. The relevant question is whether the generated system meets your reliability, security, ownership, cost and maintainability requirements.
+
+### Is a boilerplate more secure than generated code?
+
+Not automatically. A boilerplate can offer reviewed patterns, but the configured application, authorization rules, dependencies and deployment still require verification. Use a security standard such as OWASP ASVS to define what will be tested.
+
+### Will a boilerplate prevent vendor lock-in?
+
+Source ownership reduces one kind of lock-in. The product can still depend on a cloud runtime, payment provider, database feature or proprietary API. Document replaceable boundaries and exports.
+
+### When should I rewrite a prototype?
+
+Rewrite when the existing architecture blocks the proven product, carries unacceptable risk, or costs more to stabilize than replace. Do not rewrite only because the first version is unfashionable; measure the constraint.
+
+### Can AI maintain a customized boilerplate automatically?
+
+AI can analyze diffs and help resolve conflicts, but tests, migrations, security review and product judgment remain necessary. Treat it as an assisted engineering workflow, not a guaranteed updater.
+
+### Can I start with SaaS Forge and later build custom modules?
+
+Yes. That is the intended middle path: retain the shared foundation and build the distinctive product inside explicit boundaries. Verify the current module status in the repository before planning.
+
+## Sources and further reading
+
+- SaaS Forge source repository and current README: https://github.com/anoopkarnik/saas-forge
+- Better Auth Next.js integration: https://better-auth.com/docs/integrations/next
+- Next.js deployment options: https://nextjs.org/docs/app/getting-started/deploying
+- Razorpay supported subscription payment methods: https://razorpay.com/docs/payments/subscriptions/supported-payment-methods/
+- Git merge documentation: https://git-scm.com/docs/git-merge
+- Git rerere documentation: https://git-scm.com/docs/git-rerere
+- OWASP Application Security Verification Standard: https://owasp.org/www-project-application-security-verification-standard/
+

@@ -1,0 +1,45 @@
+{
+  "title": "AI Agents vs Workflows vs Traditional Automation: What Should You Build?",
+  "slug": "ai-agents-vs-workflows-vs-traditional-automation",
+  "category": "AI Automation",
+  "excerpt": "A practical framework for choosing deterministic automation, an AI-assisted workflow, or an agent—and knowing when AI should not be used at all.",
+  "seoTitle": "AI Agents vs Workflows vs Automation: A Decision Guide",
+  "seoDescription": "Compare AI agents, AI workflows and traditional automation by cost, control, risk and fit. Use a practical framework to choose the simplest reliable design.",
+  "canonicalUrl": "https://bayesian-labs.com/blog/ai-agents-vs-workflows-vs-traditional-automation",
+  "tags": [
+    "AI agents",
+    "workflow automation",
+    "n8n",
+    "human in the loop",
+    "AI architecture",
+    "automation strategy"
+  ],
+  "status": "DRAFT",
+  "author": "Anoop Karnik",
+  "includeInSitemap": true,
+  "relatedServiceSlugs": [
+    "ai-automation",
+    "data-ai-integration"
+  ],
+  "relatedCaseStudySlugs": [
+    "financial-document-ocr-pipeline",
+    "voice-driven-restaurant-ordering"
+  ],
+  "cover": {
+    "prompt": "Wide 16:9 editorial technology illustration for Bayesian Labs, dark charcoal-black background, three connected systems progressing left to right: a precise mechanical rules engine, a structured glowing workflow graph, and a restrained autonomous agent navigating branching paths, violet and cyan primary light with small emerald verification signals, sophisticated isometric depth, clean negative space, no people, no readable text, no letters, no logos, no watermark, premium technical magazine aesthetic",
+    "alt": "Three automation architectures represented as a rules engine, structured workflow and branching AI agent",
+    "caption": "Traditional automation, AI-assisted workflows and agents differ primarily in who controls the next step. Conceptual illustration."
+  },
+  "sourceUrls": [
+    "https://www.anthropic.com/research/building-effective-agents",
+    "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+    "https://docs.n8n.io/advanced-ai/human-in-the-loop-tools/",
+    "https://docs.n8n.io/flow-logic/error-handling/",
+    "https://docs.n8n.io/workflows/executions/all-executions/"
+  ],
+  "claimNotes": [
+    "The workflow-versus-agent distinction is aligned with Anthropic's published definition.",
+    "Recommendations about risk tiers and architecture are Bayesian Labs engineering guidance, not a claim of universal compliance.",
+    "No model, vendor or agent is described as error-free or fully autonomous in production."
+  ]
+}

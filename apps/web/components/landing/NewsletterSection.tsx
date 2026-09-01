@@ -7,7 +7,7 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 
 const NewsletterSection = () => {
   const trpc = useTRPC();
-  const { data } = useSuspenseQuery(trpc.landing.getLandingInfoFromNotion.queryOptions());
+  const { data } = useSuspenseQuery(trpc.landing.getLandingInfo.queryOptions());
   const newsletterSection = data.newsletterSection;
 
   const [email, setEmail] = useState<string>("");

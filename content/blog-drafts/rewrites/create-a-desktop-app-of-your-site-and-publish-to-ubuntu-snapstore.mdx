@@ -1,0 +1,289 @@
+# Turn a Next.js Site into a Secure Electron App and Publish It to the Snap Store
+
+**Direct answer:** a deployed Next.js application can become a Linux desktop app by placing a small Electron shell around its HTTPS URL, packaging that shell as a strictly confined Snap, testing the package locally and releasing it through the Snap Store. The shell is the easy part. The important work is preserving Electron's security boundary, deciding which URLs and operating-system capabilities are allowed, and treating the Snap as a separately versioned product.
+
+This tutorial uses the **thin-client** model: Electron loads a trusted production website. It is appropriate when the Next.js app already needs a server for authentication, database access, server actions or API routes. It does **not** create an offline copy of the site. If offline use is a requirement, design that separately; static export supports fewer Next.js features, while bundling a local Node server changes updates, storage, ports and security.
+
+## Architecture before code
+
+The result has three independently deployable parts:
+
+1. the Next.js web application, served over HTTPS;
+2. a small Electron main process that creates a restricted browser window;
+3. a Snap package and store listing for Linux distribution.
+
+The website can continue to ship without rebuilding the desktop binary. That convenience also means a compromised web deployment reaches desktop users immediately. Electron's documentation warns that remote content carries greater risk because Electron can expose operating-system capabilities. The renderer in this guide receives no Node.js integration, no preload API, no automatic permissions and no unrestricted navigation.
+
+## Prerequisites
+
+You need:
+
+- a production Next.js URL that works over HTTPS;
+- Node.js and a package manager;
+- a Linux build environment for the Snap target;
+- a square application icon, ideally at least 512 × 512 pixels;
+- a Snapcraft account and a registered Snap name before publishing.
+
+Keep the desktop wrapper in its own directory or workspace package. That makes its dependency updates and release history explicit instead of mixing Electron into the web server runtime.
+
+```bash
+mkdir desktop-shell
+cd desktop-shell
+npm init -y
+npm install --save-dev electron@latest electron-builder@latest
+```
+
+Commit the resulting lockfile. `latest` is useful while starting the example; production should pin reviewed versions and use an update cadence because Electron ships Chromium and Node.js with the app.
+
+## Create the hardened main process
+
+Create `main.cjs`:
+
+```js
+const { app, BrowserWindow, session, shell } = require("electron");
+const { URL } = require("node:url");
+
+const APP_ORIGIN = "https://app.example.com";
+const EXTERNAL_ORIGINS = new Set([
+  "https://docs.example.com",
+  "https://status.example.com",
+]);
+
+function originOf(value) {
+  try {
+    return new URL(value).origin;
+  } catch {
+    return null;
+  }
+}
+
+function createWindow() {
+  const window = new BrowserWindow({
+    width: 1280,
+    height: 820,
+    minWidth: 960,
+    minHeight: 640,
+    show: false,
+    backgroundColor: "#09090b",
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+      sandbox: true,
+    },
+  });
+
+  window.once("ready-to-show", () => window.show());
+
+  window.webContents.on("will-navigate", (event, destination) => {
+    if (originOf(destination) !== APP_ORIGIN) event.preventDefault();
+  });
+
+  window.webContents.setWindowOpenHandler(({ url }) => {
+    if (EXTERNAL_ORIGINS.has(originOf(url))) {
+      void shell.openExternal(url);
+    }
+    return { action: "deny" };
+  });
+
+  void window.loadURL(APP_ORIGIN);
+}
+
+app.whenReady().then(() => {
+  session.defaultSession.setPermissionRequestHandler(
+    (_webContents, _permission, callback) => callback(false),
+  );
+
+  createWindow();
+
+  app.on("activate", () => {
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  });
+});
+
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") app.quit();
+});
+```
+
+Replace `APP_ORIGIN` and the external allowlist. Parse URLs and compare their exact origins; do not use a prefix check such as `startsWith("https://example.com")`, because a malicious hostname can share that prefix.
+
+The window makes four deliberate choices:
+
+- `nodeIntegration: false` keeps remote page JavaScript away from Node.js primitives;
+- `contextIsolation: true` separates the page's JavaScript context from Electron internals;
+- `sandbox: true` applies Chromium's renderer sandbox;
+- permission, navigation and new-window requests are denied unless the app explicitly supports them.
+
+Electron enables several of these defaults in current releases, but setting them visibly documents the boundary and helps prevent a future refactor from weakening it. Do not add a preload script until a native capability is genuinely required. If you later expose IPC, provide one narrow operation at a time through `contextBridge`, validate every argument and validate the sender.
+
+OAuth can require extra work. If authentication leaves your origin, prefer the system browser and a designed callback/deep-link flow. Do not add every identity-provider page to an unrestricted in-app navigation allowlist merely to make a login screen pass.
+
+## Add local development and packaging commands
+
+Update `package.json`:
+
+```json
+{
+  "name": "example-desktop",
+  "version": "1.0.0",
+  "description": "Desktop client for Example",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "dist:snap": "electron-builder --linux snap"
+  },
+  "devDependencies": {
+    "electron": "<installed-version>",
+    "electron-builder": "<installed-version>"
+  },
+  "build": {
+    "appId": "com.example.desktop",
+    "productName": "Example",
+    "files": ["main.cjs", "package.json"],
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "linux": {
+      "target": ["snap"],
+      "category": "Utility",
+      "icon": "build/icon.png"
+    },
+    "snapcraft": {
+      "base": "core24",
+      "core24": {
+        "summary": "Desktop client for Example",
+        "confinement": "strict"
+      }
+    }
+  }
+}
+```
+
+Keep the actual dependency versions written by the package manager. With electron-builder v27, the old flat `snap` configuration was removed; the current configuration lives under `snapcraft`. Its documentation recommends `core24` for new applications and notes that Snap builds require Linux or Docker.
+
+Place the production icon at `build/icon.png`. The store also needs its own listing copy, screenshots, contact details and privacy information where applicable; those are product assets, not generated automatically from this file.
+
+## Test the desktop boundary before packaging
+
+Start the shell:
+
+```bash
+npm start
+```
+
+Test more than the home screen:
+
+- login, logout and session persistence;
+- expected internal navigation;
+- downloads and uploads, if required;
+- links that should open in the system browser;
+- offline and slow-network states;
+- expired sessions and server maintenance responses;
+- keyboard navigation, scaling and dark/light appearance;
+- denial of unexpected popups and permission requests.
+
+Open DevTools during development and confirm there are no Electron security warnings. Inspect the website's Content Security Policy too. The wrapper does not repair an unsafe web application; its job is to avoid turning a web issue into access to the user's computer.
+
+## Build and install the Snap locally
+
+Build on Linux:
+
+```bash
+npm run dist:snap
+```
+
+The generated filename contains the application name, version and architecture. Install that exact artifact locally with `--dangerous` because it has not been signed by the store:
+
+```bash
+sudo snap install --dangerous dist/example-desktop_1.0.0_amd64.snap
+```
+
+Run the installed command from the application menu or terminal. Exercise every feature that touches the filesystem, camera, microphone, notifications or external links. Strict confinement is a feature: if the app needs a permission, declare and justify the relevant Snap interface instead of switching to classic confinement to silence an error.
+
+When diagnosing a runtime problem, inspect logs and confinement denials. electron-builder's current guide suggests commands such as:
+
+```bash
+journalctl --user -xe | grep example-desktop
+snap run --shell example-desktop
+```
+
+Remove the local package before testing the store build:
+
+```bash
+sudo snap remove example-desktop
+```
+
+## Register and release through the Snap Store
+
+Create a Snapcraft account, register the intended name, install the Snapcraft CLI and authenticate. Name registration matters because the local package name must match the store name you control.
+
+For a first manual release, upload the built artifact to the stable channel:
+
+```bash
+snapcraft upload --release=stable dist/example-desktop_1.0.0_amd64.snap
+```
+
+The store performs automated review. Fix any reported issues and submit a rebuilt revision rather than bypassing the checks. Test the public result on another Ubuntu machine:
+
+```bash
+sudo snap install example-desktop
+example-desktop
+```
+
+Use channels intentionally. `edge` is suitable for continuously delivered development builds, `beta` for testers, `candidate` for a release candidate, and `stable` for the production audience. Promote an already tested revision between channels instead of building different binaries for each audience.
+
+electron-builder can also publish directly with the Snap Store provider, but keep credentials in the CI secret store—not in `package.json` or the repository. Manual upload is easier to understand for a first release; CI publishing is valuable once versioning, review and rollback are repeatable.
+
+## Version and release both products
+
+The website and desktop shell now have different release responsibilities.
+
+The web deployment owns server behavior, API compatibility and Content Security Policy. The desktop release owns Electron updates, operating-system integration, packaging and store metadata. A web change can break an old shell, so define the minimum supported desktop version when native behavior evolves.
+
+A practical release checklist is:
+
+- update Electron and audit dependency changes;
+- test the current production and staging origins;
+- increment the desktop semantic version;
+- build in a repeatable Linux environment;
+- install the exact artifact locally;
+- release to `edge` or `beta` first;
+- verify from the store on a clean machine;
+- promote the same revision to `stable`;
+- monitor web errors and desktop-specific support reports.
+
+If the product needs offline data, background tasks, filesystem access, automatic updates outside the store or many native integrations, a thin shell may no longer be the right architecture. Treat that as product engineering, not as another packaging flag. [SaaS Forge](/case-studies/saas-forge) explores the broader problem of sharing a product foundation across web, desktop and mobile without pretending every surface is identical.
+
+## Frequently asked questions
+
+### Does this package the Next.js server inside Electron?
+
+No. It loads an existing HTTPS deployment. A server-backed Next.js application still runs on its normal infrastructure. Bundling a local server is possible but introduces lifecycle, port, update and data-storage decisions that this thin-client guide deliberately avoids.
+
+### Can I enable Node integration because I trust my own site?
+
+Do not enable it for remote content. Your site can still be affected by an XSS issue, compromised dependency or deployment mistake. Electron explicitly recommends keeping Node integration disabled, enabling context isolation and sandboxing, and exposing only narrow validated capabilities.
+
+### Why does a link no longer open?
+
+The example denies new windows and off-origin navigation by default. Add only the exact trusted external origins the product needs, or design a system-browser OAuth/deep-link flow. A broken link is easier to fix than an unlimited navigation boundary is to secure.
+
+### Can I build the Snap on macOS or Windows?
+
+The current electron-builder documentation requires a Linux environment or Docker for Snap packaging. Use a Linux workstation or a Linux CI runner for the most predictable result.
+
+### Should I use strict or classic confinement?
+
+Start with strict confinement. Classic confinement has a larger trust surface and can require store approval. Declare the minimum Snap interfaces needed by the application and test them on the installed artifact.
+
+### How do users receive updates?
+
+The Snap Store distributes revisions through channels and handles Snap updates. The web UI can update independently because it is remote. Native shell changes still require a new desktop version and store release.
+
+## Official references
+
+- Electron, introduction and current quick-start example: https://www.electronjs.org/docs/latest/
+- Electron, security checklist: https://www.electronjs.org/docs/latest/tutorial/security
+- electron-builder, current Snap and `snapcraft` configuration: https://www.electron.build/docs/snap/
+- Snapcraft, publishing and testing a Snap: https://snapcraft.io/docs/releasing-your-app/

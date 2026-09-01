@@ -1,0 +1,26 @@
+{
+  "name": "@workspace/database",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "prisma generate --schema prisma/schema.prisma",
+    "migrate": "prisma migrate dev --schema prisma/schema.prisma",
+    "migrate:deploy": "prisma migrate deploy --schema prisma/schema.prisma",
+    "studio": "prisma studio --schema prisma/schema.prisma",
+    "test": "vitest run --passWithNoTests"
+  },
+  "exports": {
+    "./client": "./src/client.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "6.19.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.25",
+    "@workspace/typescript-config": "workspace:*",
+    "prisma": "6.19.1",
+    "typescript": "^5.9.2",
+    "vitest": "^4.0.18"
+  }
+}

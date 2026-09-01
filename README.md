@@ -1,71 +1,74 @@
-# 🚀 COMPANY LANDING PAGE BOILERPLATE  
+# Company Landing Page
 
-### A Modern, Minimal Landing Page for Any Company with Next.js & Strapi(Built with Turborepo)
+A configurable company landing page built with Next.js, React, tRPC, Prisma, PostgreSQL, Tailwind CSS, and Turborepo.
 
-<img alt="Downloads" src="https://img.shields.io/npm/dm/company-landing-page?style=flat-square&labelColor=343b41"/>
+Landing-page, blog, and documentation content is stored in PostgreSQL and can be edited from `/admin`. Blog and documentation bodies are authored as MDX. Notion is only needed when importing an existing CMS.
 
-![Alt text](https://strapi.bayesian-labs.com/uploads/company_landing_page_8e99b299b1.png)
+## Local setup
 
-🔹 **Minimal & Clean UI**  
-🔹 **Built with ShadCN UI & Resend for Email Subscriptions**
-🔹 **Easily customizable**  
-🔹 **Supports Strapi CMS**  
-🔹 **Deploy with Vercel in One Click**  
+1. Install dependencies:
 
-👉 **[Live Demo](https://bayesian-labs.com)**  
+   ```sh
+   pnpm install
+   ```
 
-> **⭐ If you find this project useful, consider giving it a star to support development!**  
+2. Copy `apps/web/.env.example` to `apps/web/.env` and set at least:
 
-## 🚀 Getting Started  
+   ```dotenv
+   DATABASE_URL="postgresql://postgres:password@localhost:5432/company_landing_page"
+   NEXT_PUBLIC_SAAS_NAME="Your Company"
+   NEXT_PUBLIC_URL="http://localhost:3000"
+   ADMIN_PASSWORD="choose-a-strong-password"
+   ADMIN_SESSION_SECRET="generate-a-long-random-secret"
+   ```
 
-### 1️⃣ **Clone & Install**  
+3. Generate Prisma Client and apply the PostgreSQL migration:
 
-Clone the repo and install dependencies:  
+   ```sh
+   pnpm db:generate
+   pnpm db:migrate:deploy
+   ```
+
+4. Start the app:
+
+   ```sh
+   pnpm dev
+   ```
+
+Open [http://localhost:3000](http://localhost:3000) for the site and [http://localhost:3000/admin](http://localhost:3000/admin) for the CMS. On a new database, the first CMS read seeds PostgreSQL from the checked-in landing-page snapshot. Admin access uses a signed, HttpOnly session backed by `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET`; there is no browser-stored fallback password.
+
+## Database commands
 
 ```sh
-npx company-landing-page@latest
-cd company-landing-page
-npm install
+pnpm db:generate        # regenerate Prisma Client
+pnpm db:migrate         # create/apply migrations during development
+pnpm db:migrate:deploy  # apply checked-in migrations in deployment
+pnpm db:import-cms      # import landing, blog, and documentation content from Notion
+pnpm db:sync-lifeforge  # sync the curated public LifeForge portfolio projection
+pnpm db:studio          # open Prisma Studio
 ```
 
-### 2️⃣ **Run Locally**  
+`db:sync-lifeforge` requires `LIFEFORGE_DATABASE_URL`. It copies only the
+allowlisted public/anonymized portfolio fields into this app's database and
+rejects signed or private Notion media URLs. The public API additionally
+filters unpublished projects, private case studies, unverified metrics, and
+testimonials or logos without consent.
 
-Start the Next.js app on localhost:3000 and Strapi CMS on localhost:1337:
+The `/admin` sidebar includes dedicated workspaces for service packages, case
+studies, portfolio publishing, proof metrics, social proof, project leads,
+founder/SEO content, Blogs, and Documentation. Blog, Documentation, service,
+and case-study long-form content is authored as MDX.
+
+The MDX editor supports standard Markdown plus JSX components. A styled callout is available as `<Callout type="info">...</Callout>`; supported types are `info`, `success`, `warning`, and `danger`.
+
+## Quality checks
 
 ```sh
-# Start Next.js app
-npm run dev
-
-# Start Strapi CMS (In a separate terminal)
-cd apps/strapi-cms
-npm run dev #Username - guest@bayesian-labs.com Password - Password1
+pnpm --filter web typecheck
+pnpm --filter @workspace/cms test
+pnpm build
 ```
 
-Then read the [docs](https://bayesian-labs.com/landing/doc) for more information.
+## License
 
-
-## 🤝 Contributing  
-
-We welcome contributions! To contribute:  
-
-1) **Fork the repo** & create a new branch  
-2) **Make changes** following the coding guidelines  
-3) **Submit a Pull Request (PR)**  
-
-📖 Check out the contribution guide:  
-
-- [CONTRIBUTING](/docs/CONTRIBUTING.md)  
-- [CODE_OF_CONDUCT](/docs/CODE_OF_CONDUCT.md)  
-- [PULL_REQUEST](/docs/pull_request_template.md)  
-
-
-🐞 Found a bug? Report it via [BUG_REPORT](https://github.com/anoopkarnik/company-landing-page/issues/new?template=bug_report.md) 
-
-💡 Have an idea? Submit a [FEATURE_REQUEST](https://github.com/anoopkarnik/company-landing-page/issues/new?template=feature_request.md)  
-
----
-
-## 📜 License  
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
+MIT. See [LICENSE](LICENSE).

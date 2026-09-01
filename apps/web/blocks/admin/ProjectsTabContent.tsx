@@ -24,6 +24,7 @@ export function ProjectsTabContent({ initialData, onSave, isSaving }: SectionTab
     const { fields, append, remove } = useFieldArray({
         control: form.control,
         name: "products",
+        keyName: "_formId",
     });
 
     useEffect(() => {
@@ -82,7 +83,7 @@ export function ProjectsTabContent({ initialData, onSave, isSaving }: SectionTab
 
                 <div className="space-y-4">
                     {fields.map((field, index) => (
-                        <div key={field.id} className="relative border rounded-lg bg-muted/30">
+                        <div key={field._formId} className="relative border rounded-lg bg-muted/30">
                             <div className="flex items-center justify-between p-4 cursor-pointer" onClick={() => toggleExpand(index)}>
                                 <div className="flex items-center gap-2">
                                     <span className="text-xs font-medium text-muted-foreground">

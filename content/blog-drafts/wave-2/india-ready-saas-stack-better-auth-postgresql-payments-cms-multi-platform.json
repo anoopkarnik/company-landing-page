@@ -1,0 +1,52 @@
+{
+  "title": "An India-Ready SaaS Stack: Better Auth, PostgreSQL, Payments, CMS and Multi-Platform Apps",
+  "slug": "india-ready-saas-stack-better-auth-postgresql-payments-cms-multi-platform",
+  "category": "MVP & SaaS",
+  "excerpt": "A source-owned SaaS architecture for Indian founders, covering authentication, PostgreSQL, replaceable billing providers, CMS boundaries and shared web, desktop and mobile contracts.",
+  "seoTitle": "India-Ready SaaS Stack: Auth, Postgres & Payments",
+  "seoDescription": "Design an India-ready SaaS stack with Better Auth, PostgreSQL, adaptable payments, an operational CMS and shared web, desktop and mobile contracts.",
+  "canonicalUrl": "https://bayesian-labs.com/blog/india-ready-saas-stack-better-auth-postgresql-payments-cms-multi-platform",
+  "tags": [
+    "SaaS India",
+    "Better Auth",
+    "PostgreSQL",
+    "SaaS payments",
+    "Next.js",
+    "SaaS Forge",
+    "CMS",
+    "multi-platform apps"
+  ],
+  "status": "DRAFT",
+  "author": "Anoop Karnik",
+  "includeInSitemap": true,
+  "relatedServiceSlugs": [
+    "mvp-development",
+    "data-ai-integration"
+  ],
+  "relatedCaseStudySlugs": [
+    "saas-forge"
+  ],
+  "cover": {
+    "prompt": "Wide 16:9 premium editorial technology illustration for an India-ready SaaS architecture, dark charcoal-black background, modular platform core with authentication shield, relational database cylinder, adaptable payment rails, content blocks, and three connected device surfaces for web desktop mobile, violet and cyan illumination with emerald verified pathways and one restrained saffron accent, sophisticated isometric technical aesthetic, no map, no flag, no readable text, no letters, no logos, no watermark",
+    "alt": "Modular SaaS platform connecting authentication, PostgreSQL, payments, CMS, web, desktop and mobile",
+    "caption": "An India-ready SaaS architecture isolates changing payment constraints from durable identity, data and product contracts. Conceptual illustration."
+  },
+  "sourceUrls": [
+    "https://github.com/anoopkarnik/saas-forge",
+    "https://github.com/anoopkarnik/saas-forge/blob/main/scaffold-modules/registry.json",
+    "https://better-auth.com/docs/adapters/prisma",
+    "https://better-auth.com/docs/concepts/database",
+    "https://docs.stripe.com/india-accept-international-payments",
+    "https://docs.stripe.com/india-recurring-payments",
+    "https://docs.dodopayments.com/miscellaneous/merchant-acceptance",
+    "https://docs.dodopayments.com/features/payment-methods",
+    "https://razorpay.com/docs/payments/subscriptions/supported-payment-methods/"
+  ],
+  "claimNotes": [
+    "Repository claims were checked against public main at commit 506e81d on 2026-09-01; they may change before publication.",
+    "Current source exposes Stripe and Dodo Payments; Razorpay is discussed as a provider option, not claimed as an implemented SaaS Forge integration.",
+    "Organizations/teams, API keys and notifications are marked unimplemented in the current scaffold registry.",
+    "AI modules are described as experimental; no current green-CI claim is made.",
+    "Payment eligibility and regulatory details require a fresh provider check and qualified legal/tax advice before publication."
+  ]
+}

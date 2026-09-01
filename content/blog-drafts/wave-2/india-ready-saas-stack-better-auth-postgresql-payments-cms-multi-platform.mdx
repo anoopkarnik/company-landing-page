@@ -1,0 +1,258 @@
+# An India-Ready SaaS Stack: Better Auth, PostgreSQL, Payments, CMS and Multi-Platform Apps
+
+**The short answer:** an India-ready SaaS stack is not a Next.js starter with an INR symbol. It is an architecture in which the founder owns the code and data, authentication is portable, billing providers can be changed, Indian and international payment constraints are checked explicitly, business content can be operated without deployments, and web, desktop and mobile clients use the same backend contracts.
+
+One practical implementation is a monorepo with a Next.js web application, Better Auth, Prisma and PostgreSQL, a billing adapter boundary, an operator-facing CMS, and separate Electron and Expo clients. The important word is **boundary**. Payment availability, KYC requirements, recurring mandates and taxes change; they should not be scattered through product code.
+
+This article uses the public [SaaS Forge repository](https://github.com/anoopkarnik/saas-forge) as a concrete implementation reference. It does not claim that one template completes legal, tax or payment compliance for every Indian business.
+
+## Define “India-ready” before choosing packages
+
+A SaaS product serving an Indian founder may sell to customers in India, outside India or both. Those models have different checkout, settlement, tax and support needs. Write down these decisions first:
+
+1. Where is the business entity established?
+2. Which countries can become customers?
+3. Is the product sold once, by subscription, by usage or through credits?
+4. Which currencies are displayed, charged and settled?
+5. Does the provider act only as a gateway or as Merchant of Record?
+6. Which invoices, tax records and refund evidence must be retained?
+7. What happens when a recurring mandate is delayed, revoked or cannot be created?
+8. Can billing be replaced without rewriting account and entitlement logic?
+
+Provider documentation illustrates why this matters. Stripe’s official India guidance states that new Indian businesses must request an invite rather than open a standard account directly. Its India recurring-payment documentation also describes limitations and mandate behavior that differ from a generic global Stripe tutorial. Razorpay documents cards, UPI AutoPay and eMandate for subscriptions. Dodo Payments currently documents India among accepted merchant locations and lists UPI and RuPay support, including special behavior for Indian subscriptions.
+
+Those are current provider statements, not permanent guarantees. Confirm entity eligibility, product category, settlement, fees and recurring behavior with the selected provider before committing the product design.
+
+## Use one domain model, not one vendor model
+
+The product should understand its own concepts:
+
+- user and session;
+- plan and price;
+- checkout attempt;
+- subscription or purchase;
+- entitlement and credit balance;
+- invoice or receipt reference;
+- webhook event and processing state.
+
+Do not let the rest of the application depend directly on a provider object called, for example, a Stripe Subscription. Translate provider events into your domain states at one boundary.
+
+```text
+Web / Desktop / Mobile
+          |
+       typed API
+          |
+Auth -- Product services -- Entitlements
+          |                    |
+      PostgreSQL          Billing adapter
+                               |
+                    Stripe / Dodo / future provider
+```
+
+This does not make switching providers free. Checkout UI, webhook events, refunds, proration and reconciliation all differ. It makes the change localized and testable instead of forcing billing details through every feature.
+
+## Authentication: own identity without rebuilding security primitives
+
+Better Auth is a TypeScript authentication and authorization framework with database adapters and plugins. Its Prisma adapter documentation shows PostgreSQL-backed integration and a schema-generation workflow. The CLI can generate the Prisma models required by the chosen auth configuration, while Prisma remains responsible for applying migrations.
+
+That split supports a useful ownership model:
+
+- identity records and sessions live in the product database;
+- application code controls auth configuration and callbacks;
+- the chosen login methods can evolve;
+- the team remains responsible for secrets, trusted origins, secure cookies, email verification, password reset and authorization checks.
+
+Authentication is not complete when sign-in renders. A production checklist includes:
+
+- verified email policy appropriate to the product;
+- rate limiting and abuse controls;
+- session expiry and revocation;
+- OAuth callback URLs per environment;
+- server-side authorization for every protected operation;
+- administrator access with stronger protection;
+- audit evidence for sensitive account changes;
+- tested account deletion and data-retention behavior.
+
+SaaS Forge’s current source uses a shared auth package across the web and native clients and exposes email and selected social-provider configuration. That is a foundation, not a claim that every Better Auth plugin or enterprise identity pattern is enabled.
+
+## PostgreSQL: make product state durable and inspectable
+
+PostgreSQL is a strong default for relational SaaS data because identity, subscriptions, entitlements and business records benefit from constraints and transactions. The database should enforce invariants that must remain true even if two requests arrive together.
+
+Examples include:
+
+- a unique provider-event ID so a webhook is processed once;
+- a unique active entitlement where the business model requires it;
+- foreign keys between user, account and billing records;
+- a transaction that records both a credit debit and its ledger entry;
+- explicit status transitions rather than a collection of unrelated booleans.
+
+Prisma provides a typed data-access layer and migration workflow, but generated migrations still need review. A change to auth or billing schema is an operational change: back it up, test it against representative data, plan compatibility during rollout and define rollback or forward-fix behavior.
+
+For growth, start by measuring queries and connection behavior rather than promising “infinite scale.” Add indexes for observed access paths, use pooling appropriate to the hosting model, bound expensive queries and keep background work away from request time where possible.
+
+## Payments: choose the commercial model before the SDK
+
+There are two broad provider models.
+
+| Model | Product team typically owns | Provider typically handles | Key question |
+|---|---|---|---|
+| Payment gateway or processor | More tax, invoicing and merchant obligations | Payment acceptance and settlement services | Can the entity onboard and support the required Indian/global methods? |
+| Merchant of Record | Product catalogue and customer experience | Acts as seller of record and handles defined tax/payment responsibilities | Are the product category, payout country and commercial terms accepted? |
+
+Dodo Payments describes itself as Merchant of Record. Razorpay describes Indian subscription methods including UPI AutoPay and eMandate. Stripe offers extensive billing APIs but has India-specific onboarding and recurring-payment documentation. None is automatically right for every product.
+
+### Build the billing boundary around events
+
+At minimum, define provider-neutral operations such as:
+
+```text
+createCheckout(plan, customer, successUrl)
+cancelSubscription(subscriptionId, effectiveAt)
+getEntitlement(accountId)
+handleProviderEvent(rawBody, signature)
+reconcileSubscription(providerReference)
+```
+
+For webhooks:
+
+1. verify the signature against the **raw** request body;
+2. store the provider event ID under a unique constraint;
+3. acknowledge within the provider’s expected time;
+4. update local state idempotently;
+5. grant features from local entitlements, not from a success-page redirect;
+6. reconcile ambiguous or missing events on a schedule.
+
+SaaS Forge’s public source currently includes SDK/configuration surfaces for Stripe and Dodo Payments, and its scaffold registry marks the billing module implemented. This is repository evidence, not a statement that either provider will approve a particular merchant. Razorpay and other local options would require their own maintained adapter; they should not be presented as shipped integrations until that code exists.
+
+## CMS: let operations change content without changing application code
+
+Not every editable value belongs in a CMS. Product authorization, prices used for charging and validation rules should have controlled data models and release discipline. A CMS is appropriate for material such as:
+
+- landing-page copy and FAQs;
+- documentation and onboarding guides;
+- legal-page content with version and publication date;
+- announcements and support resources;
+- product screenshots and media metadata.
+
+A useful CMS layer has drafts, publication state, validation, role-based editing, audit timestamps, safe media storage and deterministic rendering. Public pages should continue to work when the editing provider is temporarily unavailable, through caching or a replicated published representation.
+
+The current SaaS Forge README describes Notion-backed documentation and CMS utilities plus administration surfaces. That is one provider choice. If a product needs PostgreSQL-native content, localization, editorial workflows or large-scale media, preserve the content interface and replace the storage implementation deliberately rather than leaking provider block types throughout the UI.
+
+## Multi-platform: share contracts, not every component
+
+Web, desktop and mobile products can share:
+
+- authentication models and validation schemas;
+- API procedure types and domain rules;
+- database and entitlement semantics;
+- analytics event names;
+- design tokens and copy where the rendering system permits it.
+
+They should not be forced to share every view. React Native and the browser have different layout primitives, navigation, storage, permissions and accessibility behavior. Electron adds a privileged main process and IPC security boundary.
+
+SaaS Forge’s current monorepo contains a Next.js web app, Electron desktop app and Expo mobile app. The desktop renderer imports shared auth and UI packages and calls the web API. The Expo client imports shared auth types and calls the same service boundary while maintaining native components. This is reuse at the contract and package level, not a promise of one universal screen implementation.
+
+The result is incremental reach: validate the product on web, then add a desktop or mobile surface for use cases that justify installation, offline behavior, notifications or native integrations. The backend and account model remain stable while each client receives appropriate UX and security work.
+
+## What the SaaS Forge implementation actually demonstrates
+
+The public repository reviewed on 1 September 2026 documents:
+
+- a pnpm and Turborepo monorepo;
+- Next.js web, Electron desktop and Expo mobile applications;
+- Better Auth, Prisma and PostgreSQL shared packages;
+- tRPC-based application contracts;
+- Notion CMS utilities and administration surfaces;
+- Stripe and Dodo Payments configuration and SDK dependencies;
+- email, object storage, logging, analytics and rate-limit integrations;
+- a staged starter-template and download workflow;
+- Docker self-hosting for the web app and PostgreSQL.
+
+It also documents important boundaries. Only the SaaS boilerplate template is described as part of the released template workflow. The scaffold registry marks organizations/teams, API keys and notifications as not implemented. AI code exists, but the AI modules should be treated as experimental rather than a basis for production-readiness claims. The repository exposes verification commands; this article does not claim the current CI run is green.
+
+That accuracy matters more than a long feature list. A starter should tell a founder what is ready, what needs configuration and what is still evolving.
+
+## An India-ready launch review
+
+Before collecting the first payment, verify:
+
+### Commercial and payment
+
+- entity and product category accepted by the provider;
+- domestic and international customer routes tested;
+- INR and foreign-currency display/settlement understood;
+- subscription mandate timing and failure behavior tested;
+- cancellation, refund and chargeback operations documented;
+- webhook replay and reconciliation tested;
+- invoice and tax ownership confirmed with a qualified adviser.
+
+### Application
+
+- permissions enforced on the server;
+- auth and provider secrets separated by environment;
+- database migrations and backups rehearsed;
+- entitlements derived idempotently from trusted events;
+- CMS roles cannot change security or charging rules;
+- responsive web behavior verified before adding native clients;
+- desktop IPC and navigation constrained;
+- mobile deep links and secure token storage reviewed.
+
+### Operations
+
+- deployment and rollback owned by the team;
+- errors route to an accountable person;
+- support can inspect account and payment state safely;
+- provider exports and database recovery have been tested;
+- privacy, terms and refund copy match actual behavior.
+
+## Limitations
+
+“Open source” and “self-hostable” reduce some forms of lock-in; they do not remove maintenance. The owner must patch dependencies, monitor infrastructure and review security changes. A shared monorepo reduces duplication but adds tooling and release coordination. Native clients add signing, stores, deep links and platform-specific testing.
+
+Payment and regulatory details are especially time-sensitive. The provider pages linked below must be checked again at implementation and launch. This article is technical architecture guidance, not legal, tax or financial advice.
+
+## Frequently asked questions
+
+### Does SaaS Forge support Razorpay out of the box?
+
+The public source reviewed for this article shows Stripe and Dodo Payments dependencies/configuration. It should not be described as shipping Razorpay until a tested adapter and webhook implementation are present. The architecture can accommodate another provider, but that is implementation work.
+
+### Is Stripe available to a new Indian business?
+
+Stripe’s current official India documentation says new Indian businesses must request an invite. Eligibility and capabilities can change, so confirm directly with Stripe for the specific entity and product.
+
+### Why use Better Auth instead of a hosted identity vendor?
+
+It keeps the framework configuration and identity persistence close to the application and offers an extensible TypeScript plugin model. That provides control but also makes the product team responsible for correct configuration, migrations, email delivery, monitoring and upgrades.
+
+### Should CMS content live in PostgreSQL or Notion?
+
+Choose based on editorial workflow, reliability and query needs. Notion can be convenient for a small content operation; PostgreSQL provides stronger product integration and data control. Keep a content-service boundary so pages are not coupled to one provider’s representation.
+
+### Can the same Next.js page run unchanged on mobile?
+
+Expo can target web, but a useful native product still needs platform-appropriate navigation, storage, controls and permissions. Share schemas, domain logic and API contracts first. Reuse visual code selectively.
+
+### Does a monorepo make the product scalable?
+
+It improves code sharing and coordination; it does not determine runtime scalability. Database access, caching, queues, API limits, observability and deployment architecture must be measured and evolved independently.
+
+## Build for provider change, not a perfect provider
+
+SaaS products built in India should not have to surrender code ownership or discover after launch that a copied billing tutorial cannot support the actual business. I use explicit provider boundaries, durable data models and shared contracts so the first web product can grow without hiding critical assumptions.
+
+[Explore the SaaS Forge case study](/case-studies/saas-forge), [inspect the open-source repository](https://github.com/anoopkarnik/saas-forge), or [discuss an India-ready MVP](/#start-project).
+
+## Sources
+
+- [SaaS Forge public repository and current README](https://github.com/anoopkarnik/saas-forge)
+- [SaaS Forge scaffold module registry](https://github.com/anoopkarnik/saas-forge/blob/main/scaffold-modules/registry.json)
+- [Better Auth: Prisma adapter](https://better-auth.com/docs/adapters/prisma)
+- [Better Auth: Database concepts](https://better-auth.com/docs/concepts/database)
+- [Stripe: Accept international payments from India](https://docs.stripe.com/india-accept-international-payments)
+- [Stripe: India recurring payments](https://docs.stripe.com/india-recurring-payments)
+- [Dodo Payments: Merchant acceptance policy](https://docs.dodopayments.com/miscellaneous/merchant-acceptance)
+- [Dodo Payments: Payment methods](https://docs.dodopayments.com/features/payment-methods)
+- [Razorpay: Subscription payment methods](https://razorpay.com/docs/payments/subscriptions/supported-payment-methods/)
+

@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,7 +11,7 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 
 const FooterSection = () => {
     const trpc = useTRPC();
-    const { data } = useSuspenseQuery(trpc.landing.getLandingInfoFromNotion.queryOptions());
+    const { data } = useSuspenseQuery(trpc.landing.getLandingInfo.queryOptions());
     const footerSection = data.footerSection as FooterSectionProps;
     const { theme } = useTheme();
     const [mounted, setMounted] = useState(false);

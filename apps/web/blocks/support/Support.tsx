@@ -17,7 +17,7 @@ import Message from "@/components/support/Message";
 import Newsletter from "@/components/support/Newsletter";
 import { useRouter } from "next/navigation";
 import { useTRPC } from "@/trpc/client";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 type ActivePanel = "message" | "newsletter" | "assistant" | null;
 
@@ -26,9 +26,18 @@ const Support = () => {
     const triggerRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
     const trpc = useTRPC();
-    const { data } = useSuspenseQuery(trpc.landing.getLandingInfoFromNotion.queryOptions());
-    const supportEmail = data.contactUs?.supportEmailAddress;
-    const appointmentLink = data.heroSection?.appointmentLink;
+    const { data } = useQuery({
+        ...trpc.landing.getLandingInfo.queryOptions(),
+        // The widget lives outside page-level hydration boundaries. Waiting for
+        // the browser avoids a server-side HTTP call back into this application.
+        enabled: typeof window !== "undefined",
+    });
+    const supportEmail = data?.contactUs?.supportEmailAddress;
+    const appointmentCandidate = data?.heroSection?.appointmentLink?.trim();
+    const appointmentLink =
+        appointmentCandidate && /^https?:\/\//.test(appointmentCandidate)
+            ? appointmentCandidate
+            : null;
 
     const [activePanel, setActivePanel] = useState<ActivePanel>(null);
 

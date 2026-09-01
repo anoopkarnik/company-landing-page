@@ -1,0 +1,248 @@
+# How to Upgrade a Customized SaaS Boilerplate Without Losing Your Changes
+
+**The short answer:** preserve a common Git ancestor between the boilerplate release and your application, perform every upgrade on a disposable branch, preview the upstream delta, merge by file ownership, regenerate derived files, review database and environment changes manually, and prove the result with tests before merging it into your product. AI can help interpret conflicts, but it should not overwrite customized files or decide that a migration is safe without evidence.
+
+This problem is often called **template drift**. The upstream starter keeps improving while the downloaded application develops its own product UI, schema and business rules. Both may change authentication, middleware, shared components, dependencies and configuration. Copying the newest template over the application destroys product work; never upgrading leaves security fixes and architectural improvements behind.
+
+I treated this as a product feature while building [SaaS Forge](https://github.com/anoopkarnik/saas-forge) and using it as the foundation for [Life OS](/case-studies/life-os). The most important lesson was that the tool is not the hard part. The hard part is preserving **intent** on both sides.
+
+## Why boilerplate upgrades become difficult
+
+Imagine a starter ships a simple `User` model. Your application adds profiles, preferences and relationships. A later starter release adds session controls and administrator fields to the same model. Neither version should replace the other.
+
+The conflicts cluster in predictable areas:
+
+- authentication configuration and user schema;
+- middleware and authorization;
+- route or procedure registries;
+- shared navigation and settings UI;
+- environment examples;
+- package manifests and lockfiles;
+- build, lint and deployment configuration;
+- generated clients and database migrations.
+
+Git can show that two branches changed the same lines. It cannot know whether a new upstream role should coexist with a product-specific permission, whether a renamed environment key changes production behavior, or whether two schema migrations can be reordered safely.
+
+## The foundation: give Git a real merge base
+
+A three-way merge compares two branch tips with their best common ancestor. Git’s official documentation calls that ancestor the merge base. Without it, every shared file can look independently added even when both copies began from the same template.
+
+SaaS Forge addresses this with a distilled release branch named `template/saas-boilerplate` and version tags shaped like `template/vX.Y.Z`. A generated project includes `.boilerplate-version`, which records its starting point. The template branch contains the released starter rather than the full platform source.
+
+That distinction matters:
+
+- `main` is the development/source repository, scaffold service and unreleased work;
+- `template/saas-boilerplate` is the downstream starter history;
+- `template/vX.Y.Z` identifies a specific released starter state.
+
+Do not force-merge an unrelated development tree into a customized product. Connect the product to the exact released template lineage.
+
+## Establish the relationship once
+
+For a project downloaded before it had a Git relationship to the starter, the documented SaaS Forge flow is conceptually:
+
+```bash
+cat .boilerplate-version
+
+git remote add boilerplate https://github.com/anoopkarnik/saas-forge.git
+git fetch boilerplate --tags
+
+git checkout -b upgrade/boilerplate-initial
+git merge template/vYOUR_BASE_VERSION --allow-unrelated-histories
+```
+
+Use the actual tag printed by the project; do not substitute “latest.” If the downloaded files match the tag, the baseline merge should be small. Resolve any initial generated-file differences, install dependencies, run the verification suite and merge that relationship into the application’s history.
+
+After this, later release merges use a normal three-way comparison:
+
+```bash
+git fetch boilerplate template/saas-boilerplate --tags
+git checkout -b upgrade/boilerplate-next
+git merge boilerplate/template/saas-boilerplate
+```
+
+The precise commands can evolve with the repository, so read the version of `UPGRADING.md` shipped with the project before running them.
+
+## Preview the change before merging
+
+The upgrade should start as a review, not as a conflict-resolution session.
+
+```bash
+git status
+git fetch boilerplate --tags
+git diff HEAD...boilerplate/template/saas-boilerplate --stat
+git diff HEAD...boilerplate/template/saas-boilerplate -- packages/auth/
+git diff HEAD...boilerplate/template/saas-boilerplate -- packages/database/prisma/
+git log boilerplate/template/saas-boilerplate --oneline
+```
+
+Confirm that the worktree is clean and recoverable. Then classify the release:
+
+- security or dependency maintenance;
+- database changes;
+- auth and authorization behavior;
+- new optional module;
+- shared UI refactor;
+- build or runtime configuration;
+- documentation-only changes.
+
+This classification determines reviewers and tests. An icon update and a session-schema change should not follow the same checklist.
+
+## Resolve conflicts by ownership and invariant
+
+“Ours” and “theirs” are directions, not decisions. For each conflict, identify what the file owns and what must remain true after the merge.
+
+| File category | Default posture | Required proof |
+|---|---|---|
+| Product routes and business logic | Preserve application behavior; import upstream intent selectively | Product tests and acceptance flows |
+| Auth and middleware | Merge both deliberately | Sign-in, sign-out, session, role and denial tests |
+| Prisma schema | Combine models and relationships manually | Schema validation, reviewed migration, representative data test |
+| Environment examples | Union new documented keys; never copy secrets | Startup/config validation per environment |
+| `package.json` | Merge scripts and dependencies semantically | Clean install, build and tests |
+| Lockfile | Treat as generated after manifests are correct | Reinstall with the repository’s pinned package manager |
+| Shared UI | Preserve product navigation and add compatible upstream behavior | Visual and interaction checks at target sizes |
+| Generated output | Regenerate; do not hand-merge | Generator produces clean diff |
+
+### Preserve invariants, not line arrangements
+
+For authentication, the invariant might be “an administrator can manage users, a normal user cannot, and existing sessions remain valid or are intentionally revoked.” For billing it might be “one provider event produces one entitlement transition.” For a navigation conflict it might be “every existing domain stays reachable and the new setting appears for authorized roles.”
+
+Write those invariants before editing. They turn a large textual conflict into a finite engineering task.
+
+### Rebuild derived files
+
+Lockfiles, generated Prisma clients, build output and formatted artifacts are consequences of source configuration. First resolve the package manifests and schema, then regenerate with the project’s documented tool versions.
+
+SaaS Forge’s upgrade guide recommends accepting the upstream lockfile in its expected conflict case and running `pnpm install`. For a heavily customized app, inspect the merged `package.json` files first so custom dependencies and overrides remain present. The regenerated lockfile should be reviewed as generated evidence, not used to decide which manifest intent wins.
+
+### Treat schema changes as data changes
+
+A merged Prisma file compiling does not prove that the database can migrate safely. Review:
+
+- new required columns on populated tables;
+- renames that a generator may interpret as drop-and-create;
+- changed unique constraints;
+- relation cardinality and deletion behavior;
+- backfill and deployment ordering;
+- compatibility between old and new application versions.
+
+Generate the migration in a development database, inspect its SQL, test it against representative data and back up before production. An AI-resolved schema conflict is still only a proposed schema.
+
+## Use two upgrade paths, depending on drift
+
+### Path A: merge the distilled release
+
+Use a release-branch merge when the application retains the template ancestry and wants the complete released change set. This gives Git the best opportunity to preserve untouched files automatically and flag only overlapping edits.
+
+This is the normal path for frequent, smaller upgrades.
+
+### Path B: import one feature’s intent
+
+When an application has diverged substantially—or needs a feature that has not entered a distilled release—a whole-tree merge may create far more noise than value. A selective workflow can inspect the upstream commits for one feature, exclude template mirrors and generated artifacts, and apply only relevant source paths with three-way context.
+
+The SaaS Forge repository includes a `boilerplate-sync` skill that describes this feature-by-feature approach for Claude Code. It groups commits, applies path-filtered patches, keeps the downstream application’s structure and requires package-specific verification.
+
+That is a documented assistant workflow, not an automatic conflict-free upgrade engine. As reviewed on 1 September 2026, the shipped template contains Claude-specific upgrade instructions and a Claude `boilerplate-sync` skill. It does **not** contain an equivalent working Codex upgrade skill; its Codex directory contains a separate brainstorming skill. Other coding agents can still assist when given the diff, invariants and test commands, but the repository should not be marketed as shipping a verified Codex automation that is not there.
+
+## What an AI assistant should and should not do
+
+An assistant is useful for:
+
+- grouping upstream commits into coherent features;
+- explaining both sides of a conflict;
+- tracing imports and schema relationships;
+- applying small additions to heavily customized shared files;
+- finding omitted environment keys;
+- running the relevant checks and summarizing remaining risk.
+
+It should not:
+
+- replace every conflicted file with the upstream version;
+- merge the development branch only because it is newest;
+- invent a migration without inspecting existing data;
+- delete a downstream feature because upstream lacks it;
+- report success without executing the required verification;
+- expose `.env` values or production credentials in prompts and logs.
+
+Give the assistant a clean branch, the actual upstream reference, a list of protected product domains and the commands that count as evidence. Review the diff before accepting the work.
+
+## Verification should follow the dependency graph
+
+Run the smallest relevant checks while resolving each area, then the whole release gate.
+
+1. **Install:** clean dependency installation with the pinned package manager.
+2. **Generate:** Prisma and any other generated clients.
+3. **Validate schema:** parse and validate every schema file.
+4. **Typecheck:** shared packages before consuming apps where possible.
+5. **Unit tests:** auth, billing, data and changed domain packages.
+6. **Build:** each affected deployable, not only the web app.
+7. **Migration rehearsal:** representative database snapshot in a safe environment.
+8. **Acceptance:** login, permissions, billing state and the product’s critical journey.
+9. **Deployment review:** new variables, jobs, callback URLs, storage and rollback.
+
+SaaS Forge exposes template sync, staged-template build and test commands to check its own released starter. Their existence is useful; it is not evidence that a particular downstream merge currently passes. Save the output from the upgrade branch or pull request.
+
+## A sustainable release rhythm
+
+Large annual upgrades are painful because every conflict contains twelve months of unknown intent. Smaller regular upgrades are easier to inspect and easier to reverse.
+
+Maintain an upgrade ledger containing:
+
+- application’s last merged template tag;
+- skipped upstream features and why;
+- downstream files intentionally protected;
+- migrations applied;
+- new environment keys;
+- verification evidence;
+- follow-up debt.
+
+If an upstream change is repeatedly impossible to merge, that is architectural feedback. Move product-specific behavior behind a stable interface or out of the shared file so future changes overlap less.
+
+## Limitations
+
+No Git strategy makes semantic conflicts disappear. Three-way merge reduces unnecessary conflicts; it cannot determine business intent. Selective feature import reduces scope; it can miss hidden dependencies. AI assistance reduces mechanical work; it can confidently produce incomplete integrations.
+
+Published tags, skills and commands also change. Inspect the project’s own `.boilerplate-version`, `UPGRADING.md` and upstream release history at the time of the upgrade. Back up data and test before production.
+
+## Frequently asked questions
+
+### Why not copy the newest starter over my app?
+
+Because unchanged filenames do not mean unchanged intent. Copying replaces custom business logic, schema and configuration without showing a reviewable merge. Use versioned ancestry and a branch.
+
+### Should I merge the boilerplate’s `main` branch?
+
+Usually not. In SaaS Forge, the downstream release lineage is the distilled `template/saas-boilerplate` branch. `main` contains source-platform concerns and unreleased work. Use the reference documented by the starter.
+
+### Can I upgrade if I downloaded a ZIP?
+
+Yes, if the project records the template version and the repository publishes a matching tag. Establish the baseline relationship once using the exact tag, then use ordinary three-way release merges.
+
+### Should I always accept the upstream lockfile?
+
+Resolve all `package.json` files first. Then regenerate the lockfile using the pinned package manager. Follow the starter’s documented approach, but confirm that custom dependencies and workspace overrides remain represented.
+
+### Can an AI agent resolve every merge conflict?
+
+It can assist with many conflicts, especially when supplied with invariants and tests. It cannot guarantee that a data migration, permission rule or product behavior is correct. Human review and executed verification remain necessary.
+
+### What if I only want one upstream feature?
+
+Identify the full feature commit set and dependencies, then import only the relevant real source paths. Test each dependency layer. SaaS Forge documents a Claude-specific skill for this, but the process remains an engineering change—not a blind cherry-pick.
+
+## Keep the product yours while the foundation improves
+
+The value of a boilerplate is not only the day-one code. It is whether the foundation can evolve after the application becomes real. SaaS Forge treats version tags, release lineage and conflict-aware integration as part of that product lifecycle.
+
+[Read the SaaS Forge case study](/case-studies/saas-forge), [inspect its upgrade guide](https://github.com/anoopkarnik/saas-forge/blob/main/template-overrides/saas-boilerplate/UPGRADING.md), or [discuss a maintainable MVP architecture](/#start-project).
+
+## Sources
+
+- [SaaS Forge repository](https://github.com/anoopkarnik/saas-forge)
+- [SaaS Forge: Upgrading your project](https://github.com/anoopkarnik/saas-forge/blob/main/template-overrides/saas-boilerplate/UPGRADING.md)
+- [SaaS Forge: Template branch upgrade workflow design](https://github.com/anoopkarnik/saas-forge/blob/main/docs/superpowers/completed/2026-04-06-template-branch-upgrade-workflow-design.md)
+- [SaaS Forge: Claude boilerplate-sync skill](https://github.com/anoopkarnik/saas-forge/blob/main/.claude/skills/boilerplate-sync/SKILL.md)
+- [Git documentation: git-merge](https://git-scm.com/docs/git-merge)
+- [Git documentation: git-merge-base](https://git-scm.com/docs/git-merge-base)
+- [GitHub documentation: Resolve a merge conflict using the command line](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/resolving-a-merge-conflict-using-the-command-line)
+

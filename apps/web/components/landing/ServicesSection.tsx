@@ -7,7 +7,7 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 
 const ServicesSection = () => {
   const trpc = useTRPC();
-  const { data } = useSuspenseQuery(trpc.landing.getLandingInfoFromNotion.queryOptions());
+  const { data } = useSuspenseQuery(trpc.landing.getLandingInfo.queryOptions());
   const serviceSection = data.serviceSection;
   const [headingArray, setHeadingArray] = useState<string[]>([])
   useEffect(() => {

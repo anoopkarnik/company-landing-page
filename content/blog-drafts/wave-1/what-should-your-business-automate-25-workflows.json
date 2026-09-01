@@ -1,0 +1,46 @@
+{
+  "title": "What Should Your Business Automate? 25 Practical AI and n8n Workflows",
+  "slug": "what-should-your-business-automate-25-workflows",
+  "type": "AI Automation",
+  "category": "AI Automation",
+  "excerpt": "Twenty-five practical automation opportunities across sales, support, finance, marketing, data and engineering—with a framework for choosing the right first workflow.",
+  "seoTitle": "25 Practical AI and n8n Workflows",
+  "seoDescription": "Find the right business process to automate with 25 practical AI and n8n workflows, a scoring framework, safety boundaries and pilot plan.",
+  "canonicalUrl": "/blog/what-should-your-business-automate-25-workflows",
+  "tags": [
+    "business automation",
+    "n8n workflows",
+    "AI automation",
+    "operations",
+    "workflow ideas",
+    "AI agents"
+  ],
+  "author": "Anoop Karnik Dasika",
+  "relatedServiceSlugs": [
+    "ai-automation",
+    "data-ai-integration"
+  ],
+  "relatedCaseStudySlugs": [
+    "automated-ga4-search-reporting",
+    "financial-document-ocr-pipeline",
+    "fhir-data-validation-service",
+    "voice-driven-restaurant-ordering"
+  ],
+  "coverPrompt": "16:9 wide editorial illustration for Bayesian Labs: a sophisticated ecosystem of twenty-five small abstract business workflow modules flowing through a central orchestration hub, with document, analytics, database, support, finance and approval motifs represented only as simple geometric objects. Dark near-black background, deep violet, cyan and emerald light paths, premium technical consultancy aesthetic, clean composition, strong depth, generous negative space. No text, no numerals, no logos, no watermark, no branded software interface.",
+  "altText": "Connected business workflow modules flowing through a central automation hub",
+  "imageCaption": "Conceptual map of repeatable business work connected through a governed automation layer.",
+  "sourceUrls": [
+    "https://docs.n8n.io/",
+    "https://docs.n8n.io/build/flow-logic/handle-errors-gracefully",
+    "https://developers.google.com/analytics/devguides/reporting/data/v1",
+    "https://developers.google.com/webmaster-tools/v1/searchanalytics/query",
+    "https://developers.google.com/drive/api/guides/about-sdk",
+    "https://owasp.org/www-project-application-security-verification-standard/"
+  ],
+  "claimNotes": [
+    "The twenty-five workflows are recommendations, not claims that every workflow was implemented for a client.",
+    "Project-specific statements link to existing case studies and preserve their evidence limitations.",
+    "The four-week pilot is a sequencing example, not a delivery guarantee.",
+    "Legal, employment, healthcare and financial decisions are intentionally kept human-led."
+  ]
+}

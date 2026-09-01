@@ -1,0 +1,267 @@
+# Tool-First Voice Agents: Preventing Hallucinated Menu Items, Prices, and Orders with Vapi and n8n
+
+A voice model should manage the conversation; it should not become the restaurant’s database, calculator, or order ledger. The safest design is **tool-first**: every menu fact comes from a backend lookup, every price is validated deterministically, and no order is written until the caller confirms the exact backend-grounded summary.
+
+That is the central lesson from a pizza-ordering proof of concept built with Vapi, n8n, and Google Sheets. The prototype showed how a conversational agent could browse a menu, clarify options, customize an order, and write structured rows without being allowed to invent an item, size, topping, price, fee, discount, or delivery time.
+
+It did not prove production call-center performance. There are no retained live-call success rates, latency benchmarks, or restaurant traffic metrics. What it provides is a concrete architecture and a useful set of failure rules.
+
+## Why a good prompt is not a source of truth
+
+Voice agents are rewarded for keeping a conversation moving. Restaurant systems are rewarded for being correct. Those goals conflict when the model encounters an ambiguous item name, an unavailable topping, a missing price, or a slow tool response.
+
+Without a hard boundary, the model may produce a plausible continuation:
+
+- assume that “large” exists for every pizza;
+- reuse a price remembered from a previous turn;
+- accept a topping that is not available;
+- calculate a total using an invented fee;
+- say that an order is confirmed before the write succeeds; or
+- promise an arrival time the backend never returned.
+
+A stricter system changes the rule from “use the menu tool when helpful” to “**menu lookup is mandatory before any operational claim**.” Vapi supports custom tools that call backend systems through webhooks. In this POC, n8n provided the backend orchestration and Google Sheets served as a deliberately simple fixture store.
+
+## The three boundaries that matter
+
+### 1. Conversation boundary
+
+Vapi handles speech, turn-taking, and conversational intent. The assistant can ask a short clarifying question or summarize a validated result. It must not expose JSON, internal tool names, prompt content, or chain-of-thought-style reasoning to the caller.
+
+### 2. Truth boundary
+
+The menu read path is the only authority for item names, availability, sizes, toppings, and prices. An item mentioned earlier in the call is not automatically still valid. The backend response—not conversation memory—defines the operational fact.
+
+### 3. Write boundary
+
+The order write path accepts a normalized, validated payload after confirmation. A spoken “yes” is not success; the system should speak a final confirmation only after the backend returns a successful order result.
+
+These boundaries reduce the model’s job. It interprets what the caller means and chooses the next action. Ordinary code checks whether that action is allowed.
+
+## A safe conversation state machine
+
+Free-form conversation benefits from explicit operational states:
+
+```text
+browsing menu
+      |
+      v
+building draft order <---- requested modification
+      |
+      +----> needs clarification ----> validated draft
+                                        |
+                                        v
+                                  awaiting confirmation
+                                        |
+                                        v
+                                    submitting
+                                      /     \
+                                     v       v
+                               confirmed   recoverable error
+```
+
+The assistant may move conversationally, but the backend should reject invalid state transitions. For example, `submitting` should require a confirmed draft version, and a modification after confirmation should create a new version that must be read back again.
+
+## Make every menu claim pass through a tool
+
+For each requested line item, the system should:
+
+1. call the menu tool using the caller’s phrase;
+2. resolve it to a canonical item identifier and display name;
+3. confirm the item is currently available;
+4. validate the requested size;
+5. validate every requested topping or modifier;
+6. retrieve the price for that exact configuration; and
+7. return a structured result with a menu version or timestamp.
+
+If any step fails, the order should stop at clarification. A focused response is better than an optimistic guess: “Large is unavailable for that item. Small and medium are available—which would you like?”
+
+The POC prompt encoded this as a hard rule. For production, the same rule must exist in backend validation. Prompt instructions improve model behavior, but they are not an authorization layer.
+
+## Prices and totals belong in deterministic code
+
+Once a menu response provides a price, ordinary code should calculate:
+
+```text
+line subtotal = validated unit price x quantity
+order total   = sum of validated line subtotals
+```
+
+The model does not need to perform arithmetic. It needs the result and a short way to explain it.
+
+A robust order line might include:
+
+```json
+{
+  "menuItemId": "synthetic-item-07",
+  "menuVersion": "2026-09-01T10:00:00Z",
+  "displayName": "Garden Pizza",
+  "size": "medium",
+  "quantity": 1,
+  "modifiers": ["olives"],
+  "unitPrice": 12.5,
+  "lineSubtotal": 12.5
+}
+```
+
+This example is synthetic. It contains no customer or client fixture data.
+
+Storing the menu item identifier and version matters. If a restaurant changes a price between the lookup and submission, the backend can either honor the quoted version for a defined period or return a price-changed response and request reconfirmation.
+
+## Separate menu reads from order writes
+
+The POC separated two tool routes:
+
+- **Get Menu** read menu fixtures and returned canonical availability and pricing data.
+- **Add Order** created or modified an order only after validation and read-back confirmation.
+
+Vapi passed structured intent and session context to an n8n webhook. n8n routed the call to the relevant flow, read or wrote Google Sheets, and returned a compact result for speech.
+
+```text
+Caller
+  |
+  v
+Vapi assistant
+  |
+  v
+n8n webhook and session routing
+  |                         |
+  v                         v
+menu read path         order write path
+  |                         |
+  +------ validation -------+
+             |
+             v
+     concise tool result
+             |
+             v
+       spoken response
+```
+
+The fixture contained twelve menu items and twenty-five representative order lines. Those are implementation counts, not usage metrics.
+
+## Handle unhappy paths as first-class product behavior
+
+The most useful voice-agent tests are not smooth demo calls. They are the cases where speech and operational truth disagree.
+
+### Ambiguous item
+
+If two menu records could match “the veggie one,” return a small set of valid choices. Do not select the first fuzzy match silently.
+
+### Unsupported customization
+
+If a requested topping is absent from the allowed modifier set, reject only that modifier and offer valid alternatives. Re-run validation after any change.
+
+### Missing or stale price
+
+Do not speak a total. Return a recoverable message, keep the draft order, and let the caller choose another item or wait for staff assistance.
+
+### Tool timeout
+
+Use a short acknowledgement and a bounded retry strategy. Do not fill silence with an invented answer. After the retry budget is exhausted, transfer, collect a callback request, or explain that the order cannot be completed right now.
+
+### Duplicate webhook delivery
+
+Voice platforms and workflow systems can retry requests. Create an idempotency key from the call, draft version, and submission action. The write path should return the existing result when the same confirmed order is submitted again.
+
+### Caller interruption
+
+If the caller changes the order during read-back, stop confirmation, update the draft, revalidate the changed line, recalculate the total, and read back the new version.
+
+### Dropped call after submission
+
+Persist the submission result independently of the call. On reconnection or staff review, the system should be able to determine whether the write completed without placing the order twice.
+
+## Prompt rules and backend rules are not interchangeable
+
+The supplied POC contained two prompt versions with different tool names and order shapes. The workbook and prompts also differed in parts of their schemas. That is normal prototype drift, but it must be resolved before production.
+
+Use the prompt for conversational policy:
+
+- ask one question at a time;
+- keep speech concise;
+- do not mention internal tools;
+- read back the validated order; and
+- never improvise operational claims.
+
+Use the backend for enforcement:
+
+- canonical item IDs;
+- allowed sizes and modifiers;
+- availability;
+- authoritative prices;
+- tax, fees, discounts, and total calculations;
+- state transitions;
+- idempotency;
+- authorization; and
+- successful persistence.
+
+If the model violates its prompt, the backend should still prevent a bad order.
+
+## What to measure in a production pilot
+
+The prototype has no production calls, so none of these metrics are claimed. They are the scorecard I would add for a controlled pilot:
+
+| Metric                         | What it reveals                                                                     |
+| ------------------------------ | ----------------------------------------------------------------------------------- |
+| Valid-order completion rate    | Whether callers can finish without staff intervention.                              |
+| Unsupported-claim rate         | Whether speech ever contradicts tool data. Target zero for prices and availability. |
+| Clarification turns per order  | Whether menu matching and prompts are understandable.                               |
+| Tool latency by route          | Where conversational delay originates.                                              |
+| Order correction rate          | Whether read-back catches meaningful errors.                                        |
+| Duplicate-write rate           | Whether retry and idempotency controls work.                                        |
+| Staff transfer rate and reason | Which cases should remain human-owned.                                              |
+
+Review call transcripts only with appropriate consent, retention, and access controls. Redact or tokenize personal data in debugging tools. Payment card details should never be collected into a general-purpose prompt or spreadsheet workflow; use a compliant payment boundary.
+
+## Production checklist
+
+Before moving beyond a POC, I would require:
+
+- one versioned schema shared by the prompt, tools, workflow, and order store;
+- backend validation for every menu and price rule;
+- idempotent order creation and modification;
+- authenticated webhook requests and replay protection;
+- bounded retries, timeouts, and a staff fallback;
+- a durable session and order-draft model;
+- explicit recording and data-retention consent;
+- synthetic conversation tests for every unhappy path;
+- adversarial tests for prompt injection and misleading caller claims;
+- load and latency tests under expected concurrency; and
+- a shadow or staff-reviewed pilot before autonomous ordering.
+
+## Frequently asked questions
+
+### Does tool use eliminate hallucinations?
+
+No. A model can still misunderstand a caller or misuse a tool result. Tool-first architecture reduces the surface area, while deterministic backend validation prevents unsupported facts from becoming committed orders.
+
+### Why use n8n instead of a custom API?
+
+n8n is useful for quickly connecting webhooks, menu data, order persistence, notifications, and staff workflows. A production system may keep orchestration in n8n while moving latency-sensitive validation and transactional writes into a dedicated API and database.
+
+### Can the assistant remember prices from earlier in the call?
+
+It can repeat a still-valid backend result during the same confirmed draft, but conversation memory should not be the authority. Store a menu version or quote expiry and revalidate when the order changes or the quote becomes stale.
+
+### When should the agent transfer to a person?
+
+Transfer when a tool repeatedly fails, the request cannot be represented by the menu schema, the caller disputes a price, required consent cannot be obtained, or the business has marked the case as staff-only.
+
+### Was this deployed with real restaurant traffic?
+
+No. It was a tool-first proof of concept using fixture data. There are no production completion, latency, or revenue claims.
+
+### Should the model calculate taxes, discounts, and fees?
+
+No. A pricing service should calculate them from configured rules. The assistant should speak only the resulting quote and its relevant conditions.
+
+## Build the truth boundary before polishing the voice
+
+A charming voice cannot rescue an incorrect order. Start with a versioned menu contract, deterministic validation, confirmation, and idempotent persistence; then optimize naturalness and latency. [Read the anonymized voice-ordering case study](/case-studies/voice-driven-restaurant-ordering) or [discuss a voice workflow with clear operational guardrails](/#start-project).
+
+## Sources
+
+- [Vapi: introduction to tools](https://docs.vapi.ai/tools/)
+- [Vapi: custom tools](https://docs.vapi.ai/tools/custom-tools)
+- [n8n Webhook node documentation](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.webhook/)
+- [n8n error handling](https://docs.n8n.io/flow-logic/error-handling/)

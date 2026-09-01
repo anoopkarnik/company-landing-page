@@ -5,6 +5,12 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
+    "db:generate": "pnpm --filter @workspace/database generate",
+    "db:import-cms": "pnpm --filter web import:cms",
+    "db:sync-lifeforge": "pnpm --filter web sync:lifeforge-public",
+    "db:migrate": "pnpm --filter web exec prisma migrate dev --schema ../../packages/database/prisma/schema.prisma && pnpm --filter web migrate:content-mdx",
+    "db:migrate:deploy": "pnpm --filter web exec prisma migrate deploy --schema ../../packages/database/prisma/schema.prisma && pnpm --filter web migrate:content-mdx",
+    "db:studio": "pnpm --filter web exec prisma studio --schema ../../packages/database/prisma/schema.prisma",
     "lint": "turbo lint",
     "start": "turbo start",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""

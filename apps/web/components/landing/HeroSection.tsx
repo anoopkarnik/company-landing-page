@@ -8,8 +8,13 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 
 const HeroSection = () => {
   const trpc = useTRPC();
-  const { data } = useSuspenseQuery(trpc.landing.getLandingInfoFromNotion.queryOptions());
+  const { data } = useSuspenseQuery(trpc.landing.getLandingInfo.queryOptions());
   const heroSection = data.heroSection;
+  const appointmentCandidate = heroSection.appointmentLink?.trim();
+  const appointmentLink =
+    appointmentCandidate && /^https?:\/\//.test(appointmentCandidate)
+      ? appointmentCandidate
+      : null;
   const [taglineArray, setTaglineArray] = useState<string[]>([])
   const [ripples, setRipples] = useState<number[]>([])
   const router = useRouter()
@@ -121,9 +126,9 @@ const HeroSection = () => {
               Read the Blogs
             </Button>
 
-            {heroSection.appointmentLink && <a
+            {appointmentLink && <a
               rel="noreferrer noopener"
-              href={heroSection.appointmentLink}
+              href={appointmentLink}
               target="_blank"
               className={`w-full md:w-1/3 text-lg flex items-center gap-1 text-white border-0 hover:opacity-90 hover:shadow-lg hover:shadow-[#03a3d7]/25 transition-all duration-300 ${buttonVariants({
                 variant: "default",

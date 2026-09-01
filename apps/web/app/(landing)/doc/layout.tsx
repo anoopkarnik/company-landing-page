@@ -6,6 +6,18 @@ import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import DocSidebar from "@/blocks/support/DocSidebar";
 import { SidebarInset, SidebarProvider } from "@workspace/ui/components/shadcn/sidebar";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Documentation",
+    description: "Technical guides, delivery documentation, and implementation notes for AI automation and full-stack systems.",
+    alternates: { canonical: "/doc" },
+    openGraph: {
+        title: "Documentation",
+        description: "Technical guides and implementation notes for AI automation and full-stack systems.",
+        url: "/doc",
+    },
+};
 
 // export const revalidate = 600;
 export const dynamic = "force-dynamic";
@@ -13,7 +25,7 @@ const DocumentationPage = async ({ children }: { children: React.ReactNode }): P
     const queryClient = getQueryClient();
     await Promise.all([
         // queryClient.ensureQueryData(trpc.portfolio.getPortfolioDataFromStrapi.queryOptions()),
-        queryClient.ensureQueryData(trpc.documentation.getDocumentationInfoFromNotion.queryOptions()),
+        queryClient.ensureQueryData(trpc.documentation.getDocumentationInfo.queryOptions()),
     ]);
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>

@@ -15,7 +15,7 @@ const DocSidebar = (): ReactElement => {
     const pathname = usePathname();
     const { theme } = useTheme();
     const trpc = useTRPC();
-    const { data: documentation } = useSuspenseQuery(trpc.documentation.getDocumentationInfoFromNotion.queryOptions())
+    const { data: documentation } = useSuspenseQuery(trpc.documentation.getDocumentationInfo.queryOptions())
     const docCategories = useMemo(() => Array.from(new Set(documentation.docs.map(doc => doc.Type))), [documentation])
     return (
         <Sidebar>

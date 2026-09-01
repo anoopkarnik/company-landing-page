@@ -16,7 +16,7 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 
 const TeamSection = () => {
   const trpc = useTRPC();
-  const { data } = useSuspenseQuery(trpc.landing.getLandingInfoFromNotion.queryOptions());
+  const { data } = useSuspenseQuery(trpc.landing.getLandingInfo.queryOptions());
   const teamSection = data.teamSection;
   const [headingArray, setHeadingArray] = useState<string[]>([])
   useEffect(() => {

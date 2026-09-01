@@ -1,0 +1,41 @@
+{
+  "title": "Tool-First Voice Agents: Preventing Hallucinated Menu Items, Prices, and Orders with Vapi and n8n",
+  "category": "AI Automation",
+  "slug": "tool-first-voice-agents-vapi-n8n",
+  "excerpt": "A practical architecture for grounding voice ordering in backend menu tools, deterministic pricing, confirmation, and idempotent writes instead of model memory.",
+  "seoTitle": "Tool-First Voice Agents with Vapi and n8n",
+  "seoDescription": "Learn how to prevent voice agents from inventing menu items, prices, or orders using Vapi tools, n8n workflows, backend validation, and confirmation states.",
+  "canonicalUrl": "https://bayesian-labs.com/blog/tool-first-voice-agents-vapi-n8n",
+  "tags": [
+    "voice AI",
+    "Vapi",
+    "n8n",
+    "AI agents",
+    "restaurant automation",
+    "tool calling"
+  ],
+  "status": "draft",
+  "author": "Anoop Karnik",
+  "includeInSitemap": true,
+  "relatedServiceSlugs": ["ai-automation", "data-ai-integration"],
+  "relatedCaseStudySlugs": ["voice-driven-restaurant-ordering"],
+  "cover": {
+    "prompt": "Create one 16:9 editorial technology illustration for a Bayesian Labs engineering article about a tool-first restaurant voice agent. Dark midnight-navy background, restrained glassmorphism, an abstract voice waveform entering a guarded workflow, branching to a synthetic menu database and a verified order record, violet and cyan signal paths with emerald validation shields, premium isometric technical-publication style, clean geometry, generous negative space. No readable text, no prices, no real menu items, no restaurant branding, no company logos, no watermarks, no identifiable people.",
+    "alt": "Conceptual voice request passing through menu validation before creating an order",
+    "caption": "Conceptual illustration of a tool-first voice workflow using synthetic data."
+  },
+  "sourceUrls": [
+    "https://docs.vapi.ai/tools/",
+    "https://docs.vapi.ai/tools/custom-tools",
+    "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.webhook/",
+    "https://docs.n8n.io/flow-logic/error-handling/",
+    "https://bayesian-labs.com/case-studies/voice-driven-restaurant-ordering"
+  ],
+  "claimNotes": [
+    "The implementation is described as a proof of concept, not a production restaurant deployment.",
+    "Twelve menu items and twenty-five representative order lines are fixture counts, not customer or usage metrics.",
+    "There are no retained production completion-rate, latency, call-volume, revenue, or accuracy measurements.",
+    "Prompt and workbook artifacts contained schema and tool-name drift; the article names this as pre-production debt.",
+    "Do not publish raw prompts or spreadsheets because they include sample personal data; all examples in the article are synthetic."
+  ]
+}

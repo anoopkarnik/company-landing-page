@@ -1,0 +1,194 @@
+# How to Choose an AI Automation Partner: 15 Questions Before You Hire
+
+**Direct answer:** choose the partner who can explain your workflow, failure modes, data boundaries, ownership and acceptance tests before promising a sophisticated agent. A credible proposal separates deterministic rules from AI judgment, includes deployment and handover, names recurring costs, and is comfortable recommending a smaller solution when it is sufficient.
+
+The best demonstration is not a chatbot responding to one polished prompt. It is a builder showing what happens when a webhook is duplicated, a document is unreadable, a model returns invalid data, an API is down, or a person rejects the proposed action.
+
+Use these 15 questions in a founder, freelancer or agency evaluation. Ask for answers against your real process, not generic slides.
+
+## 1. What business outcome and workflow boundary are you proposing?
+
+A strong answer begins with the current trigger, participants, systems, decisions, output and owner. It should state what the automation will and will not do.
+
+Be cautious when the discussion jumps directly to models, agents or a large platform. “Reduce report preparation” is not specific enough. “Collect approved GA4 and Search Console metrics, assemble the standard report, and leave analysis for editorial approval” can be tested.
+
+Ask for one sentence that defines success and one that defines the boundary.
+
+## 2. Why does this process need AI?
+
+The partner should identify the parts that require interpretation—such as extracting a table, classifying a request or drafting a summary—and keep calculations, prices, permissions and identifiers deterministic.
+
+In the [voice ordering case study](/case-studies/voice-driven-restaurant-ordering), the model handled conversation while tools controlled menu truth and pricing. A proposal that lets the model invent operational facts is not more advanced; it is less governed.
+
+## 3. What evidence will you use to design and test it?
+
+Expect a request for representative inputs, correct outputs, exception examples and volume. Ten clean examples do not prove behavior on blurred scans, empty fields, unusual languages or contradictory instructions.
+
+Ask how the test set will be split from prompt development and how corrections will be recorded. If the process is confidential, discuss anonymization or synthetic fixtures before transferring data.
+
+## 4. What happens when the workflow fails?
+
+The answer should cover timeouts, rate limits, invalid payloads, expired credentials, missing records, partial writes and third-party outages. Look for bounded retries, error routing, alerts, replay or reconciliation, and an accountable owner.
+
+n8n supports error workflows, but enabling a feature is not the same as defining a recovery policy. Ask the partner to walk through one failed execution and show what the operator sees.
+
+## 5. How will you prevent duplicate or unsafe actions?
+
+Webhooks are often delivered more than once, and a worker may retry after an uncertain response. The design should use stable identifiers, idempotency keys or state checks so a retry does not create a second invoice, order, email or CRM record.
+
+For consequential actions, ask where approval occurs, how stale approvals expire, and whether the final payload is shown to the reviewer.
+
+## 6. Where are credentials and sensitive data stored?
+
+A credible answer names the environments, secret store, encryption boundary, access roles, logs, backups and retention policy. Production credentials should not live in source code, exported workflow JSON or a developer’s personal account.
+
+Ask whether sensitive inputs are sent to a model provider, how long they are retained, and whether the provider configuration matches your requirements. Do not accept “the platform is secure” as the complete threat model.
+
+OWASP’s Application Security Verification Standard is a useful baseline for agreeing which technical controls will be verified. It is a framework, not a certificate automatically inherited from a library.
+
+## 7. Who owns the source code, workflows and infrastructure?
+
+The proposal should state ownership of repositories, workflow definitions, prompts, cloud accounts, domains, databases, model accounts and deployment keys. It should also identify third-party licenses and any component that cannot be transferred.
+
+Prefer client-owned accounts for durable production systems, with least-privilege access granted to the delivery team. If the partner hosts the system, define export and transition procedures before launch.
+
+## 8. What will the recurring cost be?
+
+Ask for separate estimates for workflow hosting, databases, storage, model tokens, OCR, telephony, email, monitoring and support. The estimate should show the volume assumptions and what happens at two or ten times that volume.
+
+An attractive fixed build price can hide usage costs or mandatory managed hosting. Conversely, self-hosting can reduce vendor fees while adding upgrade, backup and operations responsibility. There is no universally free option.
+
+## 9. How will quality be measured after launch?
+
+Define metrics before implementation: completion rate, manual-review rate, correction rate, cost per run, latency, duplicate rate, extraction accuracy or time saved. The definition and sampling method matter more than a large percentage.
+
+For AI, ask how quality will be monitored when the prompt, model or input distribution changes. A one-time demo score is not ongoing assurance.
+
+The [financial OCR case study](/case-studies/financial-document-ocr-pipeline) labels builder-reported accuracy separately from independently reproducible benchmarks because the original execution logs were not retained. Your partner should be equally explicit about evidence quality.
+
+## 10. What can my team change without calling you?
+
+Operational rules, recipients, thresholds, document types and prompts often change. Ask which settings will be editable, who can edit them, how changes are audited, and which changes require code review.
+
+Not every workflow needs an admin application. But if operators manage a queue, correct data or adjust rules every week, an appropriate interface may be more maintainable than editing nodes on a canvas.
+
+## 11. How will the workflow scale?
+
+Ask about current and expected volume, concurrency, memory, rate limits, queueing and database connections. The answer should be proportionate; a daily batch does not need an elaborate distributed system.
+
+n8n documents queue mode for separating the main instance from workers when scaling execution. A competent partner should also know when a custom job queue or service is a better boundary.
+
+Beware of both extremes: “it will scale automatically” and an enterprise architecture for a workflow that runs 50 times per month.
+
+## 12. How do you control changes and deployments?
+
+Workflow JSON, prompts, schemas and application code should have a source-of-truth and review path. Ask about development, staging and production environments; tests; deployment approval; rollback; migration handling; and change history.
+
+GitHub deployment environments can gate jobs with protection rules and isolate environment secrets. The exact platform can differ, but production changes should be traceable and repeatable.
+
+## 13. What documentation and handover are included?
+
+A useful handover includes:
+
+- architecture and data-flow diagrams;
+- integration and credential inventory;
+- environment and deployment instructions;
+- business rules and known limitations;
+- error and recovery runbook;
+- test fixtures and acceptance results;
+- operator and maintainer walkthroughs;
+- ownership transfer and access removal.
+
+Ask to see a redacted example. “We will document it later” commonly turns into a few screenshots after the budget is exhausted.
+
+## 14. What support is available after launch?
+
+Clarify the warranty, response hours, severity definitions, included maintenance, dependency upgrades and price for new scope. A workflow can fail because a third-party API changes even when the original code was correct.
+
+Support does not have to be a large retainer. It can be a short stabilization period plus a small monthly capacity. What matters is knowing who receives the alert and who has authority to repair or disable the workflow.
+
+## 15. What would make you recommend not automating this?
+
+This question reveals incentives. Good reasons to pause include low frequency, unclear ownership, rapidly changing rules, inaccessible data, poor economics, excessive consequence, or a simpler product feature that removes the task entirely.
+
+A strong partner may recommend a form, validation rule, database view or scheduled script instead of an AI agent. That is evidence of design judgment.
+
+## A simple evaluation scorecard
+
+Score each proposal from 0 to 2 on the following dimensions: 0 means absent, 1 means partial, and 2 means clear and evidenced.
+
+| Dimension | What a score of 2 looks like |
+| --- | --- |
+| Problem definition | Workflow and measurable outcome are explicit |
+| Architecture | AI, rules, data and human review have clear boundaries |
+| Reliability | Failure, duplicate and recovery paths are designed |
+| Security | Credentials, permissions, retention and model data are addressed |
+| Evidence | Representative fixtures and acceptance tests are named |
+| Ownership | Code, accounts, infrastructure and exit path are unambiguous |
+| Operations | Monitoring, support, runbook and responsible owner are included |
+| Commercial clarity | Assumptions, exclusions and recurring costs are visible |
+
+A score does not replace references or technical review, but it makes vague differences visible. Weight security and evidence more heavily when the workflow affects regulated data, money, external communication or customer access.
+
+## Red flags in an AI automation proposal
+
+- a guaranteed accuracy percentage without a defined evaluation set;
+- a promised cost saving with no baseline or measurement method;
+- autonomous write access before a reviewed pilot;
+- production credentials in personal accounts;
+- no explicit handling for duplicate events or partial failure;
+- no mention of recurring model and platform costs;
+- a proprietary setup with no export or transition path;
+- every problem solved with the same agent architecture;
+- client data used in a public demo without written approval;
+- a handover defined only as “access to the workflow.”
+
+## Freelancer, agency or internal team?
+
+Choose based on risk and coordination, not the label.
+
+| Model | Often a good fit when | Main diligence point |
+| --- | --- | --- |
+| Founder-led specialist | The scope is focused and direct technical ownership matters | Capacity and support coverage |
+| Agency | Several disciplines or parallel workstreams are required | Who actually builds and owns decisions |
+| Internal team | The workflow is core, constantly changing or deeply coupled to operations | Hiring time and specialized experience |
+| Hybrid | Internal ownership exists but architecture or delivery capacity is missing | Clear boundaries and knowledge transfer |
+
+Bayesian Labs is a founder-led option: the person who maps the process also designs and builds the system. That reduces handoffs, but it should still be evaluated against the same questions above.
+
+If you are comparing proposals, [start a project](/#start-project) with the current workflow and the answers you already have. A useful first response should clarify risk and scope before selling implementation. See [AI & n8n Automation](/#services) for the engagement boundary.
+
+## Frequently asked questions
+
+### Should a partner sign an NDA before discovery?
+
+Use the confidentiality agreement appropriate to your organization and disclose only what is needed at each stage. An NDA does not replace access control, data minimization or secure transfer.
+
+### Do I need a technical person to evaluate the proposal?
+
+For a consequential system, independent technical review is valuable. Non-technical buyers can still demand a plain-language failure walkthrough, clear ownership, acceptance tests and an operating-cost model.
+
+### Is a paid discovery worth it?
+
+It often is when the process, data or integration feasibility is uncertain. Make the discovery deliverable reusable: process map, risks, architecture options, estimate and recommended next scope.
+
+### What proof should I request?
+
+Ask for a live or recorded walkthrough of a relevant system, a redacted architecture or runbook, source-control practices and case studies that distinguish verified metrics from estimates. Do not request confidential client artifacts.
+
+### Can the lowest quote still be the right choice?
+
+Yes, when it reflects a deliberately small scope and clear exclusions. Compare like for like: prototype versus production, one environment versus staging and production, and build-only versus deployment, tests, documentation and support.
+
+### Who should own the n8n account?
+
+For a durable client system, the client should normally own the production account or infrastructure and grant the builder scoped access. If hosting is part of the service, the contract should define export, credentials and transition.
+
+## Sources and further reading
+
+- OWASP Application Security Verification Standard: https://owasp.org/www-project-application-security-verification-standard/
+- n8n security guidance: https://docs.n8n.io/privacy-and-security/what-you-can-do
+- n8n error handling: https://docs.n8n.io/build/flow-logic/handle-errors-gracefully
+- n8n queue mode: https://docs.n8n.io/deploy/host-n8n/configure-n8n/scaling/enable-queue-mode
+- GitHub deployment environments: https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments
+

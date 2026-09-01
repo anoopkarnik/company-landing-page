@@ -1,0 +1,41 @@
+{
+  "title": "Automating GA4 and Search Console Reporting with n8n—Without Removing Human Judgment",
+  "category": "AI Automation",
+  "slug": "automate-ga4-search-console-reporting-n8n",
+  "excerpt": "A review-first n8n architecture for collecting GA4 and Search Console data, generating charts and draft insights, assembling Google Docs, and preserving human judgment.",
+  "seoTitle": "Automate GA4 and Search Console Reports with n8n",
+  "seoDescription": "Build a reliable n8n reporting workflow for GA4 and Search Console with normalized data, deterministic charts, constrained AI insights, and human review.",
+  "canonicalUrl": "https://bayesian-labs.com/blog/automate-ga4-search-console-reporting-n8n",
+  "tags": [
+    "GA4",
+    "Google Search Console",
+    "n8n",
+    "report automation",
+    "analytics",
+    "human in the loop"
+  ],
+  "status": "draft",
+  "author": "Anoop Karnik",
+  "includeInSitemap": true,
+  "relatedServiceSlugs": ["ai-automation", "data-ai-integration"],
+  "relatedCaseStudySlugs": ["automated-ga4-search-reporting"],
+  "cover": {
+    "prompt": "Create one 16:9 editorial technology illustration for a Bayesian Labs article about automated web analytics reporting with human review. Dark midnight-navy background, restrained glassmorphism, abstract analytics streams and search signals flowing through an n8n-like modular pipeline into clean charts and a document, ending at a subtle human approval checkpoint, violet and cyan data paths with emerald verified accents, sophisticated isometric composition, premium engineering-publication style, generous negative space. No readable text, no numbers, no Google logos, no n8n logo, no company logos, no watermarks, no real analytics data, no identifiable people.",
+    "alt": "Conceptual analytics data pipeline producing a report that waits for human approval",
+    "caption": "Conceptual illustration of automated report preparation with a required human review step."
+  },
+  "sourceUrls": [
+    "https://developers.google.com/analytics/devguides/reporting/data/v1/basics",
+    "https://developers.google.com/webmaster-tools/v1/searchanalytics/query",
+    "https://developers.google.com/webmaster-tools/v1/how-tos/search_analytics",
+    "https://developers.google.com/workspace/docs/api/how-tos/move-text",
+    "https://docs.n8n.io/flow-logic/error-handling/",
+    "https://bayesian-labs.com/case-studies/automated-ga4-search-reporting"
+  ],
+  "claimNotes": [
+    "Analysis categories are design assumptions for the case study; retained artifacts do not prove every category ran for every client report.",
+    "The two-to-four-hour baseline, thirty-to-sixty-minute review range, and 60–80% reduction are planning estimates, not measured client KPIs.",
+    "The article preserves Google Search Console's official caveat that Search Analytics does not guarantee every data row.",
+    "No client property identifiers, filters, report data, credentials, or recipient details are included."
+  ]
+}

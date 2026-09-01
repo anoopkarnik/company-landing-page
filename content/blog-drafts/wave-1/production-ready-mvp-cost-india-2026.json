@@ -1,0 +1,44 @@
+{
+  "title": "How Much Does a Production-Ready MVP Cost in India in 2026?",
+  "slug": "production-ready-mvp-cost-india-2026",
+  "type": "MVP & SaaS",
+  "category": "MVP & SaaS",
+  "excerpt": "A transparent guide to production-ready MVP budgets in India, including 2026 planning ranges, cost drivers, responsible scope reductions and launch milestones.",
+  "seoTitle": "Production-Ready MVP Cost in India (2026)",
+  "seoDescription": "Plan an MVP budget in India with transparent 2026 ranges, cost drivers, production requirements and ways to reduce scope responsibly.",
+  "canonicalUrl": "/blog/production-ready-mvp-cost-india-2026",
+  "tags": [
+    "MVP cost India",
+    "MVP development",
+    "SaaS development",
+    "Next.js",
+    "startup budget",
+    "production-ready MVP"
+  ],
+  "author": "Anoop Karnik Dasika",
+  "relatedServiceSlugs": [
+    "mvp-development",
+    "data-ai-integration"
+  ],
+  "relatedCaseStudySlugs": [
+    "saas-forge",
+    "life-os"
+  ],
+  "coverPrompt": "16:9 wide editorial illustration for Bayesian Labs showing a production MVP taking shape from layered product foundations: interface panels, secure identity gate, database cylinder, payment flow, monitoring signal and deployment pipeline arranged as an elegant architectural model. Near-black background, deep violet with cyan and emerald accents, subtle glass and dimensional lighting, premium founder-focused technical aesthetic, uncluttered composition. No text, no numbers, no currency symbols, no logos, no watermark, no recognizable dashboard.",
+  "altText": "Layered MVP architecture with interface, authentication, database, payments and deployment",
+  "imageCaption": "Conceptual illustration of the product and operational layers included in a production-ready MVP.",
+  "sourceUrls": [
+    "https://nextjs.org/docs/app/guides/production-checklist",
+    "https://nextjs.org/docs/app/getting-started/deploying",
+    "https://better-auth.com/docs/integrations/next",
+    "https://www.postgresql.org/docs/current/backup.html",
+    "https://razorpay.com/docs/payments/subscriptions/supported-payment-methods/",
+    "https://owasp.org/www-project-application-security-verification-standard/"
+  ],
+  "claimNotes": [
+    "All rupee amounts are Bayesian Labs 2026 planning bands, not market averages, quotations or guarantees.",
+    "The ₹6 lakh allocation is an illustrative model and not a published client budget.",
+    "Payment-method support and limits can change and must be rechecked during implementation.",
+    "SaaS Forge AI modules are described as experimental; the article does not claim automatic conflict-free upgrades."
+  ]
+}

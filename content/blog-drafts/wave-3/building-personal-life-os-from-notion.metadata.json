@@ -1,0 +1,45 @@
+{
+  "title": "Building a Personal Life OS: When Notion Templates Become a Real Application",
+  "category": "Product Engineering",
+  "slug": "building-personal-life-os-from-notion",
+  "excerpt": "How real Notion workflows evolved into an experimental self-hosted Life OS spanning thirteen domains, PostgreSQL, five client surfaces, and a separate AI-service boundary.",
+  "seoTitle": "Building a Personal Life OS from Notion Templates",
+  "seoDescription": "A practical account of turning proven Notion workflows into a self-hosted Life OS with PostgreSQL, Next.js, multiple clients, AI services, and progressive onboarding.",
+  "canonicalUrl": "https://bayesian-labs.com/blog/building-personal-life-os-from-notion",
+  "tags": [
+    "Life OS",
+    "Notion",
+    "personal productivity",
+    "Next.js",
+    "PostgreSQL",
+    "product engineering"
+  ],
+  "status": "draft",
+  "author": "Anoop Karnik",
+  "includeInSitemap": true,
+  "relatedServiceSlugs": ["mvp-development", "data-ai-integration"],
+  "relatedCaseStudySlugs": ["life-os", "saas-forge"],
+  "cover": {
+    "prompt": "Create one 16:9 editorial technology illustration for a Bayesian Labs product-engineering article about turning fragmented personal tools into one self-hosted Life OS. Dark midnight-navy background, restrained glassmorphism, several abstract disconnected cards for tasks, learning, finance, relationships, and media converging into one elegant central system, with subtle web, desktop, mobile, browser, and editor surfaces around it, violet and cyan connections with emerald data accents, premium isometric technical-publication style, generous negative space. No readable text, no Notion logo, no product logos, no company logos, no watermarks, no private data, no identifiable people.",
+    "alt": "Conceptual fragmented personal tools converging into one multi-platform life system",
+    "caption": "Conceptual illustration of consolidating personal workflows; it is not a literal product screenshot."
+  },
+  "sourceUrls": [
+    "https://github.com/anoopkarnik/life-forge",
+    "https://github.com/anoopkarnik/saas-forge",
+    "https://game.bayesian-labs.com",
+    "https://boilerplate.bayesian-labs.com",
+    "https://fastapi.tiangolo.com/deployment/concepts/",
+    "https://nextjs.org/docs",
+    "https://www.prisma.io/docs/orm",
+    "https://bayesian-labs.com/case-studies/life-os",
+    "https://bayesian-labs.com/case-studies/saas-forge"
+  ],
+  "claimNotes": [
+    "Life OS is explicitly described as experimental and limited to the builder plus close friends and family; no commercial users, pricing, retention, revenue, or health outcomes are claimed.",
+    "Thirteen domains and five client surfaces are verified from repository and CMS evidence, but complete feature parity across surfaces is not claimed.",
+    "Regular module use is the builder's self-report and is not presented as a general user metric or product-market-fit evidence.",
+    "The article distinguishes earlier LangChain/LangGraph plans from the current public repository's documented synchronous signed-trigger agent architecture.",
+    "No private Life Forge database records, credentials, relationship data, finances, health data, or imported entertainment history are included."
+  ]
+}

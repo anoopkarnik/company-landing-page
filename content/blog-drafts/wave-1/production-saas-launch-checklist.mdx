@@ -1,0 +1,173 @@
+# The Production SaaS Launch Checklist: 40 Requirements Beyond the Landing Page
+
+**Direct answer:** a SaaS is ready to launch when the primary customer journey works, access is correctly enforced, money and data have recoverable state, failures are visible, and another authorized person can operate the system. A polished landing page and successful deployment are only the visible edge.
+
+Use this 40-point checklist as a release conversation, not as a universal certification. Mark an item complete only when you can point to evidence: a test, screenshot, runbook, restored backup, verified event or named owner. A low-risk private beta may accept documented gaps that would block a public paid launch.
+
+## 1. Product promise and user experience
+
+- [ ] **1. One primary user and job are explicit.** State who the first release serves, the job they complete, and the moment value is delivered. Secondary personas and future modules must not obscure the main path.
+
+- [ ] **2. The complete core journey is tested.** Test sign-up or invitation through the real product outcome with production-like data. Include refresh, returning sessions, interrupted flows and a second device where relevant.
+
+- [ ] **3. Every important state has a designed response.** Loading, empty, success, validation, unauthorized, not-found and server-error states must help a user recover. A silent spinner or raw stack trace is not an operating experience.
+
+- [ ] **4. The experience works on the supported viewport and input methods.** Verify responsive layouts, keyboard navigation, focus, labels, contrast and zoom. Publish which browsers and devices are supported rather than assuming every environment behaves identically.
+
+- [ ] **5. Feedback and support have an owner.** Provide an in-product or clearly linked way to report a problem. Record who triages it, expected response hours, which diagnostic context is safe to capture, and how a user learns the outcome.
+
+## 2. Authentication and authorization
+
+- [ ] **6. Account creation matches the product model.** Decide whether sign-up is open, invited, domain-restricted or admin-created. Verify email ownership or identity where needed, and prevent duplicate or ambiguous accounts.
+
+- [ ] **7. Session and recovery behavior is tested.** Test sign-in, sign-out, expiration, password or identity-provider recovery, email changes, lost-device handling and revoked access. Recovery must not become a weaker route around authentication.
+
+- [ ] **8. Authorization is enforced on the server.** Hiding a button is not access control. Each query, mutation, file and administrative action must verify the user, role, organization and record boundary at the trusted layer.
+
+- [ ] **9. Administrative access is narrow and auditable.** Separate support operations from unrestricted database access. Record sensitive administrative actions and require stronger authentication where risk justifies it.
+
+- [ ] **10. Abuse controls cover exposed routes.** Apply suitable rate limits, validation and bot resistance to sign-up, login, password recovery, forms, file upload and costly AI or messaging endpoints. Test the user experience when a limit is reached.
+
+## 3. Data, privacy and recovery
+
+- [ ] **11. The production schema and migration path are reviewed.** Migrations should be committed, repeatable and tested on realistic data. Identify destructive or long-running changes and document deployment order and rollback limits.
+
+- [ ] **12. Data ownership and retention are documented.** List what is collected, why, where it is stored, who can access it, how long it remains and how deletion works. Legal text must match actual behavior and be reviewed for the launch context.
+
+- [ ] **13. Backups exist and a restore has been tested.** “The provider has backups” is not enough. Record recovery objectives, backup scope, retention, encryption and the result of a restore rehearsal. PostgreSQL supports several backup approaches with different trade-offs.
+
+- [ ] **14. Imports and exports reconcile.** Validate counts, identifiers, required fields, duplicates and totals. Preserve a manifest and exception report so migration success is demonstrated rather than assumed.
+
+- [ ] **15. Logs exclude secrets and unnecessary personal data.** Review application, platform, analytics and AI traces. Redact tokens, authorization headers, passwords and sensitive payloads; set retention and access deliberately.
+
+## 4. Billing and commercial state
+
+- [ ] **16. Product entitlements are separate from the payment UI.** The application should derive access from verified billing state, not from a browser redirect or a success message. Define the source of truth for plan and entitlement.
+
+- [ ] **17. Payment webhooks are verified and idempotent.** Validate the provider signature, store event identity, handle duplicates and process state transitions safely. Replaying an event must not grant access twice or create inconsistent invoices.
+
+- [ ] **18. The full subscription lifecycle is represented.** Test trial, authentication or mandate, activation, renewal, failed payment, pending state, upgrade, downgrade, cancellation and expiry as applicable. Do not model billing as only `paid: true`.
+
+- [ ] **19. India payment support is checked against current documentation.** Verify business eligibility, currencies, recurring methods, limits, settlement, refunds and test behavior for the selected provider. Razorpay currently documents cards, UPI Autopay and eMandate for subscriptions; support can change.
+
+- [ ] **20. Pricing, tax and policy copy agree.** The landing page, checkout, invoice, entitlement code, cancellation flow, refund policy and support answers must describe the same offer. Remove placeholder plans and impossible promises before indexing.
+
+## 5. Email, files and third-party integrations
+
+- [ ] **21. Transactional email is authenticated and observable.** Configure the sending domain, templates, required links, bounce handling and an allowed sender. Test verification, recovery, receipt and important-notification emails in production-like conditions.
+
+- [ ] **22. File uploads are constrained.** Validate type and size on the server, generate unpredictable keys, restrict execution, authorize reads, and define scanning or review for risky formats. Test incomplete and malicious-looking uploads.
+
+- [ ] **23. Third-party API failures have a product response.** Record timeout, retry and rate-limit policy for each critical integration. When the dependency is unavailable, users and operators should see an actionable state rather than corrupted local data.
+
+- [ ] **24. Credentials belong to the organization and are scoped.** Inventory every API key, OAuth application and webhook secret. Store secrets by environment, grant least privilege, identify a rotation owner, and remove personal credentials before handover.
+
+- [ ] **25. External actions have duplicate and approval protection.** Emails, orders, posts, refunds and destructive changes need stable identifiers and, where appropriate, a preview or human checkpoint. An AI suggestion should never silently bypass the application’s permission model.
+
+## 6. Reliability, observability and support
+
+- [ ] **26. Errors are captured with useful context.** Record route or job, environment, release, safe identifiers and the failing dependency. Group repeated failures and protect sensitive input. A dashboard without an owner is not observability.
+
+- [ ] **27. Critical workflows expose business status.** Track completed, failed, retried, awaiting-review and reconciled outcomes—not only CPU and HTTP status. The operations view should answer whether the customer’s job finished.
+
+- [ ] **28. Alerts are actionable and tested.** Define severity, recipient, business hours and escalation. Trigger test alerts before launch and include a runbook link. Avoid notifying everyone for every transient retry.
+
+- [ ] **29. Recovery paths are rehearsed.** Test replaying a job, restoring data, rotating a credential, disabling an integration and rolling back a release. Record steps and decisions while the system is healthy.
+
+- [ ] **30. Capacity and cost limits are visible.** Estimate baseline and high scenarios for database connections, storage, bandwidth, email, model tokens and worker concurrency. Add quotas or alerts before a loop can create an unlimited bill.
+
+## 7. Security and release engineering
+
+- [ ] **31. A risk-based security verification scope is agreed.** Use OWASP ASVS or another appropriate baseline to select testable controls for architecture, authentication, sessions, access, validation, files, APIs and configuration. Do not claim compliance without evidence.
+
+- [ ] **32. Secrets and public environment variables are separated.** Next.js exposes variables prefixed for the client; review the built application for accidental secrets. Keep production values out of source, logs, screenshots and downloadable artifacts.
+
+- [ ] **33. Dependencies and supply-chain controls are reviewed.** Lock dependency versions, inspect material updates, enable vulnerability reporting, and define an upgrade cadence. Remove unused packages and integrations that expand the attack surface.
+
+- [ ] **34. CI checks the release artifact.** At minimum, run formatting or linting, type checks, tests and a production build. Add schema, template-sync, container or security checks where relevant. A green development server is not a release test.
+
+- [ ] **35. Deployment is gated and reversible.** Separate preview or staging from production, protect production secrets, restrict deployment branches, record the release and maintain a rollback path. GitHub environments can apply approvals and environment-specific secrets.
+
+## 8. Discovery, trust and operations after launch
+
+- [ ] **36. Search and sharing metadata are complete.** Give indexable pages accurate titles, descriptions, canonical URLs, sitemap inclusion, robots behavior and Open Graph images. Structured data must match visible content rather than invent credentials or ratings.
+
+- [ ] **37. Analytics measures the product question.** Track consent-appropriate acquisition and core journey events with stable names. Exclude internal traffic where practical and test events in production; page views alone do not prove activation.
+
+- [ ] **38. Legal, company and contact information are real.** Replace template addresses, emails, entity names, dates and policies. Identify which text was supplied or approved by qualified counsel rather than presenting generated policy as legal advice.
+
+- [ ] **39. Handover is complete.** Transfer repositories, domains, cloud projects, payment accounts, monitoring, credentials and documentation. Provide architecture, environment inventory, deployment steps, backup/recovery, known limitations and a recorded walkthrough.
+
+- [ ] **40. Launch ownership and the next decision are scheduled.** Name the release owner, support owner and incident contact. Set review dates for early failures, user feedback, cost and the success signal that determines whether to expand, change or stop.
+
+## Minimum launch gates by release type
+
+Not every launch needs the same rigor, but risk should be accepted deliberately.
+
+| Release | Reasonable minimum |
+| --- | --- |
+| Private prototype with synthetic data | Core journey, access restriction, basic error handling, no real billing, clear limitations |
+| Invite-only beta with real user data | Authorization, backups, privacy behavior, support owner, observability and recovery |
+| Public free product | Abuse controls, accessible failure states, analytics, incident path, data export/deletion plan |
+| Public paid SaaS | Verified billing lifecycle, policies, reconciliation, production support and tested rollback |
+| Sensitive or regulated product | Domain-specific legal, security, privacy and audit requirements beyond this general checklist |
+
+“Beta” is not a security control. It can reduce audience and support expectations, but real credentials, money and personal data still require responsible handling.
+
+## How to use the checklist in a release review
+
+Create one row per requirement with an owner, status, evidence link and accepted risk. Use four statuses:
+
+- **Complete:** evidence exists and was reviewed.
+- **Blocked:** launch cannot proceed until resolved.
+- **Accepted risk:** an accountable owner documents why launch can proceed and by when the gap closes.
+- **Not applicable:** the reason is written, not assumed.
+
+Review blocking items first. Do not spend the final day polishing metadata while an authorization or restore gap remains. After launch, convert accepted risks into dated work and review the checklist when the product adds a role, payment method, major integration or new data class.
+
+## What a boilerplate can and cannot do
+
+A foundation can provide consistent implementations for authentication, database access, payment webhooks, email, storage, admin content, analytics, rate limiting and deployment. It can also encode production checks and documentation.
+
+It cannot decide the product’s roles, retention, refund promise, incident owner or acceptable risk. It also cannot verify that every optional module remains correct after customization.
+
+[SaaS Forge](/case-studies/saas-forge) is built around this distinction. Its public repository provides a source-controlled web, desktop and mobile foundation with shared modules and template validation. Its non-AI foundation is production-oriented; experimental AI modules remain labelled accordingly. The starter reduces repeated setup, while the product team still owns the 40 launch decisions.
+
+If you want a scoped build or independent release review, [start a project](/#start-project) and attach the current architecture, launch date and any completed evidence. The [Production-ready MVP Development service](/#services) includes deployment, documentation and handover in the engagement boundary.
+
+## Frequently asked questions
+
+### Must all 40 items be complete before a private beta?
+
+No. Scope the controls to real exposure and consequence, record accepted risks, and avoid real sensitive data or billing until their protections are ready. Authentication, authorization and recoverability still matter in a private beta.
+
+### Is a successful production build enough to launch?
+
+No. It proves the framework can compile an artifact. It does not verify roles, billing state, backups, recovery, policies, operational ownership or the core customer journey.
+
+### Do managed services remove backup and security work?
+
+They can operate parts of the infrastructure, but the product owner still configures access, retention, exports, recovery objectives and application authorization. Read the provider’s responsibility boundary.
+
+### How often should the checklist be repeated?
+
+Run it before initial launch and revisit affected sections for major features, new roles, payment changes, sensitive data, infrastructure migration and significant dependency upgrades. Schedule a full review periodically based on risk.
+
+### Who should sign off the launch?
+
+The product owner accepts business risk; the technical owner confirms implementation evidence; and qualified legal, security or compliance reviewers cover areas that require their expertise. One developer should not silently make every decision.
+
+### Can SaaS Forge make every item complete automatically?
+
+No. It can supply reusable technical foundations and checks. Product-specific policy, configuration, evidence, support and risk decisions remain with the team using it.
+
+## Sources and further reading
+
+- Next.js production checklist: https://nextjs.org/docs/app/guides/production-checklist
+- OWASP Application Security Verification Standard: https://owasp.org/www-project-application-security-verification-standard/
+- PostgreSQL backup and restore: https://www.postgresql.org/docs/current/backup.html
+- GitHub deployment environments: https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments
+- Razorpay subscription payment methods: https://razorpay.com/docs/payments/subscriptions/supported-payment-methods/
+- Google Search Essentials: https://developers.google.com/search/docs/essentials
+- SaaS Forge public repository: https://github.com/anoopkarnik/saas-forge
+

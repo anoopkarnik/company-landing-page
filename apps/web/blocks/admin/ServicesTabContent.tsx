@@ -22,6 +22,7 @@ export function ServicesTabContent({ initialData, onSave, isSaving }: SectionTab
     const { fields, append, remove } = useFieldArray({
         control: form.control,
         name: "services",
+        keyName: "_formId",
     });
 
     useEffect(() => {
@@ -66,7 +67,7 @@ export function ServicesTabContent({ initialData, onSave, isSaving }: SectionTab
 
                 <div className="space-y-4">
                     {fields.map((field, index) => (
-                        <div key={field.id} className="relative border rounded-lg p-4 bg-muted/30">
+                        <div key={field._formId} className="relative border rounded-lg p-4 bg-muted/30">
                             <div className="flex items-center justify-between mb-3">
                                 <span className="text-xs font-medium text-muted-foreground">
                                     {form.watch(`services.${index}.id`) ? "Existing" : "New"} Service #{index + 1}

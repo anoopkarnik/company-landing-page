@@ -1,11 +1,5 @@
-import React from 'react'
+import { BlogIndexPage } from "@/components/blog/BlogIndexPage";
 
-const BlogPage = () => {
-    return (
-        <div className='flex flex-col items-center justify-center h-full'>
-            <p className='text-muted-foreground'>Please select a blog from the sidebar</p>
-        </div>
-    )
+export default function BlogPage() {
+  return <BlogIndexPage />;
 }
-
-export default BlogPage

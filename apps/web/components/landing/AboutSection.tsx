@@ -7,7 +7,7 @@ import { Sparkles } from "lucide-react";
 
 const AboutSection = () => {
   const trpc = useTRPC();
-  const { data } = useSuspenseQuery(trpc.landing.getLandingInfoFromNotion.queryOptions());
+  const { data } = useSuspenseQuery(trpc.landing.getLandingInfo.queryOptions());
   const aboutSection = data.aboutSection;
   const [headingArray, setHeadingArray] = useState<string[]>([])
 

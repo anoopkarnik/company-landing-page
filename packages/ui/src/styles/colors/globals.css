@@ -67,6 +67,11 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
   }
 
   * {
@@ -75,5 +80,17 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Native select popups are painted by the browser/OS rather than Tailwind.
+     Keep their canvas and inherited text on the same theme in every CMS form. */
+  select {
+    color-scheme: inherit;
+  }
+
+  select option,
+  select optgroup {
+    background-color: var(--popover);
+    color: var(--popover-foreground);
   }
 }

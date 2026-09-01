@@ -37,8 +37,8 @@ async function loadEnvFile(filePath: string) {
 await loadEnvFile(path.join(appDir, ".env"));
 await loadEnvFile(path.join(appDir, ".env.local"));
 
-const { fetchLandingPageData } =
-  await import("../lib/functions/fetchLandingPageDataFromNotion");
+const { getLandingPageDataFromPostgres } =
+  await import("../lib/functions/landing-page-db");
 
 function isTemporaryNotionFileUrl(value: string) {
   try {
@@ -95,7 +95,9 @@ function sanitizeSnapshotValue(
   return value;
 }
 
-const landingPageData = sanitizeSnapshotValue(await fetchLandingPageData());
+const landingPageData = sanitizeSnapshotValue(
+  await getLandingPageDataFromPostgres(),
+);
 const syncedAt = new Date().toISOString();
 
 const fileContents = `/* eslint-disable */

@@ -1,0 +1,54 @@
+{
+  "title": "From a Next.js Web App to Desktop and Mobile Without Rebuilding the Core",
+  "slug": "nextjs-web-app-to-desktop-mobile-without-rebuilding-core",
+  "category": "Product Engineering",
+  "excerpt": "How to keep one identity, data model and backend contract while adding secure Electron desktop and Expo mobile experiences to a Next.js product.",
+  "seoTitle": "Next.js to Desktop & Mobile Without Rebuilding",
+  "seoDescription": "Extend a Next.js SaaS to Electron and Expo by sharing auth, contracts and domain logic while keeping secure, platform-specific application surfaces.",
+  "canonicalUrl": "https://bayesian-labs.com/blog/nextjs-web-app-to-desktop-mobile-without-rebuilding-core",
+  "tags": [
+    "Next.js",
+    "Electron",
+    "Expo",
+    "React Native",
+    "Turborepo",
+    "monorepo",
+    "multi-platform SaaS",
+    "SaaS Forge"
+  ],
+  "status": "DRAFT",
+  "author": "Anoop Karnik",
+  "includeInSitemap": true,
+  "relatedServiceSlugs": [
+    "mvp-development"
+  ],
+  "relatedCaseStudySlugs": [
+    "saas-forge",
+    "life-os"
+  ],
+  "cover": {
+    "prompt": "Wide 16:9 premium editorial technology illustration, dark charcoal-black background, one luminous platform core containing identity data and API layers branching cleanly to a browser window, a secure desktop application frame and a mobile device, shared violet and cyan data pathways with emerald verification points, subtle platform-specific shells, sophisticated isometric engineering aesthetic, generous negative space, no readable text, no letters, no logos, no watermark",
+    "alt": "One backend and shared product core connected to web, desktop and mobile applications",
+    "caption": "Share identity, domain contracts and data while giving each platform its own secure application surface. Conceptual illustration."
+  },
+  "sourceUrls": [
+    "https://github.com/anoopkarnik/saas-forge",
+    "https://github.com/anoopkarnik/saas-forge/blob/main/apps/desktop/README.md",
+    "https://github.com/anoopkarnik/saas-forge/blob/main/apps/mobile/README.md",
+    "https://turborepo.dev/docs/core-concepts/internal-packages",
+    "https://docs.expo.dev/guides/monorepos/",
+    "https://better-auth.com/docs/integrations/expo",
+    "https://docs.expo.dev/linking/overview/",
+    "https://www.electronjs.org/docs/latest/tutorial/security",
+    "https://www.electronjs.org/docs/latest/tutorial/process-model",
+    "https://www.electronjs.org/docs/latest/tutorial/launch-app-from-url-in-another-app",
+    "https://nextjs.org/docs/app/getting-started/server-and-client-components",
+    "https://nextjs.org/docs/app/getting-started/route-handlers"
+  ],
+  "claimNotes": [
+    "SaaS Forge architecture was checked against public main commit 506e81d on 2026-09-01.",
+    "The article claims shared contracts and selected packages, not complete UI reuse or feature parity across every client.",
+    "Electron security flags are grounded in the current windowConfig implementation and tests; no broader security certification is claimed.",
+    "AI modules remain experimental and no current green-CI, package-store approval or universal native-payment compatibility claim is made."
+  ]
+}

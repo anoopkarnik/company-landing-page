@@ -1,0 +1,459 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["company_landing_cms"]
+  url      = env("DATABASE_URL")
+}
+
+model LandingPage {
+  id                         Int                 @id @default(autoincrement())
+  key                        String              @unique
+  title                      String?
+  logo                       String?
+  darkLogo                   String?             @map("dark_logo")
+  githubLink                 String?             @map("github_link")
+  githubUsername             String?             @map("github_username")
+  githubRepositoryName       String?             @map("github_repository_name")
+  donateNowLink              String?             @map("donate_now_link")
+  tagline                    String?
+  description                String?
+  appointmentLink            String?             @map("appointment_link")
+  codeSnippet                String?             @map("code_snippet")
+  aboutHeading               String?             @map("about_heading")
+  about                      String?
+  users                      Int?
+  subscribers                Int?
+  downloads                  Int?
+  productsCount              Int?                @map("products_count")
+  serviceHeading             String?             @map("service_heading")
+  serviceDescription         String?             @map("service_description")
+  productHeading             String?             @map("product_heading")
+  productDescription         String?             @map("product_description")
+  testimonialHeading         String?             @map("testimonial_heading")
+  testimonialDescription     String?             @map("testimonial_description")
+  teamHeading                String?             @map("team_heading")
+  teamDescription            String?             @map("team_description")
+  creator                    String?
+  creatorLink                String?             @map("creator_link")
+  supportEmailAddress        String?             @map("support_email_address")
+  companyLegalName           String?             @map("company_legal_name")
+  websiteUrl                 String?             @map("website_url")
+  country                    String?
+  contactNumber              String?             @map("contact_number")
+  address                    String?
+  version                    String?
+  lastUpdated                String?             @map("last_updated")
+  newsletterHeading          String?             @map("newsletter_heading")
+  newsletterDescription      String?             @map("newsletter_description")
+  heroEyebrow                String?             @map("hero_eyebrow")
+  targetAudience             String?             @map("target_audience")
+  valueProposition           String?             @map("value_proposition")
+  availability               String?
+  responseTime               String?             @map("response_time")
+  primaryCtaLabel            String?             @map("primary_cta_label")
+  primaryCtaLink             String?             @map("primary_cta_link")
+  secondaryCtaLabel          String?             @map("secondary_cta_label")
+  secondaryCtaLink           String?             @map("secondary_cta_link")
+  trustHeading               String?             @map("trust_heading")
+  proofHeading               String?             @map("proof_heading")
+  servicePackagesHeading     String?             @map("service_packages_heading")
+  servicePackagesDescription String?             @map("service_packages_description")
+  caseStudiesHeading         String?             @map("case_studies_heading")
+  caseStudiesDescription     String?             @map("case_studies_description")
+  portfolioHeading           String?             @map("portfolio_heading")
+  portfolioDescription       String?             @map("portfolio_description")
+  processHeading             String?             @map("process_heading")
+  processDescription         String?             @map("process_description")
+  processSteps               Json                @default("[]") @map("process_steps")
+  founderHeading             String?             @map("founder_heading")
+  founderName                String?             @map("founder_name")
+  founderTitle               String?             @map("founder_title")
+  founderShortBio            String?             @map("founder_short_bio") @db.Text
+  founderLongBio             String?             @map("founder_long_bio") @db.Text
+  founderImageUrl            String?             @map("founder_image_url")
+  founderEducation           String?             @map("founder_education")
+  founderLocation            String?             @map("founder_location")
+  founderTimeline            Json                @default("[]") @map("founder_timeline")
+  founderSocialLinks         Json                @default("[]") @map("founder_social_links")
+  leadHeading                String?             @map("lead_heading")
+  leadDescription            String?             @map("lead_description")
+  leadSuccessMessage         String?             @map("lead_success_message")
+  seoTitle                   String?             @map("seo_title")
+  seoDescription             String?             @map("seo_description")
+  ogImageUrl                 String?             @map("og_image_url")
+  organizationName           String?             @map("organization_name")
+  organizationLogoUrl        String?             @map("organization_logo_url")
+  createdAt                  DateTime            @default(now()) @map("created_at")
+  updatedAt                  DateTime            @updatedAt @map("updated_at")
+  services                   Service[]
+  projects                   Project[]
+  testimonials               Testimonial[]
+  teamMembers                TeamMember[]
+  footerLinks                FooterLink[]
+  blogPosts                  BlogPost[]
+  documentationPages         DocumentationPage[]
+  servicePackages            ServicePackage[]
+  caseStudies                CaseStudy[]
+  proofMetrics               ProofMetric[]
+  clientLogos                ClientLogo[]
+  leads                      Lead[]
+
+  @@map("landing_page")
+  @@schema("company_landing_cms")
+}
+
+model BlogPost {
+  id                    String      @id @default(cuid())
+  sourceId              String?     @map("source_id")
+  name                  String
+  slug                  String
+  type                  String
+  order                 Int         @default(0)
+  mdx                   String      @db.Text
+  excerpt               String?     @db.Text
+  coverImage            String?     @map("cover_image")
+  coverImageAlt         String?     @map("cover_image_alt")
+  coverImageCaption     String?     @map("cover_image_caption") @db.Text
+  seoTitle              String?     @map("seo_title")
+  seoDescription        String?     @map("seo_description")
+  canonicalUrl          String?     @map("canonical_url")
+  ogImageUrl            String?     @map("og_image_url")
+  tags                  Json        @default("[]")
+  status                String      @default("published")
+  publishedAt           DateTime?   @map("published_at")
+  author                String?
+  includeInSitemap      Boolean     @default(true) @map("include_in_sitemap")
+  relatedServiceSlugs   Json        @default("[]") @map("related_service_slugs")
+  relatedCaseStudySlugs Json        @default("[]") @map("related_case_study_slugs")
+  sourceCreatedAt       DateTime?   @map("source_created_at")
+  sourceUpdatedAt       DateTime?   @map("source_updated_at")
+  createdAt             DateTime    @default(now()) @map("created_at")
+  updatedAt             DateTime    @updatedAt @map("updated_at")
+  landingPageId         Int         @map("landing_page_id")
+  landingPage           LandingPage @relation(fields: [landingPageId], references: [id], onDelete: Cascade)
+
+  @@unique([landingPageId, slug])
+  @@unique([landingPageId, sourceId])
+  @@index([landingPageId, order])
+  @@index([landingPageId, status, publishedAt])
+  @@map("blog_post")
+  @@schema("company_landing_cms")
+}
+
+model DocumentationPage {
+  id                    String      @id @default(cuid())
+  sourceId              String?     @map("source_id")
+  name                  String
+  slug                  String
+  type                  String
+  order                 Int         @default(0)
+  mdx                   String      @db.Text
+  excerpt               String?     @db.Text
+  coverImage            String?     @map("cover_image")
+  coverImageAlt         String?     @map("cover_image_alt")
+  coverImageCaption     String?     @map("cover_image_caption") @db.Text
+  seoTitle              String?     @map("seo_title")
+  seoDescription        String?     @map("seo_description")
+  canonicalUrl          String?     @map("canonical_url")
+  ogImageUrl            String?     @map("og_image_url")
+  tags                  Json        @default("[]")
+  status                String      @default("published")
+  publishedAt           DateTime?   @map("published_at")
+  author                String?
+  includeInSitemap      Boolean     @default(true) @map("include_in_sitemap")
+  relatedServiceSlugs   Json        @default("[]") @map("related_service_slugs")
+  relatedCaseStudySlugs Json        @default("[]") @map("related_case_study_slugs")
+  sourceCreatedAt       DateTime?   @map("source_created_at")
+  sourceUpdatedAt       DateTime?   @map("source_updated_at")
+  createdAt             DateTime    @default(now()) @map("created_at")
+  updatedAt             DateTime    @updatedAt @map("updated_at")
+  landingPageId         Int         @map("landing_page_id")
+  landingPage           LandingPage @relation(fields: [landingPageId], references: [id], onDelete: Cascade)
+
+  @@unique([landingPageId, slug])
+  @@unique([landingPageId, sourceId])
+  @@index([landingPageId, order])
+  @@index([landingPageId, status, publishedAt])
+  @@map("documentation_page")
+  @@schema("company_landing_cms")
+}
+
+model Service {
+  id            String      @id @default(cuid())
+  title         String
+  description   String
+  imageUrl      String?     @map("image_url")
+  order         Int         @default(0)
+  landingPageId Int         @map("landing_page_id")
+  landingPage   LandingPage @relation(fields: [landingPageId], references: [id], onDelete: Cascade)
+
+  @@index([landingPageId, order])
+  @@map("service")
+  @@schema("company_landing_cms")
+}
+
+model Project {
+  id                 String        @id @default(cuid())
+  title              String
+  description        String
+  imageUrl           String?       @map("image_url")
+  type               String?
+  githubLink         String?       @map("github_link")
+  npmPackageLink     String?       @map("npm_package_link")
+  githubRepoStars    Int?          @map("github_repo_stars")
+  weeklyGithubClones Int?          @map("weekly_github_clones")
+  weeklyNpmDownloads Int?          @map("weekly_npm_downloads")
+  notionTemplateLink String?       @map("notion_template_link")
+  notionViews        Int?          @map("notion_views")
+  notionDownloads    Int?          @map("notion_downloads")
+  notionRating       Float?        @map("notion_rating")
+  websiteLink        String?       @map("website_link")
+  websiteViews       Int?          @map("website_views")
+  monthlyActiveUsers Int?          @map("monthly_active_users")
+  youtubeVideoLink   String?       @map("youtube_video_link")
+  sourceId           String?       @map("source_id")
+  slug               String?
+  category           String?
+  publicDescription  String?       @map("public_description") @db.Text
+  clientName         String?       @map("client_name")
+  clientLogoUrl      String?       @map("client_logo_url")
+  technologies       Json          @default("[]")
+  screenshots        Json          @default("[]")
+  approvedMetrics    Json          @default("[]") @map("approved_metrics")
+  contribution       String?       @db.Text
+  demoVideoUrl       String?       @map("demo_video_url")
+  confidentiality    String        @default("PUBLIC")
+  isClientWork       Boolean       @default(false) @map("is_client_work")
+  isFeatured         Boolean       @default(false) @map("is_featured")
+  isPublished        Boolean       @default(true) @map("is_published")
+  syncedAt           DateTime?     @map("synced_at")
+  order              Int           @default(0)
+  landingPageId      Int           @map("landing_page_id")
+  landingPage        LandingPage   @relation(fields: [landingPageId], references: [id], onDelete: Cascade)
+  caseStudies        CaseStudy[]
+  proofMetrics       ProofMetric[]
+  testimonials       Testimonial[]
+
+  @@unique([landingPageId, sourceId])
+  @@unique([landingPageId, slug])
+  @@index([landingPageId, order])
+  @@index([landingPageId, isPublished, isFeatured, order])
+  @@map("project")
+  @@schema("company_landing_cms")
+}
+
+model Testimonial {
+  id             String      @id @default(cuid())
+  name           String
+  position       String?
+  comment        String
+  imageUrl       String?     @map("image_url")
+  company        String?
+  companyLogoUrl String?     @map("company_logo_url")
+  sourceUrl      String?     @map("source_url")
+  isVerified     Boolean     @default(false) @map("is_verified")
+  consentGranted Boolean     @default(false) @map("consent_granted")
+  isPublished    Boolean     @default(true) @map("is_published")
+  projectId      String?     @map("project_id")
+  project        Project?    @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  order          Int         @default(0)
+  landingPageId  Int         @map("landing_page_id")
+  landingPage    LandingPage @relation(fields: [landingPageId], references: [id], onDelete: Cascade)
+
+  @@index([landingPageId, order])
+  @@index([landingPageId, isPublished, isVerified, order])
+  @@index([projectId])
+  @@map("testimonial")
+  @@schema("company_landing_cms")
+}
+
+model TeamMember {
+  id             String          @id @default(cuid())
+  name           String
+  position       String?
+  description    String?
+  imageUrl       String?         @map("image_url")
+  order          Int             @default(0)
+  landingPageId  Int             @map("landing_page_id")
+  landingPage    LandingPage     @relation(fields: [landingPageId], references: [id], onDelete: Cascade)
+  socialNetworks SocialNetwork[]
+
+  @@index([landingPageId, order])
+  @@map("team_member")
+  @@schema("company_landing_cms")
+}
+
+model SocialNetwork {
+  id           String     @id @default(cuid())
+  name         String
+  url          String
+  order        Int        @default(0)
+  teamMemberId String     @map("team_member_id")
+  teamMember   TeamMember @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+
+  @@index([teamMemberId, order])
+  @@map("social_network")
+  @@schema("company_landing_cms")
+}
+
+model FooterLink {
+  id            String      @id @default(cuid())
+  title         String
+  href          String?
+  type          String?
+  order         Int         @default(0)
+  landingPageId Int         @map("landing_page_id")
+  landingPage   LandingPage @relation(fields: [landingPageId], references: [id], onDelete: Cascade)
+
+  @@index([landingPageId, order])
+  @@map("footer_link")
+  @@schema("company_landing_cms")
+}
+
+model ServicePackage {
+  id               String      @id @default(cuid())
+  slug             String
+  title            String
+  shortDescription String      @map("short_description") @db.Text
+  descriptionMdx   String?     @map("description_mdx") @db.Text
+  idealFor         String?     @map("ideal_for") @db.Text
+  deliverables     Json        @default("[]")
+  technologies     Json        @default("[]")
+  faqs             Json        @default("[]")
+  timeline         String?
+  priceFrom        Int?        @map("price_from")
+  priceCurrency    String?     @default("USD") @map("price_currency")
+  icon             String?
+  imageUrl         String?     @map("image_url")
+  ctaLabel         String?     @map("cta_label")
+  ctaLink          String?     @map("cta_link")
+  isFeatured       Boolean     @default(false) @map("is_featured")
+  isPublished      Boolean     @default(false) @map("is_published")
+  order            Int         @default(0)
+  createdAt        DateTime    @default(now()) @map("created_at")
+  updatedAt        DateTime    @updatedAt @map("updated_at")
+  landingPageId    Int         @map("landing_page_id")
+  landingPage      LandingPage @relation(fields: [landingPageId], references: [id], onDelete: Cascade)
+
+  @@unique([landingPageId, slug])
+  @@index([landingPageId, isPublished, order])
+  @@map("service_package")
+  @@schema("company_landing_cms")
+}
+
+model CaseStudy {
+  id                   String      @id @default(cuid())
+  slug                 String
+  title                String
+  clientName           String?     @map("client_name")
+  clientLogoUrl        String?     @map("client_logo_url")
+  industry             String?
+  summary              String      @db.Text
+  challenge            String?     @db.Text
+  solutionMdx          String      @map("solution_mdx") @db.Text
+  outcomeMdx           String?     @map("outcome_mdx") @db.Text
+  architectureMdx      String?     @map("architecture_mdx") @db.Text
+  contributionMdx      String?     @map("contribution_mdx") @db.Text
+  serviceSlugs         Json        @default("[]") @map("service_slugs")
+  technologies         Json        @default("[]")
+  metrics              Json        @default("[]")
+  gallery              Json        @default("[]")
+  timeline             String?
+  coverImageUrl        String?     @map("cover_image_url")
+  demoVideoUrl         String?     @map("demo_video_url")
+  projectUrl           String?     @map("project_url")
+  testimonialQuote     String?     @map("testimonial_quote") @db.Text
+  clientConsentGranted Boolean     @default(false) @map("client_consent_granted")
+  confidentiality      String      @default("PRIVATE")
+  isFeatured           Boolean     @default(false) @map("is_featured")
+  isPublished          Boolean     @default(false) @map("is_published")
+  seoTitle             String?     @map("seo_title")
+  seoDescription       String?     @map("seo_description")
+  order                Int         @default(0)
+  createdAt            DateTime    @default(now()) @map("created_at")
+  updatedAt            DateTime    @updatedAt @map("updated_at")
+  landingPageId        Int         @map("landing_page_id")
+  landingPage          LandingPage @relation(fields: [landingPageId], references: [id], onDelete: Cascade)
+  projectId            String?     @map("project_id")
+  project              Project?    @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  @@unique([landingPageId, slug])
+  @@index([landingPageId, isPublished, isFeatured, order])
+  @@index([projectId])
+  @@map("case_study")
+  @@schema("company_landing_cms")
+}
+
+model ProofMetric {
+  id                 String      @id @default(cuid())
+  value              String
+  label              String
+  context            String?     @db.Text
+  tooltip            String?     @db.Text
+  source             String?
+  verificationStatus String      @default("UNVERIFIED") @map("verification_status")
+  isPublished        Boolean     @default(false) @map("is_published")
+  order              Int         @default(0)
+  landingPageId      Int         @map("landing_page_id")
+  landingPage        LandingPage @relation(fields: [landingPageId], references: [id], onDelete: Cascade)
+  sourceProjectId    String?     @map("source_project_id")
+  sourceProject      Project?    @relation(fields: [sourceProjectId], references: [id], onDelete: SetNull)
+
+  @@index([landingPageId, isPublished, order])
+  @@index([sourceProjectId])
+  @@map("proof_metric")
+  @@schema("company_landing_cms")
+}
+
+model ClientLogo {
+  id             String      @id @default(cuid())
+  name           String
+  logoUrl        String      @map("logo_url")
+  websiteUrl     String?     @map("website_url")
+  altText        String?     @map("alt_text")
+  consentGranted Boolean     @default(false) @map("consent_granted")
+  isPublished    Boolean     @default(false) @map("is_published")
+  order          Int         @default(0)
+  landingPageId  Int         @map("landing_page_id")
+  landingPage    LandingPage @relation(fields: [landingPageId], references: [id], onDelete: Cascade)
+
+  @@index([landingPageId, isPublished, order])
+  @@map("client_logo")
+  @@schema("company_landing_cms")
+}
+
+model Lead {
+  id             String      @id @default(cuid())
+  name           String
+  email          String
+  company        String?
+  phone          String?
+  service        String
+  problem        String      @db.Text
+  currentSystems String?     @map("current_systems") @db.Text
+  budget         String?
+  timeline       String?
+  contactConsent Boolean     @map("contact_consent")
+  sourcePath     String?     @map("source_path")
+  referrer       String?
+  utmSource      String?     @map("utm_source")
+  utmMedium      String?     @map("utm_medium")
+  utmCampaign    String?     @map("utm_campaign")
+  utmContent     String?     @map("utm_content")
+  utmTerm        String?     @map("utm_term")
+  status         String      @default("NEW")
+  priority       String      @default("NORMAL")
+  notes          String?     @db.Text
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+  landingPageId  Int         @map("landing_page_id")
+  landingPage    LandingPage @relation(fields: [landingPageId], references: [id], onDelete: Cascade)
+
+  @@index([landingPageId, status, createdAt])
+  @@index([landingPageId, email])
+  @@map("lead")
+  @@schema("company_landing_cms")
+}

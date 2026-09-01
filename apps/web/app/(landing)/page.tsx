@@ -5,13 +5,61 @@ import { getQueryClient, trpc } from "@/trpc/server"
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { ReactElement, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import type { Metadata } from "next";
+import db from "@workspace/database/client";
 
 // export const revalidate = 600;
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const page = await db.landingPage.findUnique({
+      where: {
+        key:
+          process.env.NEXT_PUBLIC_SAAS_NAME?.trim() ||
+          "company-landing-page",
+      },
+      select: {
+        seoTitle: true,
+        seoDescription: true,
+        ogImageUrl: true,
+        tagline: true,
+        description: true,
+      },
+    });
+    if (!page) return {};
+    const title = page.seoTitle || page.tagline || undefined;
+    const description = page.seoDescription || page.description || undefined;
+    return {
+      title: title ? { absolute: title } : undefined,
+      description,
+      alternates: { canonical: "/" },
+      openGraph: {
+        type: "website",
+        url: "/",
+        title,
+        description,
+        images: page.ogImageUrl ? [{ url: page.ogImageUrl }] : undefined,
+      },
+      twitter: {
+        card: page.ogImageUrl ? "summary_large_image" : "summary",
+        title,
+        description,
+        images: page.ogImageUrl ? [page.ogImageUrl] : undefined,
+      },
+    };
+  } catch {
+    return {};
+  }
+}
+
 const HomePage = async (): Promise<ReactElement> => {
   const queryClient = getQueryClient();
   await Promise.all([
-    queryClient.ensureQueryData(trpc.landing.getLandingInfoFromNotion.queryOptions()),
+    queryClient.ensureQueryData(trpc.landing.getLandingInfo.queryOptions()),
+    queryClient.ensureQueryData(
+      trpc.conversion.getPublicConversionData.queryOptions(),
+    ),
   ]);
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

@@ -8,7 +8,7 @@ import ProjectCard from "./ProjectCard";
 
 const ProjectsSection = () => {
   const trpc = useTRPC();
-  const { data } = useSuspenseQuery(trpc.landing.getLandingInfoFromNotion.queryOptions());
+  const { data } = useSuspenseQuery(trpc.landing.getLandingInfo.queryOptions());
   const projectSection = data.projectSection;
   const [headingArray, setHeadingArray] = useState<string[]>([])
   useEffect(() => {

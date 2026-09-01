@@ -22,11 +22,27 @@ function getQueryClient() {
   return browserQueryClient;
 }
 function getUrl() {
-  const base = (() => {
-    if (typeof window !== 'undefined') return '';
-    return process.env.NEXT_PUBLIC_URL;
-  })();
-  return `${base}/api/trpc`;
+  if (typeof window !== 'undefined') return '/api/trpc';
+
+  const configuredUrl = process.env.NEXT_PUBLIC_URL;
+  if (configuredUrl) {
+    try {
+      const url = new URL(configuredUrl);
+      // `next start -p …` sets PORT at runtime. Keep local SSR requests on
+      // that same instance even when NEXT_PUBLIC_URL uses the default port.
+      if (
+        process.env.PORT &&
+        (url.hostname === 'localhost' || url.hostname === '127.0.0.1')
+      ) {
+        url.port = process.env.PORT;
+      }
+      return `${url.toString().replace(/\/$/, '')}/api/trpc`;
+    } catch {
+      // Fall through to the local runtime URL for malformed configuration.
+    }
+  }
+
+  return `http://127.0.0.1:${process.env.PORT || '3000'}/api/trpc`;
 }
 export function TRPCReactProvider(
   props: Readonly<{

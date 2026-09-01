@@ -1,0 +1,219 @@
+# What Should Your Business Automate? 25 Practical AI and n8n Workflows
+
+**Direct answer:** automate work that is repeated, rules-based enough to verify, fed by accessible data, and expensive enough to justify maintenance. Start with tasks that copy information between systems, prepare recurring reports, route documents, check records, or assemble a first draft for human review. Do not begin with a fully autonomous agent simply because the process contains text.
+
+The best first automation is usually unglamorous. It has a clear trigger, a stable source of truth, a measurable finish, and an employee who can explain the exceptions. Below are 25 workflows that can be implemented with n8n, APIs, deterministic code and selective AI.
+
+## Score a workflow before you build it
+
+Give each candidate a score from 1 to 5 on six questions:
+
+| Question | A high score means |
+| --- | --- |
+| Frequency | It happens often enough to matter |
+| Active time | A person spends meaningful time on every run |
+| Rule clarity | Inputs, outputs and exceptions can be explained |
+| Data access | The systems have APIs, webhooks or dependable exports |
+| Error tolerance | A mistake can be detected or reviewed before harm |
+| Business value | Faster, more consistent completion affects cost, service or revenue |
+
+Start with high frequency, high clarity and good data access. Treat low error tolerance as a reason to add approval—not as permission to ignore risk. If nobody owns the process or can define a correct result, improve the process before automating it.
+
+## Sales and customer operations
+
+### 1. Qualify and route inbound leads
+
+Capture a form submission, normalize company and contact fields, check for duplicates, enrich only approved data, score against explicit criteria, and assign the lead. AI can summarize free-text needs; territory, consent and ownership rules should remain deterministic. Alert a person when confidence is low or a high-value account needs review.
+
+### 2. Prepare a sales-call brief
+
+When a meeting is booked, assemble CRM history, prior emails, public company context and unresolved support issues into a concise brief. Cite the source for every factual statement and avoid inventing personal details. The output is preparation, not an automatic opinion about the prospect.
+
+### 3. Turn call notes into CRM updates
+
+Accept a transcript or approved notes, extract decisions and next actions into a schema, then show the proposed fields before writing to the CRM. This removes repeated data entry while keeping account ownership with the salesperson.
+
+### 4. Generate a proposal first draft
+
+Combine an approved service template with discovery answers, scope, exclusions, milestones and commercial assumptions. Require review before sending. Prices, legal clauses and delivery commitments should come from controlled fields—not a language model’s memory.
+
+### 5. Detect neglected opportunities
+
+Run a daily query for deals with no recent activity, a missed promised action or a close date that has passed. Send a prioritized digest rather than one alert per record. A simple rules engine is often more reliable than an agent here.
+
+## Support and service delivery
+
+### 6. Classify and route support requests
+
+Read an inbound ticket, remove unsafe markup, classify topic and urgency, attach the relevant account, and route it to the right queue. Let a person decide severity for ambiguous or high-impact cases. Track corrections so the taxonomy improves.
+
+### 7. Draft evidence-grounded support replies
+
+Retrieve only current, approved documentation; draft an answer with links to the passages used; and leave the ticket unsent. For billing, security, account deletion or legal questions, route directly to a trained person.
+
+### 8. Build a customer onboarding checklist
+
+After a contract reaches the correct state, create the customer workspace, internal project, required tasks, owners and due dates. Check that every step is idempotent so a retried webhook does not create duplicate folders or projects.
+
+### 9. Monitor service-level deadlines
+
+Calculate response and resolution deadlines from business hours, priority and contract. Warn the owner before a breach and escalate only when the deadline or inactivity rule is actually met. Store which rule produced the alert.
+
+### 10. Produce a weekly customer-health digest
+
+Combine usage, support, billing and relationship signals into an evidence table. AI may summarize patterns, but the score should have documented inputs. Make missing data visible rather than treating it as healthy behavior.
+
+## Finance and administration
+
+### 11. Extract invoice data into a review queue
+
+Watch an approved mailbox or upload folder, extract vendor, invoice number, date, tax fields, currency and totals, then validate arithmetic and duplicates. A reviewer approves the record before it reaches accounting. Keep the original document and extraction trace together.
+
+### 12. Reconcile payments against orders
+
+Consume payment webhooks, verify signatures, match a stable order identifier, and record state changes. Unmatched, duplicated or reversed payments go to a reconciliation queue. Do not let an AI model decide whether money was received.
+
+### 13. Chase missing documents
+
+Query a checklist for missing invoices, purchase orders, signed forms or identity documents; group reminders by recipient; and stop when the item arrives or the case closes. Rate-limit reminders and preserve consent and communication preferences.
+
+### 14. Assemble a month-end evidence pack
+
+Collect approved exports, statements, reconciliation summaries and exception lists into a dated folder with a manifest. Generate a draft cover note, but keep the accounting close and sign-off manual.
+
+## Marketing and content operations
+
+### 15. Automate GA4 and Search Console reporting
+
+Request agreed metrics and dimensions for the period, normalize comparisons, create deterministic charts, draft observations, and assemble a document for review. The [GA4 and search reporting case study](/case-studies/automated-ga4-search-reporting) shows why the human should add causality and business context instead of accepting an automatic narrative.
+
+### 16. Build a content refresh queue
+
+Combine page age, organic clicks, impressions, conversion relevance, broken links and product changes. Flag pages that deserve editorial review. Do not rewrite every old page automatically: preserve firsthand knowledge and update only when there is a user need.
+
+### 17. Repurpose an approved article
+
+After publication, generate channel-specific drafts for a newsletter and social posts, each linked to the canonical article. A person checks tone, claims and platform context. The source article remains the authority.
+
+### 18. Validate campaign tracking links
+
+Before launch, parse URLs, enforce the team’s UTM naming rules, check that the landing page resolves, and produce a clean campaign sheet. This is deterministic, fast and easy to test—an ideal early automation.
+
+### 19. Route reviews and brand mentions
+
+Collect events from approved platforms, detect the product and topic, and send a daily digest with links. Drafting a reply can be assisted; posting publicly should stay behind approval until the team has clear policy and confidence.
+
+## Documents, data and compliance operations
+
+### 20. Extract structured tables from documents
+
+Classify the layout, apply the appropriate OCR or parser, validate expected columns and value formats, and send low-confidence rows to review. In the [financial document OCR case study](/case-studies/financial-document-ocr-pipeline), six table layouts required table-aware handling; the strongest engine and parameters were not identical for every screen.
+
+### 21. Validate incoming records before ingestion
+
+Apply schema, profile and business-rule checks close to the ingestion boundary. Persist diagnostics with the invalid record and let valid records continue. The [FHIR validation case study](/case-studies/fhir-data-validation-service) illustrates why actionable diagnostics are more useful than a binary failure.
+
+### 22. Detect spreadsheet anomalies
+
+Watch a controlled sheet or export for missing identifiers, invalid dates, unexpected categories, duplicates and material changes. Notify the data owner with the exact rows and rules involved. Add statistical or AI detection only after basic validation is trustworthy.
+
+### 23. Classify and retain incoming documents
+
+Identify document type, extract a minimum metadata set, apply the organization’s retention label, and file it in the correct location. Sensitive or uncertain documents go to review. Retention policy must come from the organization, not the automation builder.
+
+## Product and engineering operations
+
+### 24. Triage application errors
+
+Group repeated exceptions by fingerprint, attach deployment and environment context, identify likely ownership, and open an issue only when thresholds are met. AI can summarize a stack trace, but it should not hide the original error or deploy a fix automatically.
+
+### 25. Coordinate releases and handover
+
+When a version is approved, verify checks, generate release notes from merged changes, deploy through the controlled environment, run smoke tests, and notify stakeholders. Keep production approval, rollback and secrets inside the deployment system rather than a general-purpose chat agent.
+
+## Which workflows should remain human-led?
+
+Do not automate a process merely because it is slow. Keep people responsible when the decision is rare, poorly defined, emotionally sensitive, legally consequential, or based on context the system cannot access. Examples include terminating employment, approving medical treatment, making an unreviewed credit decision, responding to a serious safety complaint, or signing a contract.
+
+A good automation can still help around such a decision: assemble records, check completeness, calculate a deterministic deadline, or prepare a draft. The final judgment remains explicit.
+
+## Choose the correct architecture
+
+### Use a deterministic workflow when
+
+- the inputs are structured;
+- rules are stable and testable;
+- the correct result can be calculated;
+- an API or database is the source of truth.
+
+### Add AI when
+
+- text, images or audio must be interpreted;
+- categories are fuzzy but reviewable;
+- a draft or summary saves meaningful time;
+- semantic retrieval improves access to approved knowledge.
+
+### Add a human approval when
+
+- the action is external or irreversible;
+- confidence can be low;
+- money, access, safety or reputation is involved;
+- policy requires accountability.
+
+### Build a product interface when
+
+- people need to correct data or manage rules;
+- the workflow has a queue, history or permissions;
+- many users need a coherent operational experience;
+- n8n’s execution view is not the right interface for the business team.
+
+This last point is often missed. An automation with ongoing exception handling may need a small Next.js and PostgreSQL operations application, not a larger workflow canvas.
+
+## A four-week pilot pattern
+
+For a suitable first process, a practical pilot can follow four stages:
+
+1. **Map:** document the real workflow, exceptions, owners, sample volume and success test.
+2. **Prove:** connect representative data and implement one end-to-end happy path.
+3. **Harden:** add validation, idempotency, errors, alerts, approvals and security boundaries.
+4. **Operate:** deploy, train the owner, observe real runs and decide whether to expand.
+
+Calendar time varies with access and complexity; this is a sequencing pattern, not a delivery promise.
+
+If you want help choosing among these workflows, [start a project](/#start-project) with three repeated tasks, their frequency, the tools involved and one anonymized example. The [AI & n8n Automation service](/#services) begins with a workflow map so the first build has a defensible reason to exist.
+
+## Frequently asked questions
+
+### Do I need n8n for every workflow?
+
+No. n8n is useful for orchestration and integrations, but a scheduled function, application job queue or small service may be simpler. Choose based on ownership, observability, expected change and deployment environment.
+
+### Can AI decide which process to automate?
+
+AI can help inventory tasks and summarize interviews, but process owners must supply frequency, exception cost and business importance. The prioritization is a business decision supported by evidence.
+
+### How do I measure whether an automation worked?
+
+Record a baseline before launch: volume, active handling time, elapsed time, correction rate and completion rate. After launch, compare the same definitions and include review time, failures and software cost.
+
+### What is the safest first automation?
+
+A read-only or draft-producing workflow is often safest: a report, internal digest, data-quality check or proposal draft. It creates value without automatically changing money, permissions or customer-facing records.
+
+### Should the workflow use an autonomous AI agent?
+
+Only when flexible planning adds value that a defined workflow cannot provide, and when its tools are constrained, observable and reviewable. Most business processes benefit from a deterministic backbone with narrow AI steps.
+
+### What information is needed for an estimate?
+
+Provide the trigger, source and destination systems, monthly volume, sample inputs and outputs, required turnaround, exceptions, data sensitivity, approver and definition of success.
+
+## Sources and further reading
+
+- n8n documentation: https://docs.n8n.io/
+- n8n, “Handle errors gracefully”: https://docs.n8n.io/build/flow-logic/handle-errors-gracefully
+- Google Analytics Data API: https://developers.google.com/analytics/devguides/reporting/data/v1
+- Google Search Console Search Analytics API: https://developers.google.com/webmaster-tools/v1/searchanalytics/query
+- Google Drive API overview: https://developers.google.com/drive/api/guides/about-sdk
+- OWASP Application Security Verification Standard: https://owasp.org/www-project-application-security-verification-standard/
+

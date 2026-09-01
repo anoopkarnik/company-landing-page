@@ -1,0 +1,41 @@
+{
+  "title": "Textract vs PaddleOCR for Financial Tables: Why Table-Specific Tuning Won",
+  "category": "Data & AI",
+  "slug": "textract-vs-paddleocr-financial-tables",
+  "excerpt": "A six-layout financial OCR case study showing when managed table extraction works, when layout-specific tuning matters, and how to measure accuracy without overstating it.",
+  "seoTitle": "Textract vs PaddleOCR for Financial Table OCR",
+  "seoDescription": "Compare AWS Textract and PaddleOCR for dense financial tables through a six-layout OCR case study, architecture, accuracy framework, and production checklist.",
+  "canonicalUrl": "https://bayesian-labs.com/blog/textract-vs-paddleocr-financial-tables",
+  "tags": [
+    "OCR",
+    "PaddleOCR",
+    "AWS Textract",
+    "financial data",
+    "n8n",
+    "document automation"
+  ],
+  "status": "draft",
+  "author": "Anoop Karnik",
+  "includeInSitemap": true,
+  "relatedServiceSlugs": ["ai-automation", "data-ai-integration"],
+  "relatedCaseStudySlugs": ["financial-document-ocr-pipeline"],
+  "cover": {
+    "prompt": "Create one 16:9 editorial technology illustration for a Bayesian Labs engineering article about extracting structured financial tables from screenshots. Dark midnight-navy background, restrained glassmorphism, a synthetic unbranded dense table flowing through two abstract OCR paths into clean validated spreadsheet rows, violet and cyan signals with emerald validation accents, crisp sophisticated isometric composition, generous negative space, premium technical publication style. Use only invented abstract cells and glyph-like marks: no readable text, no numbers, no company logos, no terminal branding, no watermarks, no real market data, no people.",
+    "alt": "Conceptual financial table flowing through OCR recognition and validation into structured rows",
+    "caption": "Conceptual illustration of a layout-aware OCR pipeline; no client screenshots or market data are shown."
+  },
+  "sourceUrls": [
+    "https://docs.aws.amazon.com/textract/latest/dg/how-it-works-analyzing.html",
+    "https://docs.aws.amazon.com/textract/latest/dg/how-it-works-tables.html",
+    "https://docs.aws.amazon.com/textract/latest/dg/textract-best-practices.html",
+    "https://www.paddleocr.ai/main/en/version3.x/pipeline_usage/table_recognition_v2.html",
+    "https://bayesian-labs.com/case-studies/financial-document-ocr-pipeline"
+  ],
+  "claimNotes": [
+    "The 100%, below-95%, and approximately-99.9% accuracy figures are builder-reported project validation results; the original labeled set and execution logs were not retained.",
+    "The roughly 750 visible fields count comes from the six supplied sample screens.",
+    "The 20–40 minute and 50–80% handling-time ranges are scenario estimates, not measured client KPIs.",
+    "Textract is not described as universally non-customizable; current AWS query adapters are acknowledged and distinguished from detector-level parameter tuning.",
+    "Do not publish the supplied Bloomberg terminal screenshots, workflow identifiers, spreadsheet identifiers, credentials references, or market values."
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "extends": "@workspace/typescript-config/prisma-db.json",
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
+}

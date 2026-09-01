@@ -1,0 +1,41 @@
+{
+  "title": "FHIR R4 Validation at Ingestion: Kafka, Flask, Diagnostics, and Configurable Rules",
+  "category": "Data & AI",
+  "slug": "fhir-r4-validation-kafka-flask",
+  "excerpt": "An ingestion-boundary architecture for validating almost fifty FHIR R4 resource types with Kafka, a Flask validator, structured diagnostics, and governed rule configuration.",
+  "seoTitle": "FHIR R4 Validation with Kafka and Flask",
+  "seoDescription": "Design FHIR R4 validation near ingestion using Kafka, Flask, OperationOutcome-style diagnostics, configurable rules, idempotent replay, and a Next.js operations UI.",
+  "canonicalUrl": "https://bayesian-labs.com/blog/fhir-r4-validation-kafka-flask",
+  "tags": [
+    "FHIR R4",
+    "healthcare interoperability",
+    "Kafka",
+    "Flask",
+    "data validation",
+    "OperationOutcome"
+  ],
+  "status": "draft",
+  "author": "Anoop Karnik",
+  "includeInSitemap": true,
+  "relatedServiceSlugs": ["data-ai-integration", "mvp-development"],
+  "relatedCaseStudySlugs": ["fhir-data-validation-service"],
+  "cover": {
+    "prompt": "Create one 16:9 editorial technology illustration for a Bayesian Labs engineering article about validating healthcare interoperability records at ingestion. Dark midnight-navy background, restrained glassmorphism, abstract synthetic healthcare resource packets moving through a Kafka-like event stream into a guarded validation service, branching into an emerald accepted path and a violet diagnostic review path, cyan connectors, sophisticated isometric architecture, premium technical-publication style, generous negative space. No readable text, no patient information, no medical logos, no FHIR flame logo, no company logos, no watermarks, no identifiable people.",
+    "alt": "Conceptual healthcare records passing through validation into accepted and diagnostic paths",
+    "caption": "Conceptual FHIR validation architecture using synthetic, non-patient data."
+  },
+  "sourceUrls": [
+    "https://hl7.org/fhir/R4/validation.html",
+    "https://hl7.org/fhir/R4/operationoutcome.html",
+    "https://hl7.org/fhir/R4/operation-resource-validate.html",
+    "https://kafka.apache.org/40/design/design/",
+    "https://bayesian-labs.com/case-studies/fhir-data-validation-service"
+  ],
+  "claimNotes": [
+    "Employment attribution is Mpowered Health; the author worked there full time for three years as a Founding Senior Software Engineer.",
+    "The author's scope excluded importing provider resources into the Kafka producer; this boundary is stated explicitly.",
+    "Almost fifty FHIR R4 resource types is a builder/project-record count and is presented as approximate.",
+    "The 80% reduction in data-related bugs is a source-recorded prior outcome whose original measurement protocol is not recoverable; it is not reconstructed or independently verified.",
+    "All diagnostic examples are synthetic, and no patient, provider, profile, or employer-confidential data is included."
+  ]
+}
