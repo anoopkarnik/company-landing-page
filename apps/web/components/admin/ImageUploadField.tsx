@@ -63,6 +63,7 @@ export function ImageUploadField({ value, onChange, uploadUrl = "/api/cms/upload
                     disabled={uploading}
                     onClick={() => fileInputRef.current?.click()}
                     title="Upload image"
+                    aria-label="Upload image"
                 >
                     {uploading ? (
                         <Loader2 className="h-4 w-4 animate-spin" />

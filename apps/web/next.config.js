@@ -1,5 +1,7 @@
+import { PHASE_DEVELOPMENT_SERVER } from 'next/constants.js';
+
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+const baseConfig = {
   transpilePackages: ['next-mdx-remote'],
   reactStrictMode: false,
   experimental: {
@@ -23,4 +25,10 @@ const nextConfig = {
   } // Disable Strict Mode
 };
 
-export default nextConfig;
+/** @type {import('next').NextConfig} */
+export default function nextConfig(phase) {
+  return {
+    ...baseConfig,
+    distDir: phase === PHASE_DEVELOPMENT_SERVER ? '.next-dev' : '.next',
+  };
+}

@@ -1,5 +1,16 @@
 import { z } from "zod";
 
+const portfolioScreenshotRecordSchema = z.record(z.string(), z.unknown());
+
+export const portfolioScreenshotsSchema = z
+    .array(
+        z.union([
+            z.string().trim().url().transform((url) => ({ url })),
+            portfolioScreenshotRecordSchema,
+        ]),
+    )
+    .max(100);
+
 // --- Navbar ---
 export const navbarFormSchema = z.object({
     title: z.string().optional(),

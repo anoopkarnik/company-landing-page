@@ -2,6 +2,7 @@ import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { hasValidAdminSession } from "@/lib/auth/admin-session";
+import { buildR2PublicUrl } from "@/lib/functions/r2-public-url";
 
 export const runtime = "nodejs";
 
@@ -39,6 +40,7 @@ export async function POST(req: Request) {
 
     const uniqueFilename = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}-${filename}`;
     const key = `cms-images/${uniqueFilename}`;
+    const publicUrl = buildR2PublicUrl(key);
 
     const buffer = Buffer.from(await file.arrayBuffer());
 
@@ -50,10 +52,6 @@ export async function POST(req: Request) {
         ContentType: file.type,
       })
     );
-
-    const publicUrl = process.env.NEXT_PUBLIC_R2_PUBLIC_URL
-      ? `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${key}`
-      : `https://${process.env.R2_BUCKET_NAME}.${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com/${key}`;
 
     return NextResponse.json({ url: publicUrl });
   }

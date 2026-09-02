@@ -5,6 +5,7 @@ import { z } from "zod";
 
 import { sendSupportEmail } from "@workspace/email/resend/index";
 import { getRatelimit } from "@/server/ratelimit";
+import { portfolioScreenshotsSchema } from "@/lib/zod/cms";
 import {
   adminProcedure,
   baseProcedure,
@@ -468,7 +469,7 @@ const portfolioProjectSchema = z.object({
   clientLogoUrl: optionalUrl,
   technologies: stringList,
   imageUrl: optionalUrl,
-  screenshots: jsonRecords,
+  screenshots: portfolioScreenshotsSchema,
   approvedMetrics: jsonRecords,
   contribution: optionalText(10000),
   githubLink: optionalUrl,

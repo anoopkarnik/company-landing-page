@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev --turbopack --port 3000",
     "prebuild": "pnpm --filter @workspace/database generate",
     "build": "next build",
     "start": "next start",
@@ -16,7 +16,10 @@
     "migrate:content-mdx": "jiti scripts/convert-content-to-mdx.ts",
     "sync:lifeforge-public": "jiti scripts/sync-lifeforge-public-cms.ts",
     "upload:blog-assets": "jiti scripts/upload-blog-assets-to-r2.ts",
-    "publish:blog-drafts": "jiti scripts/publish-blog-drafts.ts"
+    "publish:blog-drafts": "jiti scripts/publish-blog-drafts.ts",
+    "backfill:case-study-covers": "jiti scripts/backfill-case-study-covers.ts",
+    "backfill:portfolio-images": "jiti scripts/backfill-portfolio-images.ts",
+    "seed:service-tiers": "jiti scripts/seed-service-tiers.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.995.0",

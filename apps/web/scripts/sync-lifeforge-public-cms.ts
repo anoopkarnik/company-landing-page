@@ -4,6 +4,8 @@ import { fileURLToPath } from "node:url";
 
 import { PrismaClient, type Prisma } from "@workspace/database/client";
 
+import { portfolioScreenshotsSchema } from "../lib/zod/cms";
+
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const appDir = path.resolve(scriptDir, "..");
 
@@ -551,8 +553,9 @@ for (const [order, projectName] of selectedProjectNames.entries()) {
   const project = projectByName.get(projectName);
   if (!project) continue;
   const override = projectOverrides[projectName];
-  const screenshots =
+  const screenshotUrls =
     override?.screenshots ?? stableMediaUrls(project.demoImageUrls ?? []);
+  const screenshots = portfolioScreenshotsSchema.parse(screenshotUrls);
   const sourceMetrics = [
     project.impact
       ? {
@@ -592,8 +595,8 @@ for (const [order, projectName] of selectedProjectNames.entries()) {
       category,
       clientName,
       technologies,
-      screenshots,
-      imageUrl: screenshots[0] ?? null,
+      screenshots: screenshots as Prisma.InputJsonValue,
+      imageUrl: screenshotUrls[0] ?? null,
       approvedMetrics,
       contribution,
       githubLink,
@@ -617,8 +620,8 @@ for (const [order, projectName] of selectedProjectNames.entries()) {
       category,
       clientName,
       technologies,
-      screenshots,
-      imageUrl: screenshots[0] ?? null,
+      screenshots: screenshots as Prisma.InputJsonValue,
+      imageUrl: screenshotUrls[0] ?? null,
       approvedMetrics,
       contribution,
       githubLink,

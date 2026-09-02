@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { FolderKanban, Plus, Search } from "lucide-react";
 
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { SectionHeader } from "@/components/admin/SectionHeader";
 import { Button } from "@workspace/ui/components/shadcn/button";
 import { Input } from "@workspace/ui/components/shadcn/input";
@@ -44,6 +45,38 @@ type PortfolioDraft = {
   syncedAt?: string;
   order: number;
 };
+
+export function PortfolioMediaFields({
+  clientLogoUrl,
+  imageUrl,
+  onChange,
+}: {
+  clientLogoUrl: string;
+  imageUrl: string;
+  onChange: (values: {
+    clientLogoUrl?: string;
+    imageUrl?: string;
+  }) => void;
+}) {
+  return (
+    <div className="grid gap-4 md:grid-cols-2">
+      <Field label="Client logo URL">
+        <ImageUploadField
+          value={clientLogoUrl}
+          onChange={(nextClientLogoUrl) =>
+            onChange({ clientLogoUrl: nextClientLogoUrl })
+          }
+        />
+      </Field>
+      <Field label="Screenshot / cover URL">
+        <ImageUploadField
+          value={imageUrl}
+          onChange={(nextImageUrl) => onChange({ imageUrl: nextImageUrl })}
+        />
+      </Field>
+    </div>
+  );
+}
 
 export function PortfolioPublishingAdmin({
   initialData,
@@ -347,26 +380,13 @@ export function PortfolioPublishingAdmin({
                   }
                 />
               </Field>
-              <Field label="Client logo URL">
-                <Input
-                  type="url"
-                  value={item.clientLogoUrl}
-                  onChange={(event) =>
-                    update(index, { clientLogoUrl: event.target.value })
-                  }
-                />
-              </Field>
             </div>
+            <PortfolioMediaFields
+              clientLogoUrl={item.clientLogoUrl}
+              imageUrl={item.imageUrl}
+              onChange={(values) => update(index, values)}
+            />
             <div className="grid gap-4 md:grid-cols-2">
-              <Field label="Screenshot / cover URL">
-                <Input
-                  type="url"
-                  value={item.imageUrl}
-                  onChange={(event) =>
-                    update(index, { imageUrl: event.target.value })
-                  }
-                />
-              </Field>
               <Field label="GitHub URL">
                 <Input
                   type="url"

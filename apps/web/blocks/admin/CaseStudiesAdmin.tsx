@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { BriefcaseBusiness, Plus } from "lucide-react";
 
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { SectionHeader } from "@/components/admin/SectionHeader";
 import { Button } from "@workspace/ui/components/shadcn/button";
 import { Input } from "@workspace/ui/components/shadcn/input";
@@ -51,6 +52,40 @@ type CaseStudyDraft = {
 };
 
 const EMPTY_JSON_ARRAY = "[]";
+
+export function CaseStudyMediaFields({
+  clientLogoUrl,
+  coverImageUrl,
+  onChange,
+}: {
+  clientLogoUrl: string;
+  coverImageUrl: string;
+  onChange: (values: {
+    clientLogoUrl?: string;
+    coverImageUrl?: string;
+  }) => void;
+}) {
+  return (
+    <div className="grid gap-4 md:grid-cols-2">
+      <Field label="Client logo URL">
+        <ImageUploadField
+          value={clientLogoUrl}
+          onChange={(nextClientLogoUrl) =>
+            onChange({ clientLogoUrl: nextClientLogoUrl })
+          }
+        />
+      </Field>
+      <Field label="Cover image URL">
+        <ImageUploadField
+          value={coverImageUrl}
+          onChange={(nextCoverImageUrl) =>
+            onChange({ coverImageUrl: nextCoverImageUrl })
+          }
+        />
+      </Field>
+    </div>
+  );
+}
 
 export function CaseStudiesAdmin({
   initialData,
@@ -277,15 +312,6 @@ export function CaseStudiesAdmin({
                   }
                 />
               </Field>
-              <Field label="Client logo URL">
-                <Input
-                  type="url"
-                  value={item.clientLogoUrl}
-                  onChange={(event) =>
-                    update(index, { clientLogoUrl: event.target.value })
-                  }
-                />
-              </Field>
               <Field label="Industry">
                 <Input
                   value={item.industry}
@@ -303,6 +329,11 @@ export function CaseStudiesAdmin({
                 />
               </Field>
             </div>
+            <CaseStudyMediaFields
+              clientLogoUrl={item.clientLogoUrl}
+              coverImageUrl={item.coverImageUrl}
+              onChange={(values) => update(index, values)}
+            />
             <Field label="Summary">
               <Textarea
                 value={item.summary}
@@ -389,16 +420,7 @@ export function CaseStudiesAdmin({
                 />
               </Field>
             </div>
-            <div className="grid gap-4 md:grid-cols-3">
-              <Field label="Cover image URL">
-                <Input
-                  type="url"
-                  value={item.coverImageUrl}
-                  onChange={(event) =>
-                    update(index, { coverImageUrl: event.target.value })
-                  }
-                />
-              </Field>
+            <div className="grid gap-4 md:grid-cols-2">
               <Field label="Demo video URL">
                 <Input
                   type="url"

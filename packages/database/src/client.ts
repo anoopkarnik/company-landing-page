@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
-export * from "@prisma/client";
+export {Prisma, PrismaClient} from "@prisma/client";
 
 function createPrismaClient() {
   const databaseUrl = process.env.DATABASE_URL;
