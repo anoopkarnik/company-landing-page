@@ -55,7 +55,10 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const HomePage = async (): Promise<ReactElement> => {
   const queryClient = getQueryClient();
-  await Promise.all([
+  // Prefetch for SSR, but never let a transient CMS/database failure turn the
+  // whole page into the Suspense fallback — the client components retry on their
+  // own and both queries have their own data fallbacks.
+  await Promise.allSettled([
     queryClient.ensureQueryData(trpc.landing.getLandingInfo.queryOptions()),
     queryClient.ensureQueryData(
       trpc.conversion.getPublicConversionData.queryOptions(),

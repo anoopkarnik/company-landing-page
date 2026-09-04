@@ -176,7 +176,38 @@ export async function getPublicCaseStudyBySlug(slug: string) {
   return study && caseStudyIsPublic(study) ? toPublicCaseStudy(study) : null;
 }
 
+// Shape returned when the CMS row or database is unavailable. The landing page
+// still server-renders: `publicData()` on the client normalises this to nulls
+// and empty arrays, and `ConversionLanding` falls back to `landing.getLandingInfo`
+// data (which has its own baked-snapshot fallback).
+const EMPTY_CONVERSION_DATA: Record<string, unknown> = {
+  hero: null,
+  appointmentLink: null,
+  headings: null,
+  clientLogos: [],
+  proofMetrics: [],
+  servicePackages: [],
+  featuredCaseStudies: [],
+  caseStudies: [],
+  portfolioProjects: [],
+  processSteps: [],
+  founderProfile: null,
+  verifiedTestimonials: [],
+};
+
 export async function getPublicConversionData() {
+  try {
+    return await buildPublicConversionData();
+  } catch (error) {
+    console.error(
+      "[conversion] Failed to load public conversion data; serving empty fallback so the landing page still renders",
+      error,
+    );
+    return EMPTY_CONVERSION_DATA;
+  }
+}
+
+async function buildPublicConversionData() {
   const landingPage = await getLandingPage();
   const [servicePackages, caseStudies, projects, proofMetrics, clientLogos, testimonials] =
     await Promise.all([
