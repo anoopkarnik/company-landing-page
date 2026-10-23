@@ -4,6 +4,9 @@ import { fileURLToPath } from "node:url";
 
 import { PrismaClient, type Prisma } from "@workspace/database/client";
 
+import { lifeOsCaseStudy } from "../lib/constants/case-studies/life-os";
+import { saasForgeCaseStudy } from "../lib/constants/case-studies/saas-forge";
+
 import { portfolioScreenshotsSchema } from "../lib/zod/cms";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
@@ -678,145 +681,21 @@ const caseStudies: CaseStudySeed[] = [
   {
     projectName: "Life Forge",
     slug: "life-os",
-    title: "Life OS: designing a personal system that rewards resilience",
+    ...lifeOsCaseStudy,
     clientName: "Bayesian Labs",
     industry: "Personal productivity and learning",
-    summary:
-      "A self-hosted, experimental life operating system that consolidates thirteen personal domains, replaces a fragmented tool stack, and uses gamification to encourage recovery—not perfection.",
-    challenge:
-      "Personal and professional workflows were spread across Notion, YouTube, Taskade, TV Time, n8n, and other tools. The first gamified versions also punished missed habits so heavily that returning after a bad week felt impossible—the opposite of the discipline and resilience the product was meant to encourage.",
-    solutionMdx: `
-### Start with real workflows, not a feature checklist
-
-The product began with Notion systems already used for productivity, finance, and relationships. Those working habits became the first models, then the scope expanded only when an immediate need justified it: a second brain, skill trees for learning, an indie-hacker workspace for resumes and applications, entertainment tracking, content creation, health, and other life domains.
-
-That approach made Life OS a consolidation project rather than a collection of speculative dashboards. It now spans **thirteen domain areas**, while shared account, billing, content, and application infrastructure comes from SaaS Forge.
-
-### Rebuild the motivation loop
-
-Early versions tied experience points too closely to results. Missing several daily habits created so much negative progress that recovery felt unrealistic and motivation disappeared. The model was redesigned around three ideas:
-
-- reward showing up and building discipline;
-- make recovery after failure visible as resilience;
-- provide small, slow dopamine hits without pretending to measure the exact improvement of every part of a person's body or life.
-
-This also removed a harmful setup burden. The system should help someone exercise or learn now, not require hours of reading, testing, and data entry before they can begin.
-
-### Separate the product from long-running AI work
-
-The main experience remains a typed Next.js application. Long-running agents run in a separate FastAPI service using LangChain and LangGraph, behind a signed server boundary. That keeps agent execution and memory pressure isolated from the web request process and makes it easier to evolve model providers independently.
-
-The same core product is delivered across web, Electron desktop, Expo mobile, a browser extension, and a VS Code extension. The objective is not five unrelated clients; it is one set of life data and workflows available in the context where the user needs them.
-`.trim(),
-    contributionMdx: `
-I conceived and built the product end-to-end: product discovery from my own routines, domain modeling, UX, full-stack implementation, cross-platform packaging, AI-agent architecture, and the data work needed to bring existing systems into one place.
-
-The most difficult product work included an editable AI-assisted PDF resume where the editor and rendered PDF had to agree, LinkedIn authentication and publishing, and preserving entertainment history while importing TV Time-style data before access disappeared.
-`.trim(),
-    architectureMdx: `
-1. **Product clients:** Next.js web, Electron desktop, Expo mobile, browser extension, and VS Code extension.
-2. **Application boundary:** Better Auth and tRPC expose typed product capabilities without duplicating domain rules across clients.
-3. **System of record:** Prisma and PostgreSQL store the shared account, progress, knowledge, finance, entertainment, career, and other domain data.
-4. **Agent boundary:** the Next.js server sends signed jobs to a separate FastAPI service.
-5. **Agent runtime:** LangChain and LangGraph coordinate longer-running work such as knowledge capture and resume tailoring, then return durable results to the application.
-`.trim(),
-    outcomeMdx: `
-Life OS is deliberately presented as an **experimental personal platform**, not a finished commercial product. It consolidated the workflows its builder actually uses; most modules are used at least weekly and several daily. The breadth is useful for discovering what deserves to become a focused standalone product, but it also creates the next design challenge: the interface makes sense to someone who has lived with earlier Notion versions for a year and can overwhelm a newcomer.
-
-The next iteration will introduce beginner-friendly paths based on how much time someone wants to spend each day or week, with complexity revealed gradually. Commercialization will happen by extracting the strongest individual workflows into smaller products rather than trying to price the entire life system at once.
-`.trim(),
     serviceSlugs: ["mvp-development", "data-ai-integration"],
-    technologies: [
-      "Next.js",
-      "TypeScript",
-      "PostgreSQL",
-      "FastAPI",
-      "LangGraph",
-      "Electron",
-      "Expo",
-    ],
     timeline: "Personal product · active development",
     projectUrl: "https://game.bayesian-labs.com",
     confidentiality: "PUBLIC",
-    metrics: [
-      { value: "13", label: "life domains in the product", verified: true },
-      {
-        value: "5",
-        label: "web, desktop, mobile, browser and VS Code surfaces",
-        verified: true,
-      },
-    ],
   },
   {
     projectName: "SaaS Forge",
     slug: "saas-forge",
-    title: "SaaS Forge: owning the code, deployment, and upgrade path",
+    ...saasForgeCaseStudy,
     clientName: "Bayesian Labs",
     industry: "Developer tools and SaaS infrastructure",
-    summary:
-      "An open-source, India-ready SaaS foundation designed to grow from a web MVP into desktop and mobile products without surrendering infrastructure control or rebuilding the core.",
-    challenge:
-      "Vibe-coding platforms often tied deployment, costs, and code ownership to one vendor, while many boilerplates depended on authentication or payment modules that were limited or unsuitable in India. A useful starter also had to survive a harder problem: how does a customized downstream product receive later boilerplate improvements without being overwritten by them?",
-    solutionMdx: `
-### Build a foundation that can leave the demo stage
-
-SaaS Forge was designed for people building micro-SaaS products who want full control of their code and infrastructure. The foundation favors strong open-source modules such as Better Auth and keeps the system modular enough that increased usage can be handled by extending the architecture instead of rewriting a tightly coupled prototype.
-
-The build followed the dependency order a real product needs:
-
-1. web application and landing experience;
-2. authentication and database;
-3. payments;
-4. CMS and administration;
-5. scaffold generation;
-6. desktop and mobile applications;
-7. experimental AI modules;
-8. a separate backend service where Python is the better fit.
-
-The first usable version did not include scaffold forms, admin and guest roles, or AI modules. Those were added after the core could already authenticate users, persist data, and support a product workflow.
-
-### Make the starter portable
-
-The source is a pnpm and Turborepo monorepo spanning Next.js web, Electron desktop, Expo mobile, shared authentication, database and UI packages, and a staged download/scaffold flow. A founder can start with the web surface and add desktop or mobile without replacing the account and data model.
-
-The public starter includes production-oriented modules for auth, PostgreSQL data, payments, CMS, email, storage, observability, and scaffold/download workflows. AI modules are clearly treated as experimental. Multi-tenancy, API keys, and notifications are not presented as finished features where the current registry still marks them incomplete.
-
-### Treat template drift as a product feature
-
-The hardest part was upgrading an application after its downloaded boilerplate had been customized. Plain git merges worked at first, but large changes created intimidating conflicts. The solution became an explicit upgrade workflow: generate staged upgrade files and a machine-readable specification, then give an AI coding agent instructions to merge intent into the customized application instead of overwriting it.
-
-This workflow was refined while upgrading Life OS. Current repository evidence is strongest for the Claude Code command and merge skill; the broader authoring guidance is also written so Codex can reason about the same repository boundaries and upgrade intent.
-
-[Explore the source on GitHub](https://github.com/anoopkarnik/saas-forge) or [watch the product demo](https://www.youtube.com/watch?v=0zpQTtcsPtk).
-`.trim(),
-    contributionMdx: `
-I owned product direction and implementation across the landing and product UI, Better Auth integration, PostgreSQL schema, payments, CMS, admin roles, storage and email, scaffold generation, web/desktop/mobile applications, documentation, and the AI-assisted upgrade workflow.
-
-That ownership included the less visible work that makes a starter maintainable: keeping shared packages and the released template aligned, documenting editing boundaries for coding agents, testing generated variants, and using a real downstream product to expose upgrade conflicts.
-`.trim(),
-    architectureMdx: `
-1. **Monorepo foundation:** pnpm and Turborepo coordinate applications, shared packages, and the released starter.
-2. **Product surfaces:** Next.js serves web and administration; Electron and Expo reuse the same product contracts for desktop and mobile.
-3. **Core services:** Better Auth, tRPC, Prisma, and PostgreSQL provide identity, typed APIs, and persistence.
-4. **Operational modules:** payment providers, email, object storage, analytics, rate limiting, and observability are replaceable integrations rather than platform lock-in.
-5. **Scaffold pipeline:** the server builds selected variants and stages downloadable output.
-6. **Upgrade pipeline:** tree diffs and an upgrade specification describe upstream changes; an agent-assisted merge applies the intent to customized downstream code and resolves conflicts with context.
-`.trim(),
-    outcomeMdx: `
-SaaS Forge now provides one controlled starting point for web, desktop, and mobile SaaS delivery. Its non-AI foundation is used as production-oriented infrastructure; the AI modules remain experimental and are labelled accordingly.
-
-The most important outcome is architectural leverage: improvements to the shared foundation can flow into products such as Life OS without forcing those products back to a clean template. A September 2026 repository audit found **18 public template tags** and **195 commits**—evidence of an evolving upgrade path, not a claim that every downstream merge is automatic or conflict-free. Current CI is also not represented as fully green.
-`.trim(),
     serviceSlugs: ["mvp-development", "data-ai-integration"],
-    technologies: [
-      "Next.js",
-      "Better Auth",
-      "PostgreSQL",
-      "tRPC",
-      "Turborepo",
-      "Electron",
-      "Expo",
-    ],
     timeline: "Open-source product · active development",
     coverImageUrl:
       "https://pub-540add8b8ece44cab4963a5fe4abbf37.r2.dev/cms-images/1788183430255-g8r1ltv-turborepo-saas-boilerplate-code.png",
@@ -831,18 +710,6 @@ The most important outcome is architectural leverage: improvements to the shared
       },
     ],
     confidentiality: "PUBLIC",
-    metrics: [
-      {
-        value: "3",
-        label: "web, desktop and mobile app surfaces",
-        verified: true,
-      },
-      {
-        value: "18",
-        label: "public template tags as of Sep 2026",
-        verified: true,
-      },
-    ],
   },
   {
     projectName: "Financial Documents OCR",

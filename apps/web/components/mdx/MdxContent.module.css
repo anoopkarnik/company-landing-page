@@ -1,0 +1,160 @@
+/* Explicit HTML in MDX does not use the Markdown component map. Scope styles
+   to the rendered content so authored <details>/<summary> work everywhere. */
+.content details {
+  min-width: 0;
+  margin-block: 1.5rem;
+  padding-inline: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--muted) 25%, transparent);
+}
+
+.content summary {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 1.25rem;
+  color: var(--foreground);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+  list-style: none;
+  cursor: pointer;
+}
+
+.content summary::-webkit-details-marker {
+  display: none;
+}
+
+.content summary::marker {
+  content: "";
+}
+
+.content summary::after {
+  content: "";
+  flex: 0 0 0.5rem;
+  height: 0.5rem;
+  margin-top: 0.35rem;
+  margin-right: 0.25rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+}
+
+.content details[open] > summary::after {
+  margin-top: 0.6rem;
+  transform: rotate(225deg);
+}
+
+.content details[open] > summary {
+  border-bottom: 1px solid var(--border);
+}
+
+.content details[open] > :last-child {
+  margin-bottom: 1.25rem;
+}
+
+.content summary:hover {
+  color: var(--primary);
+}
+
+.content summary:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 4px;
+  border-radius: 0.25rem;
+}
+
+/* Portable HTML keeps authored stories readable in the CMS and on older renderers. */
+.content > p,
+.content > ul,
+.content > ol {
+  max-width: 76ch;
+}
+
+.content :global(.case-study-story) {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+  margin-block: 3.5rem;
+}
+.content :global(.case-study-story):first-child {
+  margin-top: 0;
+}
+.content :global(.case-study-copy) {
+  min-width: 0;
+}
+.content :global(.case-study-copy) > :first-child {
+  margin-top: 0;
+}
+.content :global(.case-study-copy) > :last-child {
+  margin-bottom: 0;
+}
+.content :global(.case-study-figure) {
+  min-width: 0;
+  margin: 0;
+}
+.content :global(.case-study-visual-title) {
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+.content :global(.case-study-image-link) {
+  position: relative;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: #fafafa;
+  cursor: zoom-in;
+}
+.content :global(.case-study-image-link) img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  border-radius: 0;
+}
+.content :global(.case-study-enlarge) {
+  display: block;
+  width: fit-content;
+  margin: 0.5rem 0.75rem 0.5rem auto;
+  color: #3f3f46;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+.content :global(.case-study-figure) figcaption {
+  margin: 0.75rem 0 0;
+  color: var(--muted-foreground);
+  font-size: 0.85rem;
+  line-height: 1.65;
+}
+.content :global(.case-study-image-link):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 4px;
+}
+@media (min-width: 900px) {
+  .content :global(.case-study-story) {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 3.5rem;
+  }
+  .content :global(.case-study-story-reverse) {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  }
+  .content :global(.case-study-story-reverse) :global(.case-study-copy) {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .content :global(.case-study-story-reverse) :global(.case-study-figure) {
+    grid-column: 1;
+    grid-row: 1;
+  }
+}
+@media (max-width: 600px) {
+  .content :global(.case-study-story) {
+    margin-block: 2.5rem;
+    gap: 1.5rem;
+  }
+}

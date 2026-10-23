@@ -59,6 +59,9 @@ export default async function CaseStudyPage({ params }: Props) {
   const { slug } = await params;
   const study = await getStudy(slug);
   if (!study) notFound();
+  const visualLayout = Boolean(
+    study.solutionMdx?.includes('className="case-study-story'),
+  );
   const verifiedMetrics = study.metrics.filter((metric) => metric.verified);
 
   const [solution, contribution, outcome, architecture] = await Promise.all([
@@ -67,6 +70,38 @@ export default async function CaseStudyPage({ params }: Props) {
     serializeMdx(study.outcomeMdx || ""),
     serializeMdx(study.architectureMdx || ""),
   ]);
+  const sections = [
+    {
+      id: "the-problem",
+      label: "The problem",
+      visible: Boolean(study.challenge),
+    },
+    {
+      id: "the-build",
+      label: "Solution and workflows",
+      visible: Boolean(solution.compiledSource),
+    },
+    {
+      id: "contribution",
+      label: "What I owned",
+      visible: Boolean(contribution.compiledSource),
+    },
+    {
+      id: "architecture",
+      label: "Architecture and engineering",
+      visible: Boolean(architecture.compiledSource),
+    },
+    {
+      id: "outcome",
+      label: "Outcomes and lessons",
+      visible: Boolean(outcome.compiledSource),
+    },
+    {
+      id: "visual-evidence",
+      label: "Product views",
+      visible: study.gallery.length > 0,
+    },
+  ].filter((section) => section.visible);
   const baseUrl = (
     process.env.NEXT_PUBLIC_URL || "http://localhost:3000"
   ).replace(/\/$/, "");
@@ -160,14 +195,37 @@ export default async function CaseStudyPage({ params }: Props) {
             </div>
           </header>
 
-          <div className="container grid gap-12 py-16 lg:grid-cols-[minmax(0,1fr)_280px] lg:py-24">
-            <div className="space-y-14">
+          {visualLayout ? (
+            <div className="border-b bg-background lg:sticky lg:top-16 lg:z-20">
+              <nav
+                aria-label="Case study contents"
+                className="container flex flex-wrap gap-x-6 gap-y-1 py-3"
+              >
+                {sections.map((section) => (
+                  <a
+                    key={section.id}
+                    href={`#${section.id}`}
+                    className="rounded-sm py-2 text-sm text-muted-foreground hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring"
+                  >
+                    {section.label}
+                  </a>
+                ))}
+              </nav>
+            </div>
+          ) : null}
+          <div
+            className={`container grid gap-12 py-16 lg:py-20 ${visualLayout ? "" : "lg:grid-cols-[minmax(0,1fr)_280px]"}`}
+          >
+            <div className="min-w-0 space-y-14">
+              <div className={visualLayout ? "hidden" : "lg:hidden"}>
+                <CaseStudyContents sections={sections} />
+              </div>
               {study.challenge ? (
                 <CaseSection
                   eyebrow="The problem"
                   title="What needed to change"
                 >
-                  <p className="text-lg leading-8 text-muted-foreground">
+                  <p className="max-w-4xl text-lg leading-8 text-muted-foreground">
                     {study.challenge}
                   </p>
                 </CaseSection>
@@ -177,12 +235,12 @@ export default async function CaseStudyPage({ params }: Props) {
                   eyebrow="The build"
                   title="Solution and implementation"
                 >
-                  <MdxArticle source={solution} />
+                  <MdxArticle source={solution} wide={visualLayout} />
                 </CaseSection>
               ) : null}
               {contribution.compiledSource ? (
                 <CaseSection eyebrow="Contribution" title="What I owned">
-                  <MdxArticle source={contribution} />
+                  <MdxArticle source={contribution} wide={visualLayout} />
                 </CaseSection>
               ) : null}
               {architecture.compiledSource ? (
@@ -190,12 +248,12 @@ export default async function CaseStudyPage({ params }: Props) {
                   eyebrow="Architecture"
                   title="How the system fits together"
                 >
-                  <MdxArticle source={architecture} />
+                  <MdxArticle source={architecture} wide={visualLayout} />
                 </CaseSection>
               ) : null}
               {outcome.compiledSource ? (
                 <CaseSection eyebrow="Outcome" title="What the work changed">
-                  <MdxArticle source={outcome} />
+                  <MdxArticle source={outcome} wide={visualLayout} />
                 </CaseSection>
               ) : null}
               {study.gallery.length ? (
@@ -228,10 +286,19 @@ export default async function CaseStudyPage({ params }: Props) {
               ) : null}
             </div>
 
-            <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
+            <aside
+              className={
+                visualLayout
+                  ? "grid gap-6 border-t pt-10 md:grid-cols-3"
+                  : "space-y-6 lg:sticky lg:top-24 lg:self-start"
+              }
+            >
+              <div className={visualLayout ? "hidden" : "hidden lg:block"}>
+                <CaseStudyContents sections={sections} />
+              </div>
               {verifiedMetrics.length ? (
                 <div className="rounded-2xl border bg-card p-5">
-                  <h2 className="font-semibold">Approved results</h2>
+                  <h2 className="font-semibold">Project facts</h2>
                   <dl className="mt-4 space-y-5">
                     {verifiedMetrics.map((metric) => (
                       <div key={`${metric.value}-${metric.label}`}>
@@ -294,7 +361,10 @@ function CaseSection({
   children: React.ReactNode;
 }) {
   return (
-    <section>
+    <section
+      id={eyebrow.toLowerCase().replaceAll(" ", "-")}
+      className="scroll-mt-40"
+    >
       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
         {eyebrow}
       </p>
@@ -306,14 +376,48 @@ function CaseSection({
 
 function MdxArticle({
   source,
+  wide = false,
 }: {
   source: Awaited<ReturnType<typeof serializeMdx>>;
+  wide?: boolean;
 }) {
   return (
-    <div className="prose prose-zinc max-w-none dark:prose-invert prose-a:text-primary prose-img:rounded-2xl">
+    <div
+      className={`prose prose-zinc break-words dark:prose-invert prose-a:text-primary prose-img:rounded-2xl ${wide ? "max-w-none [&_details_p]:max-w-[80ch] [&_details_li]:max-w-[80ch]" : "max-w-[72ch]"}`}
+    >
       <MdxContent
         source={source as Parameters<typeof MdxContent>[0]["source"]}
       />
     </div>
+  );
+}
+
+function CaseStudyContents({
+  sections,
+}: {
+  sections: Array<{ id: string; label: string }>;
+}) {
+  return (
+    <nav
+      aria-label="Case study contents"
+      className="rounded-2xl border bg-card p-5"
+    >
+      <h2 className="font-semibold">In this case study</h2>
+      <ul className="mt-3 space-y-1">
+        {sections.map((section) => (
+          <li key={section.id}>
+            <a
+              href={`#${section.id}`}
+              className="block rounded-sm py-1.5 text-sm text-muted-foreground hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            >
+              {section.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-4 text-xs leading-5 text-muted-foreground">
+        Expand the technical sections for implementation details.
+      </p>
+    </nav>
   );
 }

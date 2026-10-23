@@ -2,6 +2,7 @@
 
 import type { ComponentProps, ReactNode } from "react";
 import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
+import styles from "./MdxContent.module.css";
 
 import { cn } from "@workspace/ui/lib/utils";
 
@@ -50,9 +51,11 @@ export function MdxContent({
 }) {
   if (!source.compiledSource) return null;
   return (
-    <MDXRemote
-      {...(source as MDXRemoteSerializeResult)}
-      components={components}
-    />
+    <div className={styles.content}>
+      <MDXRemote
+        {...(source as MDXRemoteSerializeResult)}
+        components={components}
+      />
+    </div>
   );
 }
