@@ -29,6 +29,8 @@ export type PublicProofMetric = {
 export type PublicServicePackage = {
   id?: string;
   slug?: string | null;
+  category?: string | null;
+  level?: "basic" | "medium" | "advanced" | null;
   title: string;
   description: string;
   idealFor?: string | null;

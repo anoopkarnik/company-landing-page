@@ -4,9 +4,10 @@ import Link from "next/link";
 import {
   ArrowRight,
   Bot,
-  Boxes,
+  Globe,
   Braces,
   CheckCircle2,
+  ChevronDown,
   Database,
 } from "lucide-react";
 
@@ -21,6 +22,10 @@ import { Button } from "@workspace/ui/components/shadcn/button";
 
 import { DeliverableList, SectionHeading } from "./ConversionPrimitives";
 import { trackConversionEvent } from "@/lib/analytics/conversion-events";
+import {
+  groupServicePackages,
+  SERVICE_LEVEL_LABELS,
+} from "@/lib/service-packages";
 
 export function ProofSection({
   logos,
@@ -124,7 +129,7 @@ function ClientLogo({ logo }: { logo: PublicClientLogo }) {
   );
 }
 
-const serviceIcons = [Bot, Braces, Database, Boxes];
+const serviceIcons = [Bot, Database, Braces, Globe];
 
 export function ServicePackagesSection({
   services,
@@ -146,99 +151,133 @@ export function ServicePackagesSection({
       <AnimatedSection>
         <SectionHeading
           eyebrow="Ways to work together"
-          title={heading || "Choose a focused engagement, not an open-ended build"}
+          title={
+            heading || "Choose a focused engagement, not an open-ended build"
+          }
           description={description}
         />
       </AnimatedSection>
-      <div className="mt-12 grid items-stretch gap-6 lg:grid-cols-3">
-        {services.map((service, index) => {
+      <div className="mt-10 grid items-start gap-6 lg:grid-cols-2">
+        {groupServicePackages(services).map((group, index) => {
           const Icon = serviceIcons[index % serviceIcons.length];
-          const serviceHref =
-            !service.ctaHref || service.ctaHref === "#start-project"
-              ? `/?service=${encodeURIComponent(service.slug || service.title)}#start-project`
-              : service.ctaHref;
           return (
-            <AnimatedSection key={service.id ?? service.title} delay={index * 0.08}>
-              <article
-                className={`relative flex h-full flex-col rounded-2xl border bg-card p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-7 ${
-                  service.featured ? "border-primary/50 ring-1 ring-primary/20" : ""
-                }`}
-                data-track="service-package"
-                data-service-slug={service.slug ?? undefined}
-              >
-                {service.featured ? (
-                  <Badge className="absolute right-5 top-5">Popular</Badge>
-                ) : null}
-                <span className="grid size-11 place-items-center rounded-xl bg-primary/10 text-primary">
+            <article
+              key={group.category}
+              className="overflow-hidden rounded-2xl border bg-card"
+            >
+              <header className="flex items-center gap-3 border-b px-5 py-5 sm:px-6">
+                <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
                   <Icon className="size-5" aria-hidden="true" />
                 </span>
-                <h3 className="mt-5 text-xl font-semibold tracking-tight">
-                  {service.title}
+                <h3 className="text-xl font-semibold tracking-tight">
+                  {group.category}
                 </h3>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                  {service.description}
-                </p>
-                {service.idealFor ? (
-                  <div className="mt-5 rounded-xl bg-muted/55 p-4">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-foreground">
-                      Best for
-                    </p>
-                    <p className="mt-1.5 text-sm text-muted-foreground">
-                      {service.idealFor}
-                    </p>
-                  </div>
-                ) : null}
-                {(service.deliverables ?? []).length > 0 ? (
-                  <div className="mt-6">
-                    <p className="mb-3 text-sm font-medium">Typical deliverables</p>
-                    <DeliverableList items={service.deliverables ?? []} />
-                  </div>
-                ) : null}
-                <div className="mt-auto flex flex-wrap gap-x-6 gap-y-2 border-t pt-6 text-sm">
-                  {service.timeline ? (
-                    <span>
-                      <span className="text-muted-foreground">Timeline</span>
-                      <br />
-                      <strong>{service.timeline}</strong>
-                    </span>
-                  ) : null}
-                  {service.priceFrom ? (
-                    <span>
-                      <span className="text-muted-foreground">Investment</span>
-                      <br />
-                      <strong>{service.priceFrom}</strong>
-                    </span>
-                  ) : null}
-                </div>
-                <Button asChild variant="outline" className="mt-6 w-full group">
-                  <Link
-                    href={
-                      serviceHref
-                    }
-                    data-track="service-cta"
-                    data-service={service.slug ?? service.title}
-                    onClick={() =>
-                      trackConversionEvent("cta_clicked", {
-                        location: "service_package",
-                        service: service.slug || service.title,
-                      })
-                    }
-                  >
-                    {service.ctaLabel || "Discuss this project"}
-                    <ArrowRight
-                      className="transition-transform group-hover:translate-x-0.5"
-                      aria-hidden="true"
-                    />
-                  </Link>
-                </Button>
-              </article>
-            </AnimatedSection>
+              </header>
+              <div className="divide-y">
+                {group.packages.map((service) => {
+                  const serviceHref =
+                    !service.ctaHref || service.ctaHref === "#start-project"
+                      ? `/?service=${encodeURIComponent(service.slug || service.title)}#start-project`
+                      : service.ctaHref;
+                  return (
+                    <details
+                      key={service.id ?? service.slug ?? service.title}
+                      className="group/package"
+                      data-track="service-package"
+                      data-service-slug={service.slug ?? undefined}
+                    >
+                      <summary className="flex cursor-pointer list-none items-center gap-4 px-5 py-4 transition-colors hover:bg-muted/40 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary sm:px-6 [&::-webkit-details-marker]:hidden">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h4 className="text-sm font-semibold text-primary">
+                              {service.level
+                                ? SERVICE_LEVEL_LABELS[service.level]
+                                : "Package details"}
+                            </h4>
+                            {service.featured ? (
+                              <Badge variant="secondary">Popular</Badge>
+                            ) : null}
+                          </div>
+                          <p className="mt-1 text-sm font-medium">
+                            {service.title}
+                          </p>
+                          {service.priceFrom ? (
+                            <p className="mt-1 text-xs text-muted-foreground">
+                              Approx {service.priceFrom}
+                            </p>
+                          ) : null}
+                        </div>
+                        <ChevronDown
+                          className="size-4 shrink-0 text-muted-foreground transition-transform group-open/package:rotate-180 motion-reduce:transition-none"
+                          aria-hidden="true"
+                        />
+                      </summary>
+                      <div className="px-5 pb-5 sm:px-6">
+                        <p className="text-sm leading-6 text-muted-foreground">
+                          {service.description}
+                        </p>
+                        {service.idealFor ? (
+                          <p className="mt-4 text-sm leading-6 text-muted-foreground">
+                            <strong className="font-medium text-foreground">
+                              Best for:{" "}
+                            </strong>
+                            {service.idealFor}
+                          </p>
+                        ) : null}
+                        {(service.deliverables ?? []).length > 0 ? (
+                          <div className="mt-5">
+                            <p className="mb-3 text-sm font-medium">
+                              Typical deliverables
+                            </p>
+                            <DeliverableList
+                              items={service.deliverables ?? []}
+                            />
+                          </div>
+                        ) : null}
+                        {service.timeline ? (
+                          <p className="mt-5 text-sm text-muted-foreground">
+                            Timeline:{" "}
+                            <strong className="font-medium text-foreground">
+                              {service.timeline}
+                            </strong>
+                          </p>
+                        ) : null}
+                        <Button
+                          asChild
+                          variant="outline"
+                          className="mt-5 w-full"
+                        >
+                          <Link
+                            href={serviceHref}
+                            data-track="service-cta"
+                            data-service={service.slug ?? service.title}
+                            onClick={() =>
+                              trackConversionEvent("cta_clicked", {
+                                location: "service_package",
+                                service: service.slug || service.title,
+                              })
+                            }
+                          >
+                            {service.ctaLabel || "Discuss this project"}
+                            <ArrowRight aria-hidden="true" />
+                          </Link>
+                        </Button>
+                      </div>
+                    </details>
+                  );
+                })}
+              </div>
+            </article>
           );
         })}
       </div>
       <p className="mt-7 flex items-start gap-2 text-sm text-muted-foreground">
-        <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
-        Scope, timing, and investment are confirmed after a short discovery call.
+        <CheckCircle2
+          className="mt-0.5 size-4 shrink-0 text-primary"
+          aria-hidden="true"
+        />
+        Scope, timing, and investment are confirmed after a short discovery
+        call.
       </p>
     </section>
   );

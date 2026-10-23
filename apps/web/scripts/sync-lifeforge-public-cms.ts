@@ -453,64 +453,73 @@ await cmsDb.landingPage.update({
 const servicePackages = [
   {
     slug: "ai-automation",
-    title: "AI & n8n Automation",
+    category: "Automation",
+    order: 0,
+    level: "basic",
+    title: "Workflow Automation",
     shortDescription:
-      "Replace repetitive operational work with reliable, observable workflows and human review where it matters.",
+      "Connect your everyday tools and automate repetitive tasks, with clear alerts and human approval when a workflow needs your team's attention.",
     idealFor:
-      "Teams moving data between inboxes, documents, CRMs, spreadsheets, analytics tools, and internal systems.",
+      "Teams spending too much time copying information between emails, spreadsheets, CRMs, and internal tools.",
     deliverables: [
-      "Workflow discovery and automation map",
-      "n8n or custom orchestration",
-      "AI extraction, classification, or generation",
-      "Retries, alerts, logging, and human approval paths",
-      "Deployment, documentation, and handover",
+      "A practical plan for the workflows to automate",
+      "Connected workflows built with n8n or custom code",
+      "AI steps to extract, classify, or generate information",
+      "Automatic retries, alerts, and approval steps",
+      "Deployment, documentation, and team handover",
     ],
     technologies: ["n8n", "AI/LLMs", "APIs", "PostgreSQL", "Next.js"],
     timeline: "2–6 weeks",
-    ctaLabel: "Discuss an automation",
+    ctaLabel: "Automate a workflow",
     ctaLink: "#start-project",
   },
   {
     slug: "mvp-development",
-    title: "Production-ready MVP Development",
+    category: "Product Development",
+    order: 6,
+    level: "basic",
+    title: "MVP Launch",
     shortDescription:
-      "Go from a validated idea to a deployed product with authentication, data, payments, analytics, and operations included.",
+      "Turn your validated idea into a working product, with a focused user experience, backend, and the essential services needed to launch.",
     idealFor:
-      "Founders who need a credible first product without coordinating multiple specialist vendors.",
+      "Founders ready to launch their first product with one development partner handling the full build.",
     deliverables: [
-      "Scope and architecture",
-      "Responsive product UI",
-      "Backend APIs and PostgreSQL data model",
-      "Authentication, billing, analytics, and email",
-      "CI/CD, deployment, documentation, and handover",
+      "A focused product scope and technical plan",
+      "A responsive interface for desktop and mobile",
+      "Backend APIs and a PostgreSQL database",
+      "Sign-in, billing, analytics, and email integration",
+      "Automated deployment, documentation, and handover",
     ],
     technologies: ["Next.js", "TypeScript", "PostgreSQL", "Prisma", "AI"],
     timeline: "4–10 weeks",
-    ctaLabel: "Scope an MVP",
+    ctaLabel: "Plan your MVP",
     ctaLink: "#start-project",
   },
   {
     slug: "data-ai-integration",
-    title: "Data & AI Integration",
+    category: "Data & AI",
+    order: 3,
+    level: "basic",
+    title: "Data Integration & AI Tools",
     shortDescription:
-      "Connect fragmented data, validate it early, and make AI useful inside the systems your team already operates.",
+      "Connect scattered data sources and bring useful AI features into your existing tools, from document extraction to search and assistants.",
     idealFor:
-      "Product and operations teams with ingestion, validation, OCR, search, reporting, or assistant requirements.",
+      "Product and operations teams that need connected data or a focused AI feature within their current systems.",
     deliverables: [
-      "Data-flow and quality assessment",
-      "Ingestion and validation pipelines",
-      "OCR, retrieval, or assistant integration",
-      "Monitoring and failure handling",
+      "A review of your data sources, flows, and quality",
+      "Pipelines to collect and validate incoming data",
+      "Document extraction, search, or AI assistant integration",
+      "Monitoring and error handling",
       "Performance testing and technical documentation",
     ],
     technologies: ["Python", "Kafka", "PostgreSQL", "OCR", "LLMs"],
     timeline: "3–8 weeks",
-    ctaLabel: "Review a data problem",
+    ctaLabel: "Connect your data",
     ctaLink: "#start-project",
   },
 ];
 
-for (const [order, service] of servicePackages.entries()) {
+for (const service of servicePackages) {
   await cmsDb.servicePackage.upsert({
     where: {
       landingPageId_slug: {
@@ -518,10 +527,9 @@ for (const [order, service] of servicePackages.entries()) {
         slug: service.slug,
       },
     },
-    update: { ...service, order, isFeatured: true, isPublished: true },
+    update: { ...service, isFeatured: true, isPublished: true },
     create: {
       ...service,
-      order,
       isFeatured: true,
       isPublished: true,
       landingPageId: landingPage.id,

@@ -6,6 +6,7 @@ import { z } from "zod";
 import { sendSupportEmail } from "@workspace/email/resend/index";
 import { getRatelimit } from "@/server/ratelimit";
 import { portfolioScreenshotsSchema } from "@/lib/zod/cms";
+import { SERVICE_LEVELS } from "@/lib/service-packages";
 import {
   adminProcedure,
   baseProcedure,
@@ -213,7 +214,7 @@ async function buildPublicConversionData() {
     await Promise.all([
       db.servicePackage.findMany({
         where: { landingPageId: landingPage.id, isPublished: true },
-        orderBy: [{ isFeatured: "desc" }, { order: "asc" }],
+        orderBy: { order: "asc" },
       }),
       db.caseStudy.findMany({
         where: { landingPageId: landingPage.id, ...publicCaseStudyWhere },
@@ -319,6 +320,8 @@ async function buildPublicConversionData() {
       id: service.id,
       slug: service.slug,
       title: service.title,
+      category: service.category,
+      level: service.level,
       description: service.shortDescription,
       descriptionMdx: service.descriptionMdx,
       idealFor: service.idealFor,
@@ -416,6 +419,8 @@ const servicePackageSchema = z.object({
   id,
   slug,
   title: z.string().trim().min(1).max(160),
+  category: z.string().trim().min(1).max(160).default("Other services"),
+  level: z.enum(SERVICE_LEVELS).default("basic"),
   shortDescription: z.string().trim().min(1).max(1200),
   descriptionMdx: optionalText(30000),
   idealFor: optionalText(2000),
@@ -623,6 +628,8 @@ async function replaceServicePackages(items: z.infer<typeof servicePackageSchema
       const data = {
         slug: item.slug,
         title: item.title,
+        category: item.category,
+        level: item.level,
         shortDescription: item.shortDescription,
         descriptionMdx: nullable(item.descriptionMdx),
         idealFor: nullable(item.idealFor),

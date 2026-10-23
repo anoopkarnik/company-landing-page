@@ -317,6 +317,8 @@ model ServicePackage {
   id               String      @id @default(cuid())
   slug             String
   title            String
+  category         String      @default("Other services")
+  level            String      @default("basic")
   shortDescription String      @map("short_description") @db.Text
   descriptionMdx   String?     @map("description_mdx") @db.Text
   idealFor         String?     @map("ideal_for") @db.Text

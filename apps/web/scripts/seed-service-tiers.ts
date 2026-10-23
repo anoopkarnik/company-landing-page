@@ -7,13 +7,12 @@
  * Each capability has an entry tier and two tiers above it, following a
  * ~2.5x / 5x ladder. The three original packages (ai-automation,
  * mvp-development, data-ai-integration) are the entry tier of their ladder:
- * their authored copy and price are left exactly as they are, and only their
- * position is set, so the tiers of one ladder sit together.
+ * their authored copy and price are left exactly as they are, and their
+ * position, service heading, and level are set to keep each ladder together.
  *
- * Every package is unfeatured on purpose. The public query orders by
- * `isFeatured desc, order asc`, so leaving three entry tiers featured would
- * hoist them above every upper tier and break the ladders apart. Ordering is
- * therefore carried entirely by `order`.
+ * Each package stores its service heading and Basic/Medium/Advanced level.
+ * The public section groups by heading and sorts by level; `order` controls
+ * heading order. Packages start unfeatured, with equal visual priority.
  *
  * Idempotent: upserted on (landingPageId, slug), so re-running updates copy in
  * place rather than creating duplicates.
@@ -22,6 +21,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import type { PrismaClient } from "@workspace/database/client";
+
+import { SERVICE_LEVELS } from "../lib/service-packages";
 
 import { loadEnvFile, parseArgs } from "./lib/cover-backfill";
 
@@ -59,44 +60,44 @@ const LADDERS: Array<{ name: string; tiers: Tier[] }> = [
       {
         slug: "automation-ai-extraction",
         copy: {
-          title: "Automation with AI Extraction",
+          title: "AI Document Processing",
           shortDescription:
-            "Automations that read messy inputs — documents, screenshots, call transcripts — and turn them into structured rows your team can review.",
+            "Turn PDFs, screenshots, and call transcripts into organized, usable data, with validation and a review step before it reaches your business systems.",
           idealFor:
-            "Teams whose bottleneck is re-keying data out of PDFs, terminal screenshots, or recorded calls.",
+            "Teams manually reading documents or recordings and entering the same information into spreadsheets or databases.",
           deliverables: [
-            "Layout-aware OCR or transcript extraction",
-            "Structured schema and normalization step",
-            "Derived fields and validation rules",
-            "Review-first destination in Sheets, a database, or an inbox",
-            "Retries, alerting, and failure logging",
+            "Text extraction from documents, screenshots, or transcripts",
+            "Consistent fields and formatting for extracted data",
+            "Validation rules and calculated fields",
+            "A review step in Sheets, a database, or an inbox",
+            "Automatic retries, alerts, and error tracking",
           ],
           technologies: ["n8n", "PaddleOCR", "AI/LLMs", "Google Sheets", "PostgreSQL"],
           timeline: "2–5 weeks",
           priceFrom: 1200,
-          ctaLabel: "Discuss an extraction workflow",
+          ctaLabel: "Discuss document processing",
         },
       },
       {
         slug: "automation-platform",
         copy: {
-          title: "Automation Platform",
+          title: "Connected Automation Platform",
           shortDescription:
-            "Several workflows running as one system: shared orchestration, human approval where it matters, and observability you can act on.",
+            "Bring multiple workflows together in one coordinated system, with shared monitoring, approval paths, and reporting across your team.",
           idealFor:
-            "Operations teams running enough automations that failures, ownership, and audit trails have become the real problem.",
+            "Operations teams managing several automations that need clearer ownership, reliable monitoring, and a shared history of activity.",
           deliverables: [
-            "Workflow discovery and automation map across teams",
-            "Parent and sub-workflow orchestration",
+            "An automation plan covering workflows across teams",
+            "Connected workflows with reusable steps",
             "Human approval and escalation paths",
-            "Monitoring, alerting, and run history",
-            "Scheduled reporting and delivery",
-            "Documentation, training, and handover",
+            "Monitoring, alerts, and workflow history",
+            "Scheduled reports and automated delivery",
+            "Documentation, team training, and handover",
           ],
           technologies: ["n8n", "AI/LLMs", "APIs", "PostgreSQL", "Google Workspace"],
           timeline: "6–10 weeks",
           priceFrom: 2500,
-          ctaLabel: "Plan an automation platform",
+          ctaLabel: "Plan your automation platform",
         },
       },
     ],
@@ -108,101 +109,101 @@ const LADDERS: Array<{ name: string; tiers: Tier[] }> = [
       {
         slug: "validated-data-pipeline",
         copy: {
-          title: "Validated Data Pipeline",
+          title: "Data Quality & Validation",
           shortDescription:
-            "Catch bad records at the boundary instead of downstream: explicit contracts, validation, and diagnostics that name the source.",
+            "Check incoming data before it reaches your applications, route invalid records for review, and make it clear where errors started.",
           idealFor:
-            "Teams where invalid records reach downstream systems and nobody finds out until something breaks.",
+            "Teams dealing with inconsistent data from multiple sources and spending too much time tracing errors after they cause problems.",
           deliverables: [
-            "Source and schema contract definition",
-            "Validation service at the ingestion boundary",
-            "Valid and invalid routing with a result contract",
-            "Operations UI for inspecting failures",
-            "Feedback loop identifying the offending provider",
-            "Monitoring, alerting, and documentation",
+            "Clear requirements for data formats and required fields",
+            "Validation checks as data enters your system",
+            "Separate paths for valid records and records needing review",
+            "A dashboard to inspect validation failures",
+            "Source-level feedback to help resolve recurring errors",
+            "Monitoring, alerts, and documentation",
           ],
           technologies: ["Kafka", "FHIR", "PostgreSQL", "Next.js", "Python"],
           timeline: "5–9 weeks",
           priceFrom: 2000,
-          ctaLabel: "Review a validation problem",
+          ctaLabel: "Improve your data quality",
         },
       },
       {
         slug: "data-platform-ai",
         copy: {
-          title: "Data Platform with AI",
+          title: "Unified Data & AI Platform",
           shortDescription:
-            "A consolidated data layer with retrieval, assistants, and reporting built on top — governed, monitored, and documented.",
+            "Bring data from across your business into a shared foundation for AI assistants, search, and reporting, with access controls and monitoring built in.",
           idealFor:
-            "Companies whose data is spread across products and vendors, and who want AI grounded in real records rather than guessing.",
+            "Companies that need a consistent view of data across products and vendors, with AI answers grounded in their own records.",
           deliverables: [
-            "Consolidated ingestion across sources",
-            "Warehouse or operational data model",
-            "Retrieval layer grounding AI in real records",
-            "Assistant or reporting surfaces for the team",
-            "Access control, monitoring, and cost controls",
+            "Connected data pipelines across your sources",
+            "A shared warehouse or operational data model",
+            "Search and retrieval that connect AI to your records",
+            "AI assistants or reporting tools for your team",
+            "Access permissions, monitoring, and cost controls",
             "Performance testing and technical documentation",
           ],
           technologies: ["Python", "PostgreSQL", "Kafka", "LLMs", "Next.js"],
           timeline: "8–14 weeks",
           priceFrom: 4000,
-          ctaLabel: "Scope a data platform",
+          ctaLabel: "Plan your data platform",
         },
       },
     ],
   },
   {
-    name: "Product",
+    name: "Product Development",
     tiers: [
       { slug: "mvp-development" },
       {
         slug: "production-mvp",
         copy: {
-          title: "Production MVP",
+          title: "Production-ready Product",
           shortDescription:
-            "The first product with the operational parts real users need: billing, roles, tests, and monitoring — not just the happy path.",
+            "Build the foundations for a product people rely on, with user permissions, subscription billing, automated tests, and monitoring to support day-to-day operations.",
           idealFor:
-            "Founders with early users, where downtime, billing errors, or missing permissions now cost real money.",
+            "Founders with early users who need stronger billing, access controls, and operational reliability as their product grows.",
           deliverables: [
-            "Product scope, architecture, and data model",
-            "Authentication, roles, and permissions",
-            "Payments, subscriptions, and billing flows",
-            "Automated tests and CI/CD",
-            "Error tracking, analytics, and alerting",
+            "Product scope, architecture, and database design",
+            "Sign-in, user roles, and access permissions",
+            "Payments, subscriptions, and billing workflows",
+            "Automated tests and deployment pipelines",
+            "Error tracking, analytics, and alerts",
             "Deployment, documentation, and handover",
           ],
           technologies: ["Next.js", "TypeScript", "PostgreSQL", "Prisma", "Stripe", "Vercel"],
           timeline: "8–14 weeks",
           priceFrom: 2500,
-          ctaLabel: "Scope a production MVP",
+          ctaLabel: "Prepare your product for growth",
         },
       },
       {
         slug: "scaling-mvp",
         copy: {
-          title: "Scaling MVP",
+          title: "Product Scaling & Integrations",
           shortDescription:
-            "Taking a working product to multi-tenant, integrated, and operable — the stage where architecture decisions start compounding.",
+            "Prepare your existing product for more customers and more complex workflows, with separate customer workspaces, deeper integrations, and targeted performance improvements.",
           idealFor:
-            "Teams whose product works but is straining: more customers, more integrations, more people touching the codebase.",
+            "Teams with a working product that needs to support more customers, connect to more tools, and become easier to operate and maintain.",
           deliverables: [
-            "Multi-tenant data model and access boundaries",
+            "Separate customer workspaces with secure data boundaries",
             "Third-party integrations and webhook handling",
-            "Background jobs, queues, and scheduled work",
-            "Performance profiling and query optimization",
-            "Observability, runbooks, and on-call documentation",
-            "Handover to an in-house team",
+            "Background tasks, queues, and scheduled jobs",
+            "Performance analysis and database query improvements",
+            "Monitoring, operating guides, and incident procedures",
+            "Technical handover to your in-house team",
           ],
           technologies: ["Next.js", "TypeScript", "PostgreSQL", "Prisma", "Redis", "Vercel"],
           timeline: "10–16 weeks",
           priceFrom: 5000,
-          ctaLabel: "Plan a scaling engagement",
+          ctaLabel: "Scale your product",
         },
       },
     ],
   },
   {
-    name: "Web presence",
+    name: "Web Presence",
     tiers: [
       {
         slug: "landing-page-starter",
@@ -287,7 +288,11 @@ if (!landingPage) {
 }
 
 const flattened = LADDERS.flatMap((ladder) =>
-  ladder.tiers.map((tier) => ({ ...tier, ladder: ladder.name })),
+  ladder.tiers.map((tier, index) => ({
+    ...tier,
+    ladder: ladder.name,
+    level: SERVICE_LEVELS[index]!,
+  })),
 );
 
 let position = 0;
@@ -323,7 +328,7 @@ for (const tier of flattened) {
     }
     await db.servicePackage.update({
       where,
-      data: { order, isFeatured: false },
+      data: { order, isFeatured: false, category: tier.ladder, level: tier.level },
     });
     console.log(
       `repositioned\t${order}\t${tier.ladder}\t${tier.slug}\t$${existing.priceFrom}\t${existing.title}`,
@@ -333,6 +338,8 @@ for (const tier of flattened) {
 
   const data = {
     ...tier.copy,
+    category: tier.ladder,
+    level: tier.level,
     priceCurrency: "USD",
     ctaLink: "#start-project",
     isFeatured: false,

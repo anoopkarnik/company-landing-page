@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import {
   ArrowLeft,
@@ -30,9 +31,19 @@ import {
   SelectValue,
 } from "@workspace/ui/components/shadcn/select";
 import { Textarea } from "@workspace/ui/components/shadcn/textarea";
-import { cn } from "@workspace/ui/lib/utils";
+import {
+  groupServicePackages,
+  SERVICE_LEVEL_LABELS,
+} from "@/lib/service-packages";
 
 import { SectionHeading } from "./ConversionPrimitives";
+import {
+  OTHER_SERVICE_CATEGORY,
+  RECOMMEND_PACKAGE,
+  ServiceCategoryPicker,
+  ServicePackagePicker,
+  servicePackageKey,
+} from "./ProjectServicePicker";
 import { trackConversionEvent } from "@/lib/analytics/conversion-events";
 
 const budgetOptions = [
@@ -49,6 +60,14 @@ const timelineOptions = [
   "3–6 months",
   "Flexible",
 ];
+
+type EnquiryStep = "category" | "package" | "brief" | "contact";
+const stepLabels: Record<EnquiryStep, string> = {
+  category: "Choose a service area",
+  package: "Choose a package level",
+  brief: "Tell me about your project",
+  contact: "Where should I reply?",
+};
 
 const initialLead: LeadInput = {
   name: "",
@@ -76,7 +95,15 @@ export function ProjectEnquiryForm({
   successMessage?: string | null;
 }) {
   const trpc = useTRPC();
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState<EnquiryStep>("category");
+  const [category, setCategory] = useState("");
+  const [packageKey, setPackageKey] = useState("");
+  const searchParams = useSearchParams();
+  const serviceParam = searchParams.get("service");
+  const lastPrefill = useRef<string | null>(null);
+  const stepContent = useRef<HTMLDivElement>(null);
+  const stepHeading = useRef<HTMLDivElement>(null);
+  const previousStep = useRef(step);
   const [lead, setLead] = useState(initialLead);
   const [error, setError] = useState("");
   const [website, setWebsite] = useState("");
@@ -103,45 +130,129 @@ export function ProjectEnquiryForm({
   );
 
   useEffect(() => {
-    const selected = new URLSearchParams(window.location.search).get("service");
-    if (!selected) return;
+    if (!serviceParam) {
+      lastPrefill.current = null;
+      return;
+    }
+    if (lastPrefill.current === serviceParam) return;
     const match = services.find(
-      (service) => service.slug === selected || service.title === selected,
+      (service) =>
+        service.slug === serviceParam || service.title === serviceParam,
     );
     if (match) {
+      lastPrefill.current = serviceParam;
+      setCategory(match.category?.trim() || "Other services");
+      setPackageKey(servicePackageKey(match));
       setLead((current) => ({ ...current, service: match.title }));
+      setStep("package");
+      setError("");
     }
-  }, [services]);
+  }, [services, serviceParam]);
 
-  const progress = useMemo(() => ((step + 1) / 3) * 100, [step]);
+  useEffect(() => {
+    if (previousStep.current === step) return;
+    previousStep.current = step;
+    stepContent.current?.focus({ preventScroll: true });
+    stepHeading.current?.scrollIntoView({
+      block: "start",
+      behavior: "instant",
+    });
+  }, [step]);
 
-  const update = <Key extends keyof LeadInput>(key: Key, value: LeadInput[Key]) => {
+  const steps: EnquiryStep[] =
+    category === OTHER_SERVICE_CATEGORY
+      ? ["category", "brief", "contact"]
+      : ["category", "package", "brief", "contact"];
+  const stepIndex = steps.indexOf(step);
+  const progress = ((stepIndex + 1) / steps.length) * 100;
+  const selectedPackage = groupServicePackages(services)
+    .find((group) => group.category === category)
+    ?.packages.find((service) => servicePackageKey(service) === packageKey);
+
+  const chooseCategory = (value: string) => {
+    setCategory(value);
+    setPackageKey("");
+    setLead((current) => ({
+      ...current,
+      service: value === OTHER_SERVICE_CATEGORY ? "Something else" : "",
+    }));
+    setError("");
+  };
+
+  const choosePackage = (value: string) => {
+    const match = services.find(
+      (service) => servicePackageKey(service) === value,
+    );
+    setPackageKey(value);
+    setLead((current) => ({
+      ...current,
+      service:
+        value === RECOMMEND_PACKAGE
+          ? `${category} — help me choose`
+          : match?.title || "",
+    }));
+    setError("");
+  };
+
+  const update = <Key extends keyof LeadInput>(
+    key: Key,
+    value: LeadInput[Key],
+  ) => {
     setLead((current) => ({ ...current, [key]: value }));
     setError("");
   };
 
   function nextStep() {
-    if (step === 0 && !lead.service.trim()) {
-      setError("Choose the kind of help you need.");
+    if (step === "category" && !category) {
+      setError("Choose a service area or select Something else.");
       return;
     }
-    if (step === 1 && lead.problem.trim().length < 20) {
-      setError("Tell me a little more about the problem (at least 20 characters).");
+    if (
+      step === "package" &&
+      (!packageKey || (packageKey !== RECOMMEND_PACKAGE && !selectedPackage))
+    ) {
+      setError("Choose a package level or select Help me choose.");
+      return;
+    }
+    if (step === "brief" && lead.problem.trim().length < 20) {
+      setError(
+        "Tell me a little more about the problem (at least 20 characters).",
+      );
       return;
     }
     setError("");
-    if (step === 0) {
-      trackConversionEvent("lead_form_started", { service: lead.service });
+    if (step === "category") {
+      trackConversionEvent("lead_form_started", {
+        service:
+          category === OTHER_SERVICE_CATEGORY ? "Something else" : category,
+      });
     }
     trackConversionEvent("lead_form_step_completed", {
-      step: step + 1,
-      service: lead.service,
+      step: stepIndex + 1,
+      stage: step,
+      service: lead.service || category,
     });
-    setStep((current) => Math.min(current + 1, 2));
+    setStep(steps[Math.min(stepIndex + 1, steps.length - 1)]);
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (step !== "contact") {
+      nextStep();
+      return;
+    }
+    if (!lead.service.trim()) {
+      setStep("category");
+      setError("Choose the kind of help you need.");
+      return;
+    }
+    if (lead.problem.trim().length < 20) {
+      setStep("brief");
+      setError(
+        "Tell me a little more about the problem (at least 20 characters).",
+      );
+      return;
+    }
     if (!lead.name.trim()) {
       setError("Enter your name.");
       return;
@@ -194,7 +305,10 @@ export function ProjectEnquiryForm({
           <SectionHeading
             eyebrow="Start a project"
             title={heading || "Tell me what needs to change"}
-            description={description || "A short brief is enough. I’ll review the problem, constraints, and fit before suggesting a next step."}
+            description={
+              description ||
+              "A short brief is enough. I’ll review the problem, constraints, and fit before suggesting a next step."
+            }
           />
           <ul className="mt-8 space-y-4 text-sm text-muted-foreground">
             {[
@@ -214,13 +328,17 @@ export function ProjectEnquiryForm({
 
         <div className="rounded-3xl border bg-background p-5 shadow-xl sm:p-8">
           {submitted ? (
-            <div className="flex min-h-[440px] flex-col items-center justify-center text-center" aria-live="polite">
+            <div
+              className="flex min-h-[440px] flex-col items-center justify-center text-center"
+              aria-live="polite"
+            >
               <span className="grid size-16 place-items-center rounded-full bg-emerald-500/10 text-emerald-600">
                 <CheckCircle2 className="size-8" aria-hidden="true" />
               </span>
               <h2 className="mt-6 text-2xl font-semibold">Your brief is in</h2>
               <p className="mt-3 max-w-md leading-7 text-muted-foreground">
-                {successMessage || `Thanks, ${lead.name || "there"}. I’ll review the context and reply to ${lead.email || "your email"} with a useful next step.`}
+                {successMessage ||
+                  `Thanks, ${lead.name || "there"}. I’ll review the context and reply to ${lead.email || "your email"} with a useful next step.`}
               </p>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                 {cleanAppointmentLink ? (
@@ -242,79 +360,88 @@ export function ProjectEnquiryForm({
             </div>
           ) : (
             <form onSubmit={handleSubmit} noValidate data-track="lead-form">
-              <div className="flex items-center justify-between gap-4">
+              <div
+                ref={stepHeading}
+                className="flex scroll-mt-24 items-center justify-between gap-4"
+              >
                 <div>
-                  <p className="text-sm font-medium">Step {step + 1} of 3</p>
+                  <p className="text-sm font-medium" aria-live="polite">
+                    Step {stepIndex + 1} of {steps.length}
+                  </p>
                   <p className="text-xs text-muted-foreground">
-                    {step === 0
-                      ? "What do you need?"
-                      : step === 1
-                        ? "What should change?"
-                        : "Where should I reply?"}
+                    {stepLabels[step]}
                   </p>
                 </div>
-                <span className="text-xs text-muted-foreground">About 2 minutes</span>
+                <span className="text-xs text-muted-foreground">
+                  About 2 minutes
+                </span>
               </div>
-              <Progress value={progress} className="mt-4" aria-label={`${Math.round(progress)}% complete`} />
+              <Progress
+                value={progress}
+                className="mt-4"
+                aria-label={`${Math.round(progress)}% complete`}
+              />
 
-              <div className="mt-8 min-h-[330px]">
-                {step === 0 ? (
-                  <fieldset>
-                    <legend className="text-lg font-semibold">What kind of help are you looking for?</legend>
-                    <p className="mt-1 text-sm text-muted-foreground">Choose the closest option. We can refine it later.</p>
-                    <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                      {[...services.map((service) => service.title), "Something else"].map((option) => (
-                        <label
-                          key={option}
-                          className={cn(
-                            "cursor-pointer rounded-xl border p-4 text-sm font-medium transition hover:border-primary/40 hover:bg-primary/5",
-                            lead.service === option && "border-primary bg-primary/5 ring-1 ring-primary/30",
-                          )}
-                        >
-                          <input
-                            type="radio"
-                            name="service"
-                            value={option}
-                            checked={lead.service === option}
-                            onChange={() => update("service", option)}
-                            className="sr-only"
-                          />
-                          <span className="flex items-center justify-between gap-3">
-                            {option}
-                            <span className={cn("size-3 rounded-full border", lead.service === option && "border-primary bg-primary ring-2 ring-primary/20")} />
-                          </span>
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
+              <div
+                ref={stepContent}
+                tabIndex={-1}
+                className="mt-8 min-h-[330px] outline-none"
+              >
+                {step === "category" ? (
+                  <ServiceCategoryPicker
+                    services={services}
+                    selected={category}
+                    onSelect={chooseCategory}
+                  />
                 ) : null}
 
-                {step === 1 ? (
+                {step === "package" ? (
+                  <ServicePackagePicker
+                    services={services}
+                    category={category}
+                    selected={packageKey}
+                    onSelect={choosePackage}
+                  />
+                ) : null}
+
+                {step === "brief" ? (
                   <div className="space-y-5">
                     <div className="space-y-2">
-                      <Label htmlFor="lead-problem">What problem or opportunity should this project address?</Label>
+                      <Label htmlFor="lead-problem">
+                        What problem or opportunity should this project address?
+                      </Label>
                       <Textarea
                         id="lead-problem"
                         value={lead.problem}
-                        onChange={(event) => update("problem", event.target.value)}
+                        onChange={(event) =>
+                          update("problem", event.target.value)
+                        }
                         placeholder="For example: Our team spends two days each month combining reports by hand..."
                         rows={5}
                         required
                       />
-                      <p className="text-right text-xs text-muted-foreground">{lead.problem.length} characters</p>
+                      <p className="text-right text-xs text-muted-foreground">
+                        {lead.problem.length} characters
+                      </p>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="lead-systems">Current tools or systems (optional)</Label>
+                      <Label htmlFor="lead-systems">
+                        Current tools or systems (optional)
+                      </Label>
                       <Input
                         id="lead-systems"
                         value={lead.currentSystems}
-                        onChange={(event) => update("currentSystems", event.target.value)}
+                        onChange={(event) =>
+                          update("currentSystems", event.target.value)
+                        }
                         placeholder="e.g. Google Sheets, HubSpot, an existing Next.js app"
                       />
                     </div>
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div className="space-y-2">
-                        <Label htmlFor="lead-budget">Budget range (optional)</Label>
+                        <Label htmlFor="lead-budget">
+                          Budget range (optional)
+                        </Label>
                         <Select
                           value={lead.budget}
                           onValueChange={(value) => update("budget", value)}
@@ -332,7 +459,9 @@ export function ProjectEnquiryForm({
                         </Select>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="lead-timeline">Desired timing (optional)</Label>
+                        <Label htmlFor="lead-timeline">
+                          Desired timing (optional)
+                        </Label>
                         <Select
                           value={lead.timeline}
                           onValueChange={(value) => update("timeline", value)}
@@ -353,56 +482,150 @@ export function ProjectEnquiryForm({
                   </div>
                 ) : null}
 
-                {step === 2 ? (
+                {step === "contact" ? (
                   <div className="space-y-5">
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div className="space-y-2">
                         <Label htmlFor="lead-name">Your name</Label>
-                        <Input id="lead-name" autoComplete="name" value={lead.name} onChange={(event) => update("name", event.target.value)} required />
+                        <Input
+                          id="lead-name"
+                          autoComplete="name"
+                          value={lead.name}
+                          onChange={(event) =>
+                            update("name", event.target.value)
+                          }
+                          required
+                        />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="lead-company">Company (optional)</Label>
-                        <Input id="lead-company" autoComplete="organization" value={lead.company} onChange={(event) => update("company", event.target.value)} />
+                        <Input
+                          id="lead-company"
+                          autoComplete="organization"
+                          value={lead.company}
+                          onChange={(event) =>
+                            update("company", event.target.value)
+                          }
+                        />
                       </div>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="lead-email">Work email</Label>
-                      <Input id="lead-email" type="email" autoComplete="email" value={lead.email} onChange={(event) => update("email", event.target.value)} required />
+                      <Input
+                        id="lead-email"
+                        type="email"
+                        autoComplete="email"
+                        value={lead.email}
+                        onChange={(event) =>
+                          update("email", event.target.value)
+                        }
+                        required
+                      />
                     </div>
                     <div className="sr-only" aria-hidden="true">
                       <Label htmlFor="lead-website">Website</Label>
-                      <Input id="lead-website" tabIndex={-1} autoComplete="off" value={website} onChange={(event) => setWebsite(event.target.value)} />
+                      <Input
+                        id="lead-website"
+                        tabIndex={-1}
+                        autoComplete="off"
+                        value={website}
+                        onChange={(event) => setWebsite(event.target.value)}
+                      />
                     </div>
                     <label className="flex cursor-pointer items-start gap-3 rounded-xl border bg-muted/30 p-4 text-sm leading-6">
-                      <Checkbox checked={lead.contactConsent} onCheckedChange={(checked) => update("contactConsent", checked === true)} className="mt-1" />
+                      <Checkbox
+                        checked={lead.contactConsent}
+                        onCheckedChange={(checked) =>
+                          update("contactConsent", checked === true)
+                        }
+                        className="mt-1"
+                      />
                       <span>
-                        You may contact me about this project. I understand my details will be handled according to the{" "}
-                        <Link href="/legal/privacy-policy" className="font-medium text-primary underline-offset-4 hover:underline">privacy policy</Link>.
+                        You may contact me about this project. I understand my
+                        details will be handled according to the{" "}
+                        <Link
+                          href="/legal/privacy-policy"
+                          className="font-medium text-primary underline-offset-4 hover:underline"
+                        >
+                          privacy policy
+                        </Link>
+                        .
                       </span>
                     </label>
                     <div className="rounded-xl bg-muted/50 p-4 text-sm">
                       <p className="font-medium">Brief summary</p>
                       <dl className="mt-2 grid gap-2 text-muted-foreground sm:grid-cols-2">
-                        <div><dt className="text-xs">Service</dt><dd className="text-foreground">{lead.service}</dd></div>
-                        {lead.timeline ? <div><dt className="text-xs">Timing</dt><dd className="text-foreground">{lead.timeline}</dd></div> : null}
+                        <div>
+                          <dt className="text-xs">Service area</dt>
+                          <dd className="text-foreground">
+                            {category === OTHER_SERVICE_CATEGORY
+                              ? "Something else"
+                              : category}
+                          </dd>
+                        </div>
+                        {category !== OTHER_SERVICE_CATEGORY ? (
+                          <div>
+                            <dt className="text-xs">Package</dt>
+                            <dd className="text-foreground">
+                              {selectedPackage?.level
+                                ? `${SERVICE_LEVEL_LABELS[selectedPackage.level]} · `
+                                : ""}
+                              {packageKey === RECOMMEND_PACKAGE
+                                ? "Help me choose"
+                                : lead.service}
+                            </dd>
+                          </div>
+                        ) : null}
+                        {lead.timeline ? (
+                          <div>
+                            <dt className="text-xs">Timing</dt>
+                            <dd className="text-foreground">{lead.timeline}</dd>
+                          </div>
+                        ) : null}
                       </dl>
                     </div>
                   </div>
                 ) : null}
               </div>
 
-              <p className="min-h-6 text-sm text-destructive" role="alert" aria-live="polite">{error}</p>
+              <p
+                className="min-h-6 text-sm text-destructive"
+                role="alert"
+                aria-live="polite"
+              >
+                {error}
+              </p>
               <div className="mt-3 flex items-center justify-between gap-3 border-t pt-5">
-                <Button type="button" variant="ghost" onClick={() => setStep((current) => Math.max(current - 1, 0))} disabled={step === 0 || createLead.isPending}>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => {
+                    setError("");
+                    setStep(steps[Math.max(stepIndex - 1, 0)]);
+                  }}
+                  disabled={stepIndex === 0 || createLead.isPending}
+                >
                   <ArrowLeft aria-hidden="true" /> Back
                 </Button>
-                {step < 2 ? (
-                  <Button type="button" onClick={nextStep} data-track="lead-form-next">
+                {step !== "contact" ? (
+                  <Button
+                    type="button"
+                    onClick={nextStep}
+                    data-track="lead-form-next"
+                  >
                     Continue <ArrowRight aria-hidden="true" />
                   </Button>
                 ) : (
-                  <Button type="submit" disabled={createLead.isPending} data-track="lead-form-submit">
-                    {createLead.isPending ? <Loader2 className="animate-spin" aria-hidden="true" /> : <Send aria-hidden="true" />}
+                  <Button
+                    type="submit"
+                    disabled={createLead.isPending}
+                    data-track="lead-form-submit"
+                  >
+                    {createLead.isPending ? (
+                      <Loader2 className="animate-spin" aria-hidden="true" />
+                    ) : (
+                      <Send aria-hidden="true" />
+                    )}
                     {createLead.isPending ? "Sending…" : "Send project brief"}
                   </Button>
                 )}
